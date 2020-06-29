@@ -7,6 +7,8 @@ target 'Balance' do
 
   # Pods for Balance
 
-	pod 'FSCalendar'
+pod 'FSCalendar'
+pod 'RealmSwift'
+pod 'CurrencyTextField'
 
 end
