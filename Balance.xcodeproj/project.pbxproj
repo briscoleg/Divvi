@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C02B84D724AABCDA00B11C9C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02B84D624AABCDA00B11C9C /* ViewController.swift */; };
+		C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02B84D824AACC3000B11C9C /* DataManager.swift */; };
+		C02B84DB24AAD36D00B11C9C /* AddTransaction2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02B84DA24AAD36D00B11C9C /* AddTransaction2ViewController.swift */; };
 		C08A028524A3BCE60056F355 /* AddTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */; };
 		C08A028724A3C4980056F355 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028624A3C4980056F355 /* Transaction.swift */; };
 		C08A028E24A3DF1B0056F355 /* TransactionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */; };
@@ -25,6 +28,9 @@
 		12B8086F49EABEA3EA0E5B35 /* Pods-Balance.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.debug.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.debug.xcconfig"; sourceTree = "<group>"; };
 		797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.release.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.release.xcconfig"; sourceTree = "<group>"; };
 		7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Balance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C02B84D624AABCDA00B11C9C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		C02B84D824AACC3000B11C9C /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		C02B84DA24AAD36D00B11C9C /* AddTransaction2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransaction2ViewController.swift; sourceTree = "<group>"; };
 		C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewController.swift; sourceTree = "<group>"; };
 		C08A028624A3C4980056F355 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewController.swift; sourceTree = "<group>"; };
@@ -75,6 +81,8 @@
 				C0DB5FFE24A160D900008F89 /* SummaryViewController.swift */,
 				C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */,
 				C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */,
+				C02B84DA24AAD36D00B11C9C /* AddTransaction2ViewController.swift */,
+				C02B84D624AABCDA00B11C9C /* ViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -93,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				C08A028624A3C4980056F355 /* Transaction.swift */,
+				C02B84D824AACC3000B11C9C /* DataManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -246,12 +255,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C02B84DB24AAD36D00B11C9C /* AddTransaction2ViewController.swift in Sources */,
 				C0DB5FFF24A160D900008F89 /* SummaryViewController.swift in Sources */,
 				C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */,
 				C08A028724A3C4980056F355 /* Transaction.swift in Sources */,
 				C08A028E24A3DF1B0056F355 /* TransactionTableViewController.swift in Sources */,
 				C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */,
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
+				C02B84D724AABCDA00B11C9C /* ViewController.swift in Sources */,
+				C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */,
 				C08A028524A3BCE60056F355 /* AddTransactionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

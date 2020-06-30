@@ -87,11 +87,12 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             newTransaction.transactionName = name
             newTransaction.transactionDescription = desc
             newTransaction.transactionDate = datePicked
-                        
+
             try! realm.write {
                 realm.add(newTransaction)
             }
             
+            DataManager.shared.firstVC.tableView.reloadData()
             self.dismiss(animated: true, completion: nil)
             
         default:
@@ -100,10 +101,8 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        
+                
         datePicked = date
-        
-        print(datePicked)
         
         }
 }
@@ -121,3 +120,4 @@ extension UIApplication {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+

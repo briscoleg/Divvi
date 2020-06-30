@@ -22,9 +22,21 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+         print(Realm.Configuration.defaultConfiguration.fileURL!)
                 
         calendar.delegate = self
         
+//        addButton.layer.shadowColor = UIColor.black.cgColor
+//        addButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+//        addButton.layer.masksToBounds = false
+//        addButton.layer.shadowRadius = 2.0
+//        addButton.layer.shadowOpacity = 0.1
+//        addButton.layer.cornerRadius = addButton.frame.width / 2
+//        addButton.layer.borderColor = UIColor.black.cgColor
+//        addButton.layer.borderWidth = 1.0
+        
+//        makeCircular(button: addButton)
         
     }
 
@@ -43,7 +55,23 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
         let dateString = formatter.string(from: date)
         
         dateLabel.text = dateString
-                
+                        
+    }
+    
+    func makeCircular(button: UIButton) {
+    addButton.layer.shadowColor = UIColor.black.cgColor
+    addButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+    addButton.layer.masksToBounds = false
+    addButton.layer.shadowRadius = 2.0
+    addButton.layer.shadowOpacity = 0.5
+    addButton.layer.cornerRadius = addButton.frame.width / 2
+    addButton.layer.borderColor = UIColor.black.cgColor
+    addButton.layer.borderWidth = 2.0
     }
 
+    @IBAction func addButtonPressed(_ sender: UIButton) {
+    }
+    
+    @IBAction func addButton2Pressed(_ sender: UIBarButtonItem) {
+    }
 }

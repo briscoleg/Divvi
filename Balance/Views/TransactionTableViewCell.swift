@@ -10,6 +10,8 @@ import UIKit
 
 class TransactionTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var borderView: UIView!
+    
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -17,7 +19,9 @@ class TransactionTableViewCell: UITableViewCell {
         
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        borderView.layer.cornerRadius = 10
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
