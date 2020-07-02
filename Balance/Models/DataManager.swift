@@ -9,7 +9,9 @@
 import Foundation
 
 class DataManager {
-
-        static let shared = DataManager()
-        var firstVC = TransactionTableViewController()
+    
+    static let shared = DataManager()
+    var firstVC = TransactionTableViewController()
+    var summaryVC = SummaryViewController()
+    
 }

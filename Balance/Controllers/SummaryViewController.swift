@@ -21,9 +21,18 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
     @IBOutlet weak var addButton: UIBarButtonItem!
     
     let realm = try! Realm()
-        
+    
+    var transaction: Results<Transaction>!
+    
+    let addItemVC = AddTransactionViewController()
+    
+            
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        DataManager.shared.summaryVC = self
+        
+        totalTransactions()
         
          print(Realm.Configuration.defaultConfiguration.fileURL!)
                 
@@ -32,10 +41,27 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
         amountLabel.layer.shadowColor = UIColor.black.cgColor
         
     }
+    
+    func totalTransactions() {
+        
+        let transactionsTotal: Double = realm.objects(Transaction.self).sum(ofProperty: "transactionAmount")
 
+        amountLabel.text = String(format: "$%.2f", transactionsTotal)
+        
+    }
+    
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
-        displaySelectedDate(date)
+//        let transactionsDate = realm.objects(Transaction.self).filter("transactionDate < %@", date)
+//
+//        print(transactionsDate)
+//        print(date)
+        
+        let adjustedDate = date.addingTimeInterval(17 * 60 * 60)
+        
+        let transactionsTotal: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", adjustedDate).sum(ofProperty: "transactionAmount")
+
+        amountLabel.text = String(format: "$%.2f", transactionsTotal)
         
     }
     

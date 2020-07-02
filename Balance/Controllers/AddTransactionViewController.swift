@@ -44,7 +44,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         universalTextField.keyboardType = .decimalPad
         descriptionTextField.isHidden = true
         calendar.isHidden = true
-        instructionsLabel.text = "Amount:"
+        instructionsLabel.text = "Enter Amount:"
         
         nextButton.roundCorners()
     
@@ -61,7 +61,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             amount = NSString(string: universalTextField.text!).doubleValue
             print(amount)
             universalTextField.text = ""
-            instructionsLabel.text = "Name:"
+            instructionsLabel.text = "Enter Name:"
             universalTextField.keyboardType = .alphabet
             universalTextField.autocapitalizationType = .words
             universalTextField.becomeFirstResponder()
@@ -73,7 +73,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             
         case 2:
             
-            instructionsLabel.text = "Date:"
+            instructionsLabel.text = "Select Date:"
             
             name = universalTextField.text!
             desc = descriptionTextField.text!
@@ -83,7 +83,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             descriptionTextField.isHidden = true
             
             calendar.isHidden = false
-            nextButton.setTitle("Add Transaction", for: .normal)
+            nextButton.setTitle("Add", for: .normal)
             UIApplication.shared.endEditing()
             
         case 3:
@@ -100,6 +100,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             }
             
             DataManager.shared.firstVC.tableView.reloadData()
+            DataManager.shared.summaryVC.viewDidLoad()
             self.dismiss(animated: true, completion: nil)
             
         default:

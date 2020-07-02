@@ -13,19 +13,22 @@ class TransactionTableViewController: UITableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var realm = try! Realm()
+    let realm = try! Realm()
     
-    lazy var transaction: Results<Transaction> = { self.realm.objects(Transaction.self) }()
+    var transaction: Results<Transaction>!
+//        = { self.realm.objects(Transaction.self) }()
         
     let addItemVC = AddTransactionViewController()
     
-    let transactionName = ""
-    let transactionAmount = 0.0
-    let transactionDate = Date()
-    let transactionDescription = ""
+    var transactionName = ""
+    var transactionAmount = 0.0
+    var transactionDate = Date()
+    var transactionDescription = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        sortData()
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -40,7 +43,16 @@ class TransactionTableViewController: UITableViewController {
 
     }
     
-    // MARK: - Table view data source
+    func sortData() {
+        
+        transaction = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
+        
+        self.tableView.reloadData()
+        
+        
+    }
+    
+    // MARK: - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -57,6 +69,7 @@ class TransactionTableViewController: UITableViewController {
                 tableView.deleteRows(at: [indexPath], with: .automatic)
             }
         }
+        DataManager.shared.summaryVC.viewDidLoad()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
