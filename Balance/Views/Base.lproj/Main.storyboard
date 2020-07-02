@@ -42,24 +42,11 @@
                                     <constraint firstAttribute="height" constant="200" id="u7n-S8-yJw"/>
                                 </constraints>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8zn-nR-Lzg">
-                                <rect key="frame" x="314" y="713" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="Gay-mM-YJB"/>
-                                    <constraint firstAttribute="height" constant="50" id="wcz-zM-ul5"/>
-                                </constraints>
-                                <state key="normal" image="plus" catalog="system"/>
-                                <connections>
-                                    <action selector="addButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g1g-oi-sGK"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="13k-6e-xST" secondAttribute="bottom" constant="50" id="0Hw-ai-i1O"/>
                             <constraint firstItem="13k-6e-xST" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="3xS-qd-cfa"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="8zn-nR-Lzg" secondAttribute="bottom" constant="50" id="9BJ-L1-hhd"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="8zn-nR-Lzg" secondAttribute="trailing" constant="50" id="9Wn-US-bOE"/>
                             <constraint firstItem="13k-6e-xST" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="aYJ-Rt-VMy"/>
                             <constraint firstItem="13k-6e-xST" firstAttribute="top" secondItem="6QW-LD-KPQ" secondAttribute="bottom" constant="20" id="gup-7H-Jwh"/>
                             <constraint firstItem="6QW-LD-KPQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="oRB-hB-FdN"/>
@@ -68,20 +55,21 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="xS1-og-TMD">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="text.badge.plus" catalog="system" id="qXj-nT-LL0">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="list.bullet" catalog="system" id="qXj-nT-LL0">
                             <connections>
                                 <segue destination="xT5-y4-wVP" kind="show" id="Pcr-pu-5qN"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Qic-tH-oHF">
                             <connections>
-                                <action selector="addButton2Pressed:" destination="BYZ-38-t0r" id="QKy-MZ-MbW"/>
                                 <segue destination="7gh-FG-Lr7" kind="presentation" identifier="Add Transaction" id="ah9-JW-Y2b"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="addButton" destination="Qic-tH-oHF" id="b2A-y0-DiI"/>
+                        <outlet property="amountLabel" destination="krt-bE-QhQ" id="wPm-qL-toa"/>
                         <outlet property="calendar" destination="13k-6e-xST" id="n0R-Xr-hRJ"/>
                         <outlet property="dateLabel" destination="TOU-gV-2z0" id="HyX-ie-uH4"/>
                     </connections>
@@ -99,12 +87,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="A7R-w4-iTH">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <connections>
                             <outlet property="dataSource" destination="xT5-y4-wVP" id="O4S-CD-gbR"/>
                             <outlet property="delegate" destination="xT5-y4-wVP" id="NcN-Lf-uPN"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="1hZ-Rc-PsH">
+                        <nil key="title"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="fbh-Dh-4oa">
                             <connections>
                                 <action selector="addButtonPressed:" destination="xT5-y4-wVP" id="gNO-UZ-zZg"/>
@@ -113,10 +107,13 @@
                         </barButtonItem>
                     </navigationItem>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="searchBar" destination="A7R-w4-iTH" id="bgg-w5-J7b"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wqr-Uq-snN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1957.9710144927537" y="951.5625"/>
+            <point key="canvasLocation" x="2061" y="647"/>
         </scene>
         <!--Add Transaction View Controller-->
         <scene sceneID="ZcJ-Pg-Uyr">
@@ -135,9 +132,10 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="$48.12" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lu0-3L-P9u">
-                                        <rect key="frame" x="135" y="38" width="144" height="80"/>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="$48.12" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="45" translatesAutoresizingMaskIntoConstraints="NO" id="lu0-3L-P9u">
+                                        <rect key="frame" x="57" y="38" width="300" height="80"/>
                                         <constraints>
+                                            <constraint firstAttribute="width" constant="300" id="CQW-9H-9vg"/>
                                             <constraint firstAttribute="height" constant="80" id="pVT-Vj-c7m"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="thin" pointSize="50"/>
@@ -188,6 +186,9 @@
                                         <state key="normal" title="Cancel">
                                             <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
+                                        <connections>
+                                            <action selector="cancelButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="Tz9-QZ-cyW"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -211,6 +212,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="calendar" destination="Yqu-dd-27W" id="B6s-Dh-uuY"/>
+                        <outlet property="cancelButton" destination="wQ3-mQ-day" id="xwM-WC-np7"/>
                         <outlet property="descriptionTextField" destination="mXq-Am-FE2" id="w8v-e3-wDa"/>
                         <outlet property="instructionsLabel" destination="zHy-Mc-lkd" id="l6g-eC-Ofv"/>
                         <outlet property="nextButton" destination="6SV-Eh-pka" id="ATd-3J-MT0"/>
@@ -219,7 +221,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DEt-dU-OL2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3266.666666666667" y="429.91071428571428"/>
+            <point key="canvasLocation" x="2061" y="-179"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="jr3-vb-PvD">
@@ -341,7 +343,6 @@
         <segue reference="L8Z-kI-jJp"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="plus" catalog="system" width="128" height="113"/>
-        <image name="text.badge.plus" catalog="system" width="128" height="109"/>
+        <image name="list.bullet" catalog="system" width="128" height="88"/>
     </resources>
 </document>

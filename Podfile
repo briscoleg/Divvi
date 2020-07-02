@@ -10,5 +10,6 @@ target 'Balance' do
 pod 'FSCalendar'
 pod 'RealmSwift'
 pod 'CurrencyTextField'
+pod 'SwipeCellKit'
 
 end

@@ -18,11 +18,14 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     @IBOutlet weak var descriptionTextField: UITextField!
     @IBOutlet weak var calendar: FSCalendar!
     
+    @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var instructionsLabel: UILabel!
     
     let realm = try! Realm()
     
     var buttonCounter = 0
+    
+//    var customNextButton = CustomButton()
     
     var amount = 0.0
     var name = ""
@@ -32,9 +35,10 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        universalTextField.delegate = self
+        
         calendar.delegate = self
         calendar.dataSource = self
-        
         
         universalTextField.becomeFirstResponder()
         universalTextField.keyboardType = .decimalPad
@@ -43,11 +47,11 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         instructionsLabel.text = "Amount:"
         
         nextButton.roundCorners()
-        
+    
     }
     
     @IBAction func nextPressed(_ sender: UIButton) {
-        
+                
         buttonCounter += 1
         
         switch buttonCounter {
@@ -59,10 +63,13 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             universalTextField.text = ""
             instructionsLabel.text = "Name:"
             universalTextField.keyboardType = .alphabet
+            universalTextField.autocapitalizationType = .words
             universalTextField.becomeFirstResponder()
             universalTextField.placeholder = "e.g. Starbucks"
             universalTextField.reloadInputViews()
             descriptionTextField.isHidden = false
+            descriptionTextField.autocapitalizationType = .words
+            
             
         case 2:
             
@@ -105,6 +112,11 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         datePicked = date
         
         }
+    @IBAction func cancelButtonPressed(_ sender: UIButton) {
+        
+        self.dismiss(animated: true, completion: nil)
+        
+    }
 }
 
 public extension UIView {
@@ -121,3 +133,10 @@ extension UIApplication {
     }
 }
 
+extension AddTransactionViewController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        return true
+    }
+}

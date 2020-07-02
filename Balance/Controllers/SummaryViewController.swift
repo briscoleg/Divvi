@@ -15,28 +15,21 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
     @IBOutlet weak var calendar: FSCalendar!
     
     @IBOutlet weak var dateLabel: UILabel!
-            
+    
+    @IBOutlet weak var amountLabel: UILabel!
+    
+    @IBOutlet weak var addButton: UIBarButtonItem!
+    
     let realm = try! Realm()
-    
-    @IBOutlet weak var addButton: UIButton!
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
          print(Realm.Configuration.defaultConfiguration.fileURL!)
                 
         calendar.delegate = self
-        
-//        addButton.layer.shadowColor = UIColor.black.cgColor
-//        addButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-//        addButton.layer.masksToBounds = false
-//        addButton.layer.shadowRadius = 2.0
-//        addButton.layer.shadowOpacity = 0.1
-//        addButton.layer.cornerRadius = addButton.frame.width / 2
-//        addButton.layer.borderColor = UIColor.black.cgColor
-//        addButton.layer.borderWidth = 1.0
-        
-//        makeCircular(button: addButton)
+            
+        amountLabel.layer.shadowColor = UIColor.black.cgColor
         
     }
 
@@ -58,20 +51,20 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
                         
     }
     
-    func makeCircular(button: UIButton) {
-    addButton.layer.shadowColor = UIColor.black.cgColor
-    addButton.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-    addButton.layer.masksToBounds = false
-    addButton.layer.shadowRadius = 2.0
-    addButton.layer.shadowOpacity = 0.5
-    addButton.layer.cornerRadius = addButton.frame.width / 2
-    addButton.layer.borderColor = UIColor.black.cgColor
-    addButton.layer.borderWidth = 2.0
-    }
+}
 
-    @IBAction func addButtonPressed(_ sender: UIButton) {
-    }
-    
-    @IBAction func addButton2Pressed(_ sender: UIBarButtonItem) {
+extension UIButton {
+    func makeCircular(button: UIButton) {
+        
+        let button = UIButton()
+        
+    button.layer.shadowColor = UIColor.black.cgColor
+    button.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+    button.layer.masksToBounds = false
+    button.layer.shadowRadius = 2.0
+    button.layer.shadowOpacity = 0.5
+    button.layer.cornerRadius = button.frame.width / 2
+    button.layer.borderColor = UIColor.black.cgColor
+    button.layer.borderWidth = 1.0
     }
 }
