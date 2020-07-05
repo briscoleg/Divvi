@@ -32,35 +32,37 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
         calendar.delegate = self
         
         DataManager.shared.summaryVC = self
-        
-                print(Realm.Configuration.defaultConfiguration.fileURL!)
-        
-        totalTransactions()
+                
+        getTotalAtDate(Date())
         
     }
     //MARK: - Methods
-    func totalTransactions() {
+    
+    func getTotalAtDate(_ date: Date) {
         
-        let transactionsTotal: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", date).sum(ofProperty: "transactionAmount")
+        let transactionsTotalAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", date).sum(ofProperty: "transactionAmount")
+        
+        let formattedLabel = formatDoubleToCurrencyString(from: transactionsTotalAtDate)
+        
+        amountLabel.text = formattedLabel
+                
+    }
+    
+    func formatDoubleToCurrencyString(from number: Double) -> String {
         
         let formatter = NumberFormatter()
-        
+        formatter.currencySymbol = "$"
         formatter.numberStyle = .currency
-        formatter.locale = Locale.current
-
-        let transactionTotalString = formatter.string(from: NSNumber(value: transactionsTotal))
-
-        amountLabel.text = transactionTotalString
+        
+        let formattedNumber = formatter.string(from: NSNumber(value: number))
+        
+        return formattedNumber!
         
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
-        let adjustedDate = date.addingTimeInterval(17 * 60 * 60)
-        
-        let transactionsTotal: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", adjustedDate).sum(ofProperty: "transactionAmount")
-        
-        amountLabel.text = String(format: "$%.2f", transactionsTotal)
+        getTotalAtDate(date + 61199)
         
     }
     
@@ -73,7 +75,7 @@ class SummaryViewController: UIViewController, FSCalendarDelegate {
         let dateString = formatter.string(from: date)
         
         dateLabel.text = dateString
-        
+                
     }
     
 }

@@ -13,7 +13,7 @@ import RealmSwift
 class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
     
     //MARK: - IBOutlets
-    @IBOutlet weak var universalTextField: UITextField!
+    @IBOutlet weak var currencyTextField: UITextField!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var descriptionTextField: UITextField!
     @IBOutlet weak var calendar: FSCalendar!
@@ -21,6 +21,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     @IBOutlet weak var instructionsLabel: UILabel!
     @IBOutlet weak var incomeButton: UIButton!
     @IBOutlet weak var expenseButton: UIButton!
+    @IBOutlet weak var nameTextField: UITextField!
     
     //MARK: - Properties
     let realm = try! Realm()
@@ -37,30 +38,23 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        universalTextField.delegate = self
+        currencyTextField.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
         
         setupAmountView()
-//        setupCurrencyTextFiel d()
         
     }
     
     //MARK: - Methods
-//    func setupCurrencyTextField() {
-//
-//        let formatter = NumberFormatter()
-//
-//        formatter.currencySymbol = "$"
-//
-//    }
     
     func setupAmountView() {
         
-        universalTextField.becomeFirstResponder()
-        universalTextField.keyboardType = .decimalPad
-        universalTextField.textColor = UIColor(rgb: darkRed)
+        currencyTextField.becomeFirstResponder()
+        currencyTextField.keyboardType = .decimalPad
+        currencyTextField.textColor = UIColor(rgb: darkRed)
         descriptionTextField.isHidden = true
+        nameTextField.isHidden = true
         calendar.isHidden = true
         instructionsLabel.text = "Enter Expense:"
         
@@ -68,58 +62,49 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         incomeButton.roundCorners()
         incomeButton.backgroundColor = .gray
         expenseButton.roundCorners()
-//        universalTextField.toggleMinus()
         
         
     }
     
     func convertCurrency() {
-        
+
         let formatter = NumberFormatter()
         formatter.currencySymbol = "$"
         formatter.numberStyle = .currency
-        let number = formatter.number(from: universalTextField.text!)
+        let number = formatter.number(from: currencyTextField.text!)
         let doubleValue = number?.doubleValue
         amount = doubleValue!
-        
+
     }
     
     func setupNameView() {
         
         convertCurrency()
         
-//        amount = NSString(string: universalTextField.text!).doubleValue
-        print(amount)
-        
-//        universalTextField.delegate != self
-        universalTextField.text = ""
         instructionsLabel.text = "Enter Name:"
-        instructionsLabel.textColor = .black
-        universalTextField.keyboardType = .alphabet
-        universalTextField.autocapitalizationType = .words
-        universalTextField.becomeFirstResponder()
-        universalTextField.placeholder = "e.g. Starbucks"
-        universalTextField.reloadInputViews()
+        nameTextField.placeholder = "e.g. Starbucks"
+        currencyTextField.reloadInputViews()
         descriptionTextField.isHidden = false
-        descriptionTextField.autocapitalizationType = .words
         incomeButton.isHidden = true
         expenseButton.isHidden = true
+        currencyTextField.isHidden = true
+        nameTextField.isHidden = false
+        nameTextField.becomeFirstResponder()
         
     }
     
     func setupDateView() {
         
-        instructionsLabel.text = "Select Date:"
+        instructionsLabel.text = "Select a Date:"
         
-        name = universalTextField.text!
+        name = nameTextField.text!
         desc = descriptionTextField.text!
-        print(name)
-        print(desc!)
-        universalTextField.isHidden = true
+
+        currencyTextField.isHidden = true
         descriptionTextField.isHidden = true
-        
+        nameTextField.isHidden = true
         calendar.isHidden = false
-        nextButton.setTitle("Add", for: .normal)
+        nextButton.setTitle("Done", for: .normal)
         UIApplication.shared.hideKeyboard()
         
     }
@@ -178,13 +163,13 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     @IBAction func incomeButtonPressed(_ sender: UIButton) {
         
         if isExpense == true {
-            universalTextField.toggleMinus()
+            currencyTextField.dropMinus()
         }
         isExpense = false
         expenseButton.backgroundColor = .gray
         incomeButton.backgroundColor = UIColor(rgb: darkGreen)
         instructionsLabel.text = "Enter Income:"
-        universalTextField.textColor = UIColor(rgb: darkGreen)
+        currencyTextField.textColor = UIColor(rgb: darkGreen)
         
         
     }
@@ -192,13 +177,13 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     @IBAction func expenseButtonPressed(_ sender: UIButton) {
         
         if isExpense == false {
-            universalTextField.toggleMinus()
+            currencyTextField.addMinus()
         }
         isExpense = true
         expenseButton.backgroundColor = UIColor(rgb: darkRed)
         incomeButton.backgroundColor = .gray
         instructionsLabel.text = "Enter Expense:"
-        universalTextField.textColor = UIColor(rgb: darkRed)
+        currencyTextField.textColor = UIColor(rgb: darkRed)
         
     }
     
@@ -228,10 +213,21 @@ extension UIApplication {
 }
 
 extension UITextField {
-    func toggleMinus() {
+    func addMinus() {
 
+        if text?.hasPrefix("-") == false {
+        self.text = "-\(text!)"
+        }
+    }
+}
+
+extension UITextField {
+    func dropMinus() {
+        
         if let text = self.text {
-            self.text = String(text.hasPrefix("-") ? text.dropFirst() : "-\(text)")
+            if text.hasPrefix("-") {
+                self.text = String(text.dropFirst())
+            }
         }
     }
 }

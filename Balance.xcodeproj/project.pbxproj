@@ -8,16 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02B84D824AACC3000B11C9C /* DataManager.swift */; };
-		C057B65B24AC0D62005810B9 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C057B65A24AC0D62005810B9 /* CustomButton.swift */; };
-		C057B65D24AC1511005810B9 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C057B65C24AC1511005810B9 /* ButtonViewController.swift */; };
 		C08A028524A3BCE60056F355 /* AddTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */; };
 		C08A028724A3C4980056F355 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028624A3C4980056F355 /* Transaction.swift */; };
 		C08A028E24A3DF1B0056F355 /* TransactionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */; };
 		C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */; };
 		C0C09DB324A422F3008ABF6A /* TransactionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */; };
-		C0D1143E24AEF2A700A57AF2 /* RoundShakeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D1143D24AEF2A700A57AF2 /* RoundShakeButton.swift */; };
-		C0D1144224AF986300A57AF2 /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D1144124AF986300A57AF2 /* CurrencyTextField.swift */; };
-		C0D1144824AFC99B00A57AF2 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D1144724AFC99B00A57AF2 /* TestViewController.swift */; };
 		C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DB5FFA24A160D900008F89 /* AppDelegate.swift */; };
 		C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DB5FFC24A160D900008F89 /* SceneDelegate.swift */; };
 		C0DB5FFF24A160D900008F89 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DB5FFE24A160D900008F89 /* SummaryViewController.swift */; };
@@ -32,16 +27,11 @@
 		797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.release.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.release.xcconfig"; sourceTree = "<group>"; };
 		7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Balance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C02B84D824AACC3000B11C9C /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		C057B65A24AC0D62005810B9 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
-		C057B65C24AC1511005810B9 /* ButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
 		C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewController.swift; sourceTree = "<group>"; };
 		C08A028624A3C4980056F355 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewController.swift; sourceTree = "<group>"; };
 		C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewCell.swift; sourceTree = "<group>"; };
 		C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableViewCell.xib; sourceTree = "<group>"; };
-		C0D1143D24AEF2A700A57AF2 /* RoundShakeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShakeButton.swift; sourceTree = "<group>"; };
-		C0D1144124AF986300A57AF2 /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
-		C0D1144724AFC99B00A57AF2 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		C0DB5FF724A160D900008F89 /* Balance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Balance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0DB5FFA24A160D900008F89 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C0DB5FFC24A160D900008F89 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,8 +77,6 @@
 				C0DB5FFE24A160D900008F89 /* SummaryViewController.swift */,
 				C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */,
 				C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */,
-				C057B65C24AC1511005810B9 /* ButtonViewController.swift */,
-				C0D1144724AFC99B00A57AF2 /* TestViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -108,24 +96,13 @@
 			children = (
 				C08A028624A3C4980056F355 /* Transaction.swift */,
 				C02B84D824AACC3000B11C9C /* DataManager.swift */,
-				C057B65A24AC0D62005810B9 /* CustomButton.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		C0D1143C24AEF28200A57AF2 /* Custom Assets */ = {
-			isa = PBXGroup;
-			children = (
-				C0D1143D24AEF2A700A57AF2 /* RoundShakeButton.swift */,
-				C0D1144124AF986300A57AF2 /* CurrencyTextField.swift */,
-			);
-			path = "Custom Assets";
 			sourceTree = "<group>";
 		};
 		C0DB5FEE24A160D900008F89 = {
 			isa = PBXGroup;
 			children = (
-				C0D1143C24AEF28200A57AF2 /* Custom Assets */,
 				C0DB5FF924A160D900008F89 /* Balance */,
 				C0DB5FF824A160D900008F89 /* Products */,
 				9ADA34B4E0CAFBCD34A3F757 /* Pods */,
@@ -273,18 +250,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C0DB5FFF24A160D900008F89 /* SummaryViewController.swift in Sources */,
-				C0D1143E24AEF2A700A57AF2 /* RoundShakeButton.swift in Sources */,
 				C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */,
 				C08A028724A3C4980056F355 /* Transaction.swift in Sources */,
 				C08A028E24A3DF1B0056F355 /* TransactionTableViewController.swift in Sources */,
-				C0D1144824AFC99B00A57AF2 /* TestViewController.swift in Sources */,
 				C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */,
-				C0D1144224AF986300A57AF2 /* CurrencyTextField.swift in Sources */,
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
-				C057B65B24AC0D62005810B9 /* CustomButton.swift in Sources */,
 				C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */,
 				C08A028524A3BCE60056F355 /* AddTransactionViewController.swift in Sources */,
-				C057B65D24AC1511005810B9 /* ButtonViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
