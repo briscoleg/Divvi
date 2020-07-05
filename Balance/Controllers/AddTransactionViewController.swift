@@ -10,134 +10,253 @@ import UIKit
 import FSCalendar
 import RealmSwift
 
-class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource {
+class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
     
-    
+    //MARK: - IBOutlets
     @IBOutlet weak var universalTextField: UITextField!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var descriptionTextField: UITextField!
     @IBOutlet weak var calendar: FSCalendar!
-    
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var instructionsLabel: UILabel!
+    @IBOutlet weak var incomeButton: UIButton!
+    @IBOutlet weak var expenseButton: UIButton!
     
+    //MARK: - Properties
     let realm = try! Realm()
-    
-    var buttonCounter = 0
-    
-//    var customNextButton = CustomButton()
-    
+    public var buttonCounter = 0
     var amount = 0.0
     var name = ""
     var desc: String?
     var datePicked = Date()
+    var isExpense = true
+    let darkRed = 0xD93D24
+    let darkGreen = 0x59C13B
     
+    //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
         universalTextField.delegate = self
-        
         calendar.delegate = self
         calendar.dataSource = self
         
-        universalTextField.becomeFirstResponder()
-        universalTextField.keyboardType = .decimalPad
-        descriptionTextField.isHidden = true
-        calendar.isHidden = true
-        instructionsLabel.text = "Enter Amount:"
+        setupAmountView()
+//        setupCurrencyTextFiel d()
         
-        nextButton.roundCorners()
-    
     }
     
+    //MARK: - Methods
+//    func setupCurrencyTextField() {
+//
+//        let formatter = NumberFormatter()
+//
+//        formatter.currencySymbol = "$"
+//
+//    }
+    
+    func setupAmountView() {
+        
+        universalTextField.becomeFirstResponder()
+        universalTextField.keyboardType = .decimalPad
+        universalTextField.textColor = UIColor(rgb: darkRed)
+        descriptionTextField.isHidden = true
+        calendar.isHidden = true
+        instructionsLabel.text = "Enter Expense:"
+        
+        nextButton.roundCorners()
+        incomeButton.roundCorners()
+        incomeButton.backgroundColor = .gray
+        expenseButton.roundCorners()
+//        universalTextField.toggleMinus()
+        
+        
+    }
+    
+    func convertCurrency() {
+        
+        let formatter = NumberFormatter()
+        formatter.currencySymbol = "$"
+        formatter.numberStyle = .currency
+        let number = formatter.number(from: universalTextField.text!)
+        let doubleValue = number?.doubleValue
+        amount = doubleValue!
+        
+    }
+    
+    func setupNameView() {
+        
+        convertCurrency()
+        
+//        amount = NSString(string: universalTextField.text!).doubleValue
+        print(amount)
+        
+//        universalTextField.delegate != self
+        universalTextField.text = ""
+        instructionsLabel.text = "Enter Name:"
+        instructionsLabel.textColor = .black
+        universalTextField.keyboardType = .alphabet
+        universalTextField.autocapitalizationType = .words
+        universalTextField.becomeFirstResponder()
+        universalTextField.placeholder = "e.g. Starbucks"
+        universalTextField.reloadInputViews()
+        descriptionTextField.isHidden = false
+        descriptionTextField.autocapitalizationType = .words
+        incomeButton.isHidden = true
+        expenseButton.isHidden = true
+        
+    }
+    
+    func setupDateView() {
+        
+        instructionsLabel.text = "Select Date:"
+        
+        name = universalTextField.text!
+        desc = descriptionTextField.text!
+        print(name)
+        print(desc!)
+        universalTextField.isHidden = true
+        descriptionTextField.isHidden = true
+        
+        calendar.isHidden = false
+        nextButton.setTitle("Add", for: .normal)
+        UIApplication.shared.hideKeyboard()
+        
+    }
+    
+    func saveTransaction() {
+        
+        let newTransaction = Transaction()
+        
+        newTransaction.transactionAmount = amount
+        newTransaction.transactionName = name
+        newTransaction.transactionDescription = desc
+        newTransaction.transactionDate = datePicked
+        
+        try! realm.write {
+            realm.add(newTransaction)
+        }
+        
+        DataManager.shared.firstVC.tableView.reloadData()
+        DataManager.shared.summaryVC.viewDidLoad()
+        
+        self.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    
+    //MARK: - IBActions
     @IBAction func nextPressed(_ sender: UIButton) {
-                
+        
         buttonCounter += 1
         
         switch buttonCounter {
             
         case 1:
             
-            amount = NSString(string: universalTextField.text!).doubleValue
-            print(amount)
-            universalTextField.text = ""
-            instructionsLabel.text = "Enter Name:"
-            universalTextField.keyboardType = .alphabet
-            universalTextField.autocapitalizationType = .words
-            universalTextField.becomeFirstResponder()
-            universalTextField.placeholder = "e.g. Starbucks"
-            universalTextField.reloadInputViews()
-            descriptionTextField.isHidden = false
-            descriptionTextField.autocapitalizationType = .words
-            
+            setupNameView()
             
         case 2:
             
-            instructionsLabel.text = "Select Date:"
-            
-            name = universalTextField.text!
-            desc = descriptionTextField.text!
-            print(name)
-            print(desc!)
-            universalTextField.isHidden = true
-            descriptionTextField.isHidden = true
-            
-            calendar.isHidden = false
-            nextButton.setTitle("Add", for: .normal)
-            UIApplication.shared.endEditing()
+            setupDateView()
             
         case 3:
             
-            let newTransaction = Transaction()
-            
-            newTransaction.transactionAmount = amount
-            newTransaction.transactionName = name
-            newTransaction.transactionDescription = desc
-            newTransaction.transactionDate = datePicked
-
-            try! realm.write {
-                realm.add(newTransaction)
-            }
-            
-            DataManager.shared.firstVC.tableView.reloadData()
-            DataManager.shared.summaryVC.viewDidLoad()
-            self.dismiss(animated: true, completion: nil)
+            saveTransaction()
             
         default:
             print("Error")
         }
     }
     
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-                
-        datePicked = date
-        
-        }
     @IBAction func cancelButtonPressed(_ sender: UIButton) {
         
         self.dismiss(animated: true, completion: nil)
         
     }
+    
+    @IBAction func incomeButtonPressed(_ sender: UIButton) {
+        
+        if isExpense == true {
+            universalTextField.toggleMinus()
+        }
+        isExpense = false
+        expenseButton.backgroundColor = .gray
+        incomeButton.backgroundColor = UIColor(rgb: darkGreen)
+        instructionsLabel.text = "Enter Income:"
+        universalTextField.textColor = UIColor(rgb: darkGreen)
+        
+        
+    }
+    
+    @IBAction func expenseButtonPressed(_ sender: UIButton) {
+        
+        if isExpense == false {
+            universalTextField.toggleMinus()
+        }
+        isExpense = true
+        expenseButton.backgroundColor = UIColor(rgb: darkRed)
+        incomeButton.backgroundColor = .gray
+        instructionsLabel.text = "Enter Expense:"
+        universalTextField.textColor = UIColor(rgb: darkRed)
+        
+    }
+    
+    
+    //MARK: - Calendar Delegate Methods
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        
+        datePicked = date
+        
+    }
 }
-
-public extension UIView {
-    //Round the corners
+//MARK: - Extensions
+extension UIButton {
     func roundCorners(){
+        
         let radius = bounds.maxX / 16
+        
         layer.cornerRadius = radius
+        
     }
 }
 
 extension UIApplication {
-    func endEditing() {
+    func hideKeyboard() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
-extension AddTransactionViewController: UITextFieldDelegate {
+extension UITextField {
+    func toggleMinus() {
+
+        if let text = self.text {
+            self.text = String(text.hasPrefix("-") ? text.dropFirst() : "-\(text)")
+        }
+    }
+}
+
+extension UIViewController: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
+        let dotString = "."
+        let character = "$"
+
+        if let text = textField.text{
+            if !text.contains(character){
+                textField.text = "-\(character)\(text)"
+            }
+            let isDeleteKey = string.isEmpty
+
+            if !isDeleteKey {
+                if text.contains(dotString) {
+                    if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
+                        return false
+                    }
+                }
+            }
+        }
         return true
     }
 }

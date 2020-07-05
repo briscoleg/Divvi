@@ -1,34 +1,26 @@
 PODS:
-  - CurrencyTextField (2.3)
   - FSCalendar (2.8.1)
   - Realm (4.4.1):
     - Realm/Headers (= 4.4.1)
   - Realm/Headers (4.4.1)
   - RealmSwift (4.4.1):
     - Realm (= 4.4.1)
-  - SwipeCellKit (2.7.1)
 
 DEPENDENCIES:
-  - CurrencyTextField
   - FSCalendar
   - RealmSwift
-  - SwipeCellKit
 
 SPEC REPOS:
   trunk:
-    - CurrencyTextField
     - FSCalendar
     - Realm
     - RealmSwift
-    - SwipeCellKit
 
 SPEC CHECKSUMS:
-  CurrencyTextField: 75d8ee80cf245925684b34c9a49ba886f258e2dc
   FSCalendar: 5245140456fcbcac5824c203b98bd8068bdfee1a
   Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
   RealmSwift: 3eb8924ff7100df5928c7602f71d0fec51e7c9c5
-  SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: 5856afb44508f4cee2dee18be9486b83acad5786
+PODFILE CHECKSUM: 4c6944c40d0d1ec4dd562aab8430cc08e239b93d
 
 COCOAPODS: 1.9.1

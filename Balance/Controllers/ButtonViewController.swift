@@ -10,7 +10,7 @@ import UIKit
 
 class ButtonViewController: UIViewController {
     
-    var button = CustomButton()
+    @IBOutlet weak var myButton: RoundShakeButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,26 +23,26 @@ class ButtonViewController: UIViewController {
     
     func setupButtonConstraints() {
         
-        view.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 280).isActive = true
-        button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -200).isActive = true
+        view.addSubview(myButton)
+        myButton.translatesAutoresizingMaskIntoConstraints = false
+        myButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        myButton.widthAnchor.constraint(equalToConstant: 280).isActive = true
+        myButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        myButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -200).isActive = true
         
     }
     
     
     func addActionToButton() {
         
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        myButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         
     }
     
     
     @IBAction func buttonPressed(_ sender: UIButton) {
         
-        button.shake()
+        myButton.shake()
         
     }
     

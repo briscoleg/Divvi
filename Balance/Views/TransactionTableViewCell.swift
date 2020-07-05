@@ -10,9 +10,8 @@ import UIKit
 
 class TransactionTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var stackView: UIStackView!
-    @IBOutlet weak var amountView: UIView!
-    @IBOutlet weak var nameView: UIView!
+    @IBOutlet weak var valueView: UIView!
+    @IBOutlet weak var transactionView: UIView!
     
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
@@ -21,48 +20,30 @@ class TransactionTableViewCell: UITableViewCell {
         
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-//        amountLabel.numberFormatted()
-        
-        let fnt = UIFont(name: "Helvetica", size: 50)
-        let attributedString = NSMutableAttributedString(string: "$499", attributes: [NSAttributedString.Key.font: fnt?.withSize(50) as Any])
-        attributedString.setAttributes([NSAttributedString.Key.font: fnt?.withSize(20) as Any, NSAttributedString.Key.baselineOffset: 20], range: NSRange(location: 2, length: 2))
-        amountLabel.attributedText = attributedString
-        
-//        stackView.layer.cornerRadius = 10
-//        amountView.layer.cornerRadius = 10
-//        nameView.layer.cornerRadius = 10
-        
-        
-        
-    }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+        transactionView.round()
+        valueView.round2()
 
-        // Configure the view for the selected state
     }
-    
 }
 
-extension UILabel {
-    
-    func numberFormatted() {
+extension UIView {
+    func round(){
         
-        let s = "$499"
-        let mas = NSMutableAttributedString(string: s, attributes: [
-            .foregroundColor : UIColor.white,
-            .font : UIFont(name:"Helvetica", size:50)!
-        ])
-        let r2 = s.index(before: s.endIndex)
-        let r1 = s.index(before: r2)
-        let r = NSRange(r1...r2, in:s)
-        mas.addAttributes([
-            .font : UIFont(name:"Helvetica", size:20)!,
-            .baselineOffset : 20
-            ], range: r)
+        let radius = bounds.maxX / 16
         
-        
+        layer.cornerRadius = radius
+        clipsToBounds = true
+//        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
-    
+}
+
+extension UIView {
+    func round2(){
+                
+        layer.cornerRadius = 2.5
+//        layer.masksToBounds = false
+        clipsToBounds = false
+//        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+    }
 }

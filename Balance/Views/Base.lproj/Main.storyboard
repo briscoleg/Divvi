@@ -160,52 +160,84 @@
                                     <constraint firstAttribute="trailing" secondItem="Yqu-dd-27W" secondAttribute="trailing" id="gEB-Wt-A5J"/>
                                 </constraints>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="BNH-Wg-PaS">
-                                <rect key="frame" x="82" y="709" width="250" height="50"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6SV-Eh-pka">
-                                        <rect key="frame" x="0.0" y="0.0" width="250" height="50"/>
-                                        <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="BVn-9L-SQG"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="aah-6x-qnZ"/>
-                                            <constraint firstAttribute="width" constant="250" id="czI-3l-EgH"/>
-                                        </constraints>
-                                        <state key="normal" title="Next">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="nextPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="mvX-8m-14c"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="OHz-Ko-KYq"/>
-                                </constraints>
-                            </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wQ3-mQ-day">
                                 <rect key="frame" x="321" y="20" width="48" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="4ZF-0T-tty"/>
                                 </constraints>
                                 <state key="normal" title="Cancel">
-                                    <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="cancelButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="Tz9-QZ-cyW"/>
+                                </connections>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" spacing="33" translatesAutoresizingMaskIntoConstraints="NO" id="c14-s5-c9t">
+                                <rect key="frame" x="57" y="800" width="300" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6gy-Mp-a9u">
+                                        <rect key="frame" x="0.0" y="0.0" width="133.5" height="50"/>
+                                        <color key="backgroundColor" red="0.85098039215686272" green="0.23921568627450979" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="100" id="ZHe-N0-whv"/>
+                                            <constraint firstAttribute="height" constant="30" id="ay3-60-pYt"/>
+                                        </constraints>
+                                        <state key="normal" title="Income">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="incomeButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="uBX-Mh-TDH"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adb-Sv-lMX" userLabel="Expense Button">
+                                        <rect key="frame" x="166.5" y="0.0" width="133.5" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="k1u-eS-0NW"/>
+                                            <constraint firstAttribute="width" constant="100" id="x2G-e5-a4h"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Expense">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="expenseButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="X9e-Bv-03Z"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="300" id="XTH-zF-TCd"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="kVr-eb-c8z"/>
+                                    <constraint firstAttribute="height" constant="50" id="ygS-F7-mRN"/>
+                                </constraints>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ItD-6b-ejd">
+                                <rect key="frame" x="82" y="675" width="250" height="30"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="TKm-xV-ZrD"/>
+                                    <constraint firstAttribute="height" constant="50" id="gJ4-wA-5gh"/>
+                                </constraints>
+                                <state key="normal" title="Next">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="nextPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="F1G-J3-i9b"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="tDX-K6-JDP" firstAttribute="top" secondItem="yRN-NO-PAa" secondAttribute="top" constant="125" id="2f9-KP-pD9"/>
+                            <constraint firstItem="c14-s5-c9t" firstAttribute="centerX" secondItem="sGb-se-Ft9" secondAttribute="centerX" id="9lM-eU-HJb"/>
                             <constraint firstItem="tDX-K6-JDP" firstAttribute="trailing" secondItem="yRN-NO-PAa" secondAttribute="trailing" id="Cag-Fv-ANi"/>
+                            <constraint firstItem="c14-s5-c9t" firstAttribute="centerX" secondItem="sGb-se-Ft9" secondAttribute="centerX" id="Faa-o8-tcg"/>
                             <constraint firstItem="wQ3-mQ-day" firstAttribute="top" secondItem="yRN-NO-PAa" secondAttribute="top" constant="20" id="QN8-7a-U2D"/>
                             <constraint firstItem="tDX-K6-JDP" firstAttribute="leading" secondItem="yRN-NO-PAa" secondAttribute="leading" id="YB9-nG-dxg"/>
-                            <constraint firstItem="BNH-Wg-PaS" firstAttribute="centerX" secondItem="sGb-se-Ft9" secondAttribute="centerX" id="mKB-r5-bE7"/>
+                            <constraint firstItem="c14-s5-c9t" firstAttribute="top" secondItem="ItD-6b-ejd" secondAttribute="bottom" constant="50" id="fZd-wf-K8F"/>
+                            <constraint firstItem="ItD-6b-ejd" firstAttribute="centerX" secondItem="sGb-se-Ft9" secondAttribute="centerX" id="frT-co-V6e"/>
                             <constraint firstItem="yRN-NO-PAa" firstAttribute="trailing" secondItem="wQ3-mQ-day" secondAttribute="trailing" constant="45" id="nDm-zM-xa7"/>
-                            <constraint firstItem="BNH-Wg-PaS" firstAttribute="top" secondItem="tDX-K6-JDP" secondAttribute="bottom" constant="35" id="rEe-lm-W7j"/>
-                            <constraint firstItem="BNH-Wg-PaS" firstAttribute="centerX" secondItem="sGb-se-Ft9" secondAttribute="centerX" id="w9N-gO-Vc2"/>
+                            <constraint firstItem="ItD-6b-ejd" firstAttribute="top" secondItem="tDX-K6-JDP" secondAttribute="bottom" constant="30" id="u2b-Yj-W8I"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="yRN-NO-PAa"/>
                     </view>
@@ -216,8 +248,10 @@
                         <outlet property="calendar" destination="Yqu-dd-27W" id="B6s-Dh-uuY"/>
                         <outlet property="cancelButton" destination="wQ3-mQ-day" id="xwM-WC-np7"/>
                         <outlet property="descriptionTextField" destination="mXq-Am-FE2" id="w8v-e3-wDa"/>
+                        <outlet property="expenseButton" destination="adb-Sv-lMX" id="Wi6-BF-TeY"/>
+                        <outlet property="incomeButton" destination="6gy-Mp-a9u" id="23k-6Q-ifI"/>
                         <outlet property="instructionsLabel" destination="zHy-Mc-lkd" id="l6g-eC-Ofv"/>
-                        <outlet property="nextButton" destination="6SV-Eh-pka" id="ATd-3J-MT0"/>
+                        <outlet property="nextButton" destination="ItD-6b-ejd" id="aco-2n-YbY"/>
                         <outlet property="universalTextField" destination="lu0-3L-P9u" id="eUx-2a-1Qy"/>
                     </connections>
                 </viewController>
@@ -339,6 +373,65 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TGC-PO-eJx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3263.7681159420295" y="-243.08035714285714"/>
+        </scene>
+        <!--Test View Controller-->
+        <scene sceneID="jtc-fL-hyo">
+            <objects>
+                <viewController id="iVL-pR-H1d" customClass="TestViewController" customModule="Balance" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="RLr-cA-LOk">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="6Om-uw-55k">
+                                <rect key="frame" x="57" y="148" width="300" height="600"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Uct-00-qje" customClass="CurrencyTextField" customModule="Balance" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="g4I-Fe-A52"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="s81-If-D20">
+                                        <rect key="frame" x="0.0" y="285" width="300" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="MKE-PZ-9wy"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="229-nc-izz">
+                                        <rect key="frame" x="0.0" y="570" width="300" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="P5N-XW-lTW"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="ZPG-jt-neZ"/>
+                                    <constraint firstAttribute="height" constant="600" id="dCP-kj-QJd"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="6Om-uw-55k" firstAttribute="centerY" secondItem="RLr-cA-LOk" secondAttribute="centerY" id="5vS-kc-bPG"/>
+                            <constraint firstItem="6Om-uw-55k" firstAttribute="centerX" secondItem="RLr-cA-LOk" secondAttribute="centerX" id="KHQ-eT-ouT"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ZFy-73-egh"/>
+                    </view>
+                    <connections>
+                        <outlet property="currencyText" destination="Uct-00-qje" id="6hI-eq-IJ6"/>
+                        <outlet property="descriptionText" destination="229-nc-izz" id="HWM-0b-eSu"/>
+                        <outlet property="nameText" destination="s81-If-D20" id="b9G-2l-AxJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="N0L-Ia-aTa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="341" y="1081"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
