@@ -92,9 +92,9 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionTableViewCell", for: indexPath) as! TransactionTableViewCell
         
-        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-        
-        let realm = try! Realm(configuration: config)
+//        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+//        
+//        let realm = try! Realm(configuration: config)
         let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
         
         let formatter = DateFormatter()

@@ -22,6 +22,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     @IBOutlet weak var incomeButton: UIButton!
     @IBOutlet weak var expenseButton: UIButton!
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var backButton: UIButton!
     
     //MARK: - Properties
     let realm = try! Realm()
@@ -48,32 +49,45 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     
     //MARK: - Methods
     
-    func setupAmountView() {
-        
-        currencyTextField.becomeFirstResponder()
-        currencyTextField.keyboardType = .decimalPad
-        currencyTextField.textColor = UIColor(rgb: darkRed)
-        descriptionTextField.isHidden = true
-        nameTextField.isHidden = true
-        calendar.isHidden = true
-        instructionsLabel.text = "Enter Expense:"
-        
-        nextButton.roundCorners()
-        incomeButton.roundCorners()
-        incomeButton.backgroundColor = .gray
-        expenseButton.roundCorners()
-        
-        
-    }
-    
     func convertCurrency() {
-
+        
         let formatter = NumberFormatter()
         formatter.currencySymbol = "$"
         formatter.numberStyle = .currency
         let number = formatter.number(from: currencyTextField.text!)
         let doubleValue = number?.doubleValue
         amount = doubleValue!
+        
+    }
+    
+    func setupAmountView() {
+        
+        currencyTextField.becomeFirstResponder()
+        currencyTextField.keyboardType = .decimalPad
+        descriptionTextField.isHidden = true
+        nameTextField.isHidden = true
+        calendar.isHidden = true
+        expenseButton.isHidden = true
+        incomeButton.isHidden = true
+        backButton.isHidden = true
+        instructionsLabel.text = "Enter Amount:"
+        
+        backButton.roundCorners()
+        nextButton.roundCorners()
+        incomeButton.roundCorners()
+        expenseButton.roundCorners()
+        
+        
+    }
+    
+    func setupExpenseIncomeView() {
+        
+        instructionsLabel.text = "Is this an income or expense?"
+        incomeButton.isHidden = false
+        expenseButton.isHidden = false
+        backButton.isHidden = true
+        backButton.isHidden = false
+        currencyTextField.resignFirstResponder()
 
     }
     
@@ -85,11 +99,17 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         nameTextField.placeholder = "e.g. Starbucks"
         currencyTextField.reloadInputViews()
         descriptionTextField.isHidden = false
+        descriptionTextField.attributedPlaceholder = NSAttributedString(string: "Add description (optional)",
+        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         incomeButton.isHidden = true
         expenseButton.isHidden = true
         currencyTextField.isHidden = true
         nameTextField.isHidden = false
+        backButton.isHidden = false
         nameTextField.becomeFirstResponder()
+        calendar.isHidden = true
+        nextButton.setTitle("Next", for: .normal)
+        
         
     }
     
@@ -99,7 +119,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
         name = nameTextField.text!
         desc = descriptionTextField.text!
-
+        
         currencyTextField.isHidden = true
         descriptionTextField.isHidden = true
         nameTextField.isHidden = true
@@ -129,29 +149,39 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
     }
     
-    
-    //MARK: - IBActions
-    @IBAction func nextPressed(_ sender: UIButton) {
-        
-        buttonCounter += 1
+    func setupViews() {
         
         switch buttonCounter {
             
         case 1:
             
-            setupNameView()
+            setupExpenseIncomeView()
             
         case 2:
             
-            setupDateView()
+            setupNameView()
             
         case 3:
+            
+            setupDateView()
+            
+        case 4:
             
             saveTransaction()
             
         default:
             print("Error")
         }
+        
+    }
+    
+    
+    //MARK: - IBActions
+    @IBAction func nextPressed(_ sender: UIButton) {
+        
+        buttonCounter += 1
+        print(buttonCounter)
+        setupViews()
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIButton) {
@@ -166,9 +196,10 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             currencyTextField.dropMinus()
         }
         isExpense = false
+        instructionsLabel.isHidden = true
         expenseButton.backgroundColor = .gray
         incomeButton.backgroundColor = UIColor(rgb: darkGreen)
-        instructionsLabel.text = "Enter Income:"
+        instructionsLabel.text = "Income"
         currencyTextField.textColor = UIColor(rgb: darkGreen)
         
         
@@ -180,10 +211,22 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             currencyTextField.addMinus()
         }
         isExpense = true
+        instructionsLabel.isHidden = true
         expenseButton.backgroundColor = UIColor(rgb: darkRed)
         incomeButton.backgroundColor = .gray
-        instructionsLabel.text = "Enter Expense:"
+        instructionsLabel.text = "Expense"
         currencyTextField.textColor = UIColor(rgb: darkRed)
+        
+    }
+    
+    @IBAction func backButtonPressed(_ sender: UIButton) {
+        
+        buttonCounter -= 1
+        
+        setupViews()
+        
+        print(buttonCounter)
+//        setupViews()
         
     }
     
@@ -214,9 +257,9 @@ extension UIApplication {
 
 extension UITextField {
     func addMinus() {
-
+        
         if text?.hasPrefix("-") == false {
-        self.text = "-\(text!)"
+            self.text = "-\(text!)"
         }
     }
 }
@@ -238,13 +281,13 @@ extension UIViewController: UITextFieldDelegate {
         
         let dotString = "."
         let character = "$"
-
+        
         if let text = textField.text{
             if !text.contains(character){
-                textField.text = "-\(character)\(text)"
+                textField.text = "\(character)\(text)"
             }
             let isDeleteKey = string.isEmpty
-
+            
             if !isDeleteKey {
                 if text.contains(dotString) {
                     if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {

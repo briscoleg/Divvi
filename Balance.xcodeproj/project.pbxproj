@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02B84D824AACC3000B11C9C /* DataManager.swift */; };
+		C057F3B024B2A6E80007CAC0 /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */; };
+		C057F3B124B2A6E80007CAC0 /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C057F3AF24B2A6E80007CAC0 /* SummaryTableViewCell.xib */; };
 		C08A028524A3BCE60056F355 /* AddTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */; };
 		C08A028724A3C4980056F355 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028624A3C4980056F355 /* Transaction.swift */; };
 		C08A028E24A3DF1B0056F355 /* TransactionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */; };
@@ -27,6 +29,8 @@
 		797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.release.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.release.xcconfig"; sourceTree = "<group>"; };
 		7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Balance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C02B84D824AACC3000B11C9C /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
+		C057F3AF24B2A6E80007CAC0 /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		C08A028424A3BCE60056F355 /* AddTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewController.swift; sourceTree = "<group>"; };
 		C08A028624A3C4980056F355 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		C08A028D24A3DF1B0056F355 /* TransactionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewController.swift; sourceTree = "<group>"; };
@@ -87,6 +91,8 @@
 				C0DB600024A160D900008F89 /* Main.storyboard */,
 				C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */,
 				C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */,
+				C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */,
+				C057F3AF24B2A6E80007CAC0 /* SummaryTableViewCell.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -195,6 +201,7 @@
 			files = (
 				C0DB600724A160DB00008F89 /* LaunchScreen.storyboard in Resources */,
 				C0DB600424A160DB00008F89 /* Assets.xcassets in Resources */,
+				C057F3B124B2A6E80007CAC0 /* SummaryTableViewCell.xib in Resources */,
 				C0C09DB324A422F3008ABF6A /* TransactionTableViewCell.xib in Resources */,
 				C0DB600224A160D900008F89 /* Main.storyboard in Resources */,
 			);
@@ -253,6 +260,7 @@
 				C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */,
 				C08A028724A3C4980056F355 /* Transaction.swift in Sources */,
 				C08A028E24A3DF1B0056F355 /* TransactionTableViewController.swift in Sources */,
+				C057F3B024B2A6E80007CAC0 /* SummaryTableViewCell.swift in Sources */,
 				C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */,
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
 				C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */,
