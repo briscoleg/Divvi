@@ -9,6 +9,7 @@
 import UIKit
 import FSCalendar
 import RealmSwift
+import SwiftDate
 
 class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
     
@@ -19,21 +20,24 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     @IBOutlet weak var calendar: FSCalendar!
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var instructionsLabel: UILabel!
-    @IBOutlet weak var incomeButton: UIButton!
-    @IBOutlet weak var expenseButton: UIButton!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var incomeSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var recurringButton: UIButton!
+    @IBOutlet weak var recursLabel: UILabel!
     
     //MARK: - Properties
     let realm = try! Realm()
-    public var buttonCounter = 0
+    public var buttonCounter = 1
     var amount = 0.0
     var name = ""
     var desc: String?
-    var datePicked = Date()
-    var isExpense = true
-    let darkRed = 0xD93D24
-    let darkGreen = 0x59C13B
+    lazy var datePicked = Date()
+    var category = ""
+    public var isExpense = true
+    let darkRed = 0xc0392b
+    let darkGreen = 0x2ecc71
+    
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -44,10 +48,35 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         calendar.dataSource = self
         
         setupAmountView()
+        roundButtonCorners()
+        
+        //        saveMultipleTransactions()
         
     }
     
     //MARK: - Methods
+    
+    func setupViews() {
+        
+        switch buttonCounter {
+            
+        case 1:
+            setupAmountView()
+        case 2:
+            setupNameView()
+            
+        case 3:
+            
+            setupDateView()
+            
+        case 4:
+            saveMultipleTransactions()
+            
+        default:
+            print("Error")
+        }
+        
+    }
     
     func convertCurrency() {
         
@@ -60,54 +89,65 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
     }
     
+    func roundButtonCorners() {
+        
+        backButton.roundCorners()
+        nextButton.roundCorners()
+        recurringButton.roundCorners()
+        
+    }
+    
     func setupAmountView() {
         
+        currencyTextField.isHidden = false
         currencyTextField.becomeFirstResponder()
         currencyTextField.keyboardType = .decimalPad
         descriptionTextField.isHidden = true
         nameTextField.isHidden = true
         calendar.isHidden = true
-        expenseButton.isHidden = true
-        incomeButton.isHidden = true
         backButton.isHidden = true
-        instructionsLabel.text = "Enter Amount:"
-        
-        backButton.roundCorners()
-        nextButton.roundCorners()
-        incomeButton.roundCorners()
-        expenseButton.roundCorners()
-        
+        nextButton.isHidden = false
+        instructionsLabel.text = "Amount:"
+        incomeSegmentedControl.isHidden = false
+        recurringButton.isHidden = true
+        recursLabel.isHidden = true
+        if isExpense {
+            currencyTextField.textColor = UIColor(rgb: darkRed)
+        }
         
     }
     
     func setupExpenseIncomeView() {
         
-        instructionsLabel.text = "Is this an income or expense?"
-        incomeButton.isHidden = false
-        expenseButton.isHidden = false
-        backButton.isHidden = true
+        instructionsLabel.text = "Income or Expense?"
+        nextButton.isHidden = true
         backButton.isHidden = false
         currencyTextField.resignFirstResponder()
-
+        nameTextField.isHidden = true
+        descriptionTextField.isHidden = true
+        currencyTextField.isHidden = false
     }
     
     func setupNameView() {
         
-        convertCurrency()
+        //        convertCurrency()
         
-        instructionsLabel.text = "Enter Name:"
-        nameTextField.placeholder = "e.g. Starbucks"
+        incomeSegmentedControl.isHidden = true
+        instructionsLabel.isHidden = false
+        instructionsLabel.text = "Name:"
+        nameTextField.placeholder = "Starbucks"
         currencyTextField.reloadInputViews()
         descriptionTextField.isHidden = false
         descriptionTextField.attributedPlaceholder = NSAttributedString(string: "Add description (optional)",
-        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
-        incomeButton.isHidden = true
-        expenseButton.isHidden = true
+                                                                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         currencyTextField.isHidden = true
         nameTextField.isHidden = false
         backButton.isHidden = false
+        nextButton.isHidden = false
         nameTextField.becomeFirstResponder()
         calendar.isHidden = true
+        recurringButton.isHidden = true
+        recursLabel.isHidden = true
         nextButton.setTitle("Next", for: .normal)
         
         
@@ -116,6 +156,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     func setupDateView() {
         
         instructionsLabel.text = "Select a Date:"
+        recursLabel.text = "Is this a recurrring transaction?"
         
         name = nameTextField.text!
         desc = descriptionTextField.text!
@@ -124,6 +165,8 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         descriptionTextField.isHidden = true
         nameTextField.isHidden = true
         calendar.isHidden = false
+        recurringButton.isHidden = false
+        recursLabel.isHidden = false
         nextButton.setTitle("Done", for: .normal)
         UIApplication.shared.hideKeyboard()
         
@@ -137,6 +180,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         newTransaction.transactionName = name
         newTransaction.transactionDescription = desc
         newTransaction.transactionDate = datePicked
+        newTransaction.transactionCategory = category
         
         try! realm.write {
             realm.add(newTransaction)
@@ -149,29 +193,44 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
     }
     
-    func setupViews() {
+    func saveMultipleTransactions() {
         
-        switch buttonCounter {
+        var transactionArray:[Transaction] = []
+        let numberOfTransactionsToAdd = 2
+        
+        for _ in 1...numberOfTransactionsToAdd {
             
-        case 1:
+            let addedTransaction = Transaction()
             
-            setupExpenseIncomeView()
+            addedTransaction.transactionAmount = amount
+            addedTransaction.transactionName = name
+            addedTransaction.transactionDescription = desc
+            addedTransaction.transactionDate = datePicked
+            addedTransaction.transactionCategory = category
             
-        case 2:
+            transactionArray.append(addedTransaction)
             
-            setupNameView()
+            datePicked = datePicked + 1.months
             
-        case 3:
-            
-            setupDateView()
-            
-        case 4:
-            
-            saveTransaction()
-            
-        default:
-            print("Error")
         }
+        
+        let transactionList = List<Transaction>()
+        
+        
+        for transaction in transactionArray {
+            
+            transactionList.append(transaction)
+            
+        }
+        
+        try! realm.write {
+            realm.add(transactionList)
+        }
+        
+        DataManager.shared.firstVC.tableView.reloadData()
+        DataManager.shared.summaryVC.viewDidLoad()
+        
+        self.dismiss(animated: true, completion: nil)
         
     }
     
@@ -179,7 +238,12 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     //MARK: - IBActions
     @IBAction func nextPressed(_ sender: UIButton) {
         
-        buttonCounter += 1
+        
+        if currencyTextField.text == "" {
+            print("Invalid amount")
+        } else {
+            buttonCounter += 1
+        }
         print(buttonCounter)
         setupViews()
     }
@@ -190,32 +254,32 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
     }
     
-    @IBAction func incomeButtonPressed(_ sender: UIButton) {
+    @IBAction func incomeSegmentedControlPressed(_ sender: UISegmentedControl) {
         
-        if isExpense == true {
-            currencyTextField.dropMinus()
+        switch incomeSegmentedControl.selectedSegmentIndex {
+            
+        case 0:
+            
+            isExpense = true
+            if isExpense && currencyTextField.text != ""{
+                currencyTextField.addMinus()
+            }
+            instructionsLabel.text = "Expense"
+            currencyTextField.textColor = UIColor(rgb: darkRed)
+            
+        case 1:
+            
+            if isExpense {
+                currencyTextField.dropMinus()
+            }
+            isExpense = false
+            
+            instructionsLabel.text = "Income"
+            currencyTextField.textColor = UIColor(rgb: darkGreen)
+            
+        default:
+            break
         }
-        isExpense = false
-        instructionsLabel.isHidden = true
-        expenseButton.backgroundColor = .gray
-        incomeButton.backgroundColor = UIColor(rgb: darkGreen)
-        instructionsLabel.text = "Income"
-        currencyTextField.textColor = UIColor(rgb: darkGreen)
-        
-        
-    }
-    
-    @IBAction func expenseButtonPressed(_ sender: UIButton) {
-        
-        if isExpense == false {
-            currencyTextField.addMinus()
-        }
-        isExpense = true
-        instructionsLabel.isHidden = true
-        expenseButton.backgroundColor = UIColor(rgb: darkRed)
-        incomeButton.backgroundColor = .gray
-        instructionsLabel.text = "Expense"
-        currencyTextField.textColor = UIColor(rgb: darkRed)
         
     }
     
@@ -226,7 +290,13 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         setupViews()
         
         print(buttonCounter)
-//        setupViews()
+        setupViews()
+        
+    }
+    
+    @IBAction func recurringButtonPressed(_ sender: UIButton) {
+        
+        
         
     }
     
@@ -280,15 +350,19 @@ extension UIViewController: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         let dotString = "."
-        let character = "$"
+        let dollarSign = "$"
+        let minusSign = "-$"
         
         if let text = textField.text{
-            if !text.contains(character){
-                textField.text = "\(character)\(text)"
+            if !text.contains(dollarSign){
+                textField.text = "-\(dollarSign)\(text)"
             }
-            let isDeleteKey = string.isEmpty
-            
-            if !isDeleteKey {
+
+            let backSpace = string.isEmpty
+            if backSpace && text == minusSign {
+                textField.text = ""
+            }
+            if !backSpace {
                 if text.contains(dotString) {
                     if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
                         return false

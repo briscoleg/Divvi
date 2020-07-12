@@ -9,5 +9,6 @@ target 'Balance' do
 
 pod 'FSCalendar'
 pod 'RealmSwift'
+pod 'SwiftDate'
 
 end

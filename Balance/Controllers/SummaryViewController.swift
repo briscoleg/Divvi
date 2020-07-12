@@ -34,7 +34,6 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
     var startDate: Date?
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
-//    let nsDate = Date()
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -110,13 +109,17 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
     func predicateForDayFromDate(date: Date) -> NSPredicate {
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
         components.hour = 00
         components.minute = 00
         components.second = 00
+        
         let startDate = calendar.date(from: components)
+        
         components.hour = 23
         components.minute = 59
         components.second = 59
+        
         let endDate = calendar.date(from: components)
 
         return NSPredicate(format: "transactionDate >= %@ AND transactionDate =< %@", argumentArray: [startDate!, endDate!])
@@ -158,7 +161,7 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
         let transactionCount = transaction.filter(dateRangePredicate).count
         
         if transactionCount == 0 {
-            transactionsLabel.text = "No transactions on this date"
+            transactionsLabel.text = "No transactions for this date."
         } else {
             transactionsLabel.text = "Transactions:"
         }
@@ -210,44 +213,44 @@ extension UIButton {
     }
 }
 
-extension Date {
-    var startOfDay: Date {
-        return Calendar.current.startOfDay(for: self)
-    }
+//extension Date {
+//    var startOfDay: Date {
+//        return Calendar.current.startOfDay(for: self)
+//    }
+//
+//    var endOfDay: Date {
+//        var components = DateComponents()
+//        components.day = 1
+//        components.second = -1
+//        return Calendar.current.date(byAdding: components, to: startOfDay)!
+//    }
+//
+//    var startOfMonth: Date {
+//        let components = Calendar.current.dateComponents([.year, .month], from: startOfDay)
+//        return Calendar.current.date(from: components)!
+//    }
+//
+//    var endOfMonth: Date {
+//        var components = DateComponents()
+//        components.month = 1
+//        components.second = -1
+//        return Calendar.current.date(byAdding: components, to: startOfMonth)!
+//    }
+//}
 
-    var endOfDay: Date {
-        var components = DateComponents()
-        components.day = 1
-        components.second = -1
-        return Calendar.current.date(byAdding: components, to: startOfDay)!
-    }
-
-    var startOfMonth: Date {
-        let components = Calendar.current.dateComponents([.year, .month], from: startOfDay)
-        return Calendar.current.date(from: components)!
-    }
-
-    var endOfMonth: Date {
-        var components = DateComponents()
-        components.month = 1
-        components.second = -1
-        return Calendar.current.date(byAdding: components, to: startOfMonth)!
-    }
-}
-
-extension Date{
-
-func makeDayPredicate() -> NSPredicate {
-    let calendar = Calendar.current
-    var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self)
-    components.hour = 00
-    components.minute = 00
-    components.second = 00
-    let startDate = calendar.date(from: components)
-    components.hour = 23
-    components.minute = 59
-    components.second = 59
-    let endDate = calendar.date(from: components)
-    return NSPredicate(format: "transactionDate >= %@ AND transactionDate =< %@", argumentArray: [startDate!, endDate!])
-}
-}
+//extension Date{
+//
+//func makeDayPredicate() -> NSPredicate {
+//    let calendar = Calendar.current
+//    var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self)
+//    components.hour = 00
+//    components.minute = 00
+//    components.second = 00
+//    let startDate = calendar.date(from: components)
+//    components.hour = 23
+//    components.minute = 59
+//    components.second = 59
+//    let endDate = calendar.date(from: components)
+//    return NSPredicate(format: "transactionDate >= %@ AND transactionDate =< %@", argumentArray: [startDate!, endDate!])
+//}
+//}

@@ -16,8 +16,7 @@ class Transaction: Object {
     @objc dynamic var transactionAmount = 0.0
     @objc dynamic var transactionDate = Date()
     @objc dynamic var transactionCategory = ""
-//    override static func primaryKey() -> String? {
-//        return "transactionDate"
-//    }
-    
+    @objc dynamic var isExpense = true
+    @objc dynamic var isRecurring = false
+        
 }
