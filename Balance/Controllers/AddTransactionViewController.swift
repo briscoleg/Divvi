@@ -14,43 +14,64 @@ import SwiftDate
 class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
     
     //MARK: - IBOutlets
-    @IBOutlet weak var currencyTextField: UITextField!
-    @IBOutlet weak var nextButton: UIButton!
-    @IBOutlet weak var descriptionTextField: UITextField!
-    @IBOutlet weak var calendar: FSCalendar!
     @IBOutlet weak var cancelButton: UIButton!
-    @IBOutlet weak var instructionsLabel: UILabel!
-    @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var backButton: UIButton!
+
+    //Amount View Outlets
+    @IBOutlet weak var amountInstructionsLabel: UILabel!
     @IBOutlet weak var incomeSegmentedControl: UISegmentedControl!
-    @IBOutlet weak var recurringButton: UIButton!
+    @IBOutlet weak var amountTextField: UITextField!
+    @IBOutlet weak var amountNextButton: UIButton!
+    
+    //Name View Outlets
+    @IBOutlet weak var nameInstructionsLabel: UILabel!
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var descriptionTextField: UITextField!
+    @IBOutlet weak var nameNextButton: UIButton!
+    @IBOutlet weak var nameBackButton: UIButton!
+
+    //Date View Outlets
+    @IBOutlet weak var dateInsructionsLabel: UILabel!
+    @IBOutlet weak var calendar: FSCalendar!
     @IBOutlet weak var recursLabel: UILabel!
+    @IBOutlet weak var recurringSwitch: UISwitch!
+    @IBOutlet weak var dateAddTransactionButton: UIButton!
+    @IBOutlet weak var dateBackButton: UIButton!
+    
+    
+    //Stacks
+    @IBOutlet weak var amountStackView: UIStackView!
+    
+    @IBOutlet weak var nameStackView: UIStackView!
+    
+    @IBOutlet weak var dateStackView: UIStackView!
+    
+    
     
     //MARK: - Properties
     let realm = try! Realm()
     public var buttonCounter = 1
     var amount = 0.0
-    var name = ""
-    var desc: String?
-    lazy var datePicked = Date()
+//    var name = ""
+//    var desc: String?
+    var datePicked = Date()
     var category = ""
-    public var isExpense = true
-    let darkRed = 0xc0392b
-    let darkGreen = 0x2ecc71
-    
+    var isExpense = true
+    var recurringInterval = "None"
+    var numberOfTransactionsToAdd = 1
+//    let darkRed = 0xc0392b
+//    let darkGreen = 0x2ecc71
+    var component: Int?
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        currencyTextField.delegate = self
+        amountTextField.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
         
         setupAmountView()
         roundButtonCorners()
-        
-        //        saveMultipleTransactions()
         
     }
     
@@ -64,26 +85,22 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             setupAmountView()
         case 2:
             setupNameView()
-            
         case 3:
-            
             setupDateView()
-            
         case 4:
-            saveMultipleTransactions()
-            
+            saveTransaction()
         default:
-            print("Error")
+            break
         }
         
     }
     
-    func convertCurrency() {
+    func convertAmountToCurrency() {
         
         let formatter = NumberFormatter()
         formatter.currencySymbol = "$"
         formatter.numberStyle = .currency
-        let number = formatter.number(from: currencyTextField.text!)
+        let number = formatter.number(from: amountTextField.text!)
         let doubleValue = number?.doubleValue
         amount = doubleValue!
         
@@ -91,140 +108,152 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     
     func roundButtonCorners() {
         
-        backButton.roundCorners()
-        nextButton.roundCorners()
-        recurringButton.roundCorners()
+        amountNextButton.roundCorners()
+        nameNextButton.roundCorners()
+        dateAddTransactionButton.roundCorners()
         
     }
     
     func setupAmountView() {
         
-        currencyTextField.isHidden = false
-        currencyTextField.becomeFirstResponder()
-        currencyTextField.keyboardType = .decimalPad
-        descriptionTextField.isHidden = true
-        nameTextField.isHidden = true
-        calendar.isHidden = true
-        backButton.isHidden = true
-        nextButton.isHidden = false
-        instructionsLabel.text = "Amount:"
-        incomeSegmentedControl.isHidden = false
-        recurringButton.isHidden = true
-        recursLabel.isHidden = true
+        //Setup Stacks
+        nameStackView.isHidden = true
+        dateStackView.isHidden = true
+        amountStackView.isHidden = false
+        
+        //Setup Instructions
+        amountInstructionsLabel.text = "Amount:"
+
+        
+        //Setup Keyboard
+        amountTextField.becomeFirstResponder()
+        amountTextField.keyboardType = .decimalPad
+
+        //Action
         if isExpense {
-            currencyTextField.textColor = UIColor(rgb: darkRed)
-        }
+            amountTextField.textColor = UIColor(rgb: Constants.darkRed)
+               }
         
-    }
-    
-    func setupExpenseIncomeView() {
-        
-        instructionsLabel.text = "Income or Expense?"
-        nextButton.isHidden = true
-        backButton.isHidden = false
-        currencyTextField.resignFirstResponder()
-        nameTextField.isHidden = true
-        descriptionTextField.isHidden = true
-        currencyTextField.isHidden = false
     }
     
     func setupNameView() {
         
-        //        convertCurrency()
+        amountTextField.reloadInputViews()
+
+        //Setup Stacks
+        dateStackView.isHidden = true
+        amountStackView.isHidden = true
+        nameStackView.isHidden = false
         
-        incomeSegmentedControl.isHidden = true
-        instructionsLabel.isHidden = false
-        instructionsLabel.text = "Name:"
-        nameTextField.placeholder = "Starbucks"
-        currencyTextField.reloadInputViews()
-        descriptionTextField.isHidden = false
-        descriptionTextField.attributedPlaceholder = NSAttributedString(string: "Add description (optional)",
-                                                                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
-        currencyTextField.isHidden = true
-        nameTextField.isHidden = false
-        backButton.isHidden = false
-        nextButton.isHidden = false
+        //Setup Label
+        nameInstructionsLabel.text = "Name this transaction:"
+        
+        //Setup Keyboard
         nameTextField.becomeFirstResponder()
-        calendar.isHidden = true
-        recurringButton.isHidden = true
-        recursLabel.isHidden = true
-        nextButton.setTitle("Next", for: .normal)
+
+        //Setup Instructions
+//        nameTextField.placeholder = "Starbucks"
+//        descriptionTextField.attributedPlaceholder = NSAttributedString(string: "Add description (optional)",
+//        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+        
+        
+        
+//        incomeSegmentedControl.isHidden = true
+//        instructionsLabel.isHidden = false
+//        amountInstructionsLabel.text = "Name:"
+//        descriptionTextField.isHidden = false
+       
+//        amountTextField.isHidden = true
+//        nameTextField.isHidden = false
+//        backButton.isHidden = false
+//        nextButton.isHidden = false
+//        calendar.isHidden = true
+//        recursLabel.isHidden = true
+//        nameNextButton.setTitle("Next", for: .normal)
         
         
     }
     
     func setupDateView() {
         
-        instructionsLabel.text = "Select a Date:"
-        recursLabel.text = "Is this a recurrring transaction?"
+        //Setup Stacks
+        amountStackView.isHidden = true
+        nameStackView.isHidden = true
+        dateStackView.isHidden = false
         
-        name = nameTextField.text!
-        desc = descriptionTextField.text!
-        
-        currencyTextField.isHidden = true
-        descriptionTextField.isHidden = true
-        nameTextField.isHidden = true
-        calendar.isHidden = false
-        recurringButton.isHidden = false
-        recursLabel.isHidden = false
-        nextButton.setTitle("Done", for: .normal)
+        //Setup Keyboard
         UIApplication.shared.hideKeyboard()
+
+        //Setup Instructions
+        
+        amountInstructionsLabel.text = "Select a Date:"
+        recursLabel.text = "This transaction repeats:"
+
+//        name = nameTextField.text!
+//        desc = descriptionTextField.text!
+        
+    }
+    
+    func setNumberOfTransactions() {
+        
+        switch recurringInterval {
+            
+        case "Yearly":
+            numberOfTransactionsToAdd = 2
+        case "Monthly":
+            numberOfTransactionsToAdd = 3
+        case "Every Two Weeks":
+            numberOfTransactionsToAdd = 4
+        case "Every Week":
+            numberOfTransactionsToAdd = 5
+        case "Every Day":
+            numberOfTransactionsToAdd = 6
+        case "Does Not Repeat":
+            numberOfTransactionsToAdd = 1
+        default:
+            break
+        }
         
     }
     
     func saveTransaction() {
         
-        let newTransaction = Transaction()
         
-        newTransaction.transactionAmount = amount
-        newTransaction.transactionName = name
-        newTransaction.transactionDescription = desc
-        newTransaction.transactionDate = datePicked
-        newTransaction.transactionCategory = category
-        
-        try! realm.write {
-            realm.add(newTransaction)
-        }
-        
-        DataManager.shared.firstVC.tableView.reloadData()
-        DataManager.shared.summaryVC.viewDidLoad()
-        
-        self.dismiss(animated: true, completion: nil)
-        
-    }
-    
-    func saveMultipleTransactions() {
-        
-        var transactionArray:[Transaction] = []
-        let numberOfTransactionsToAdd = 2
+        //        setTimeInterval()
+        setNumberOfTransactions()
         
         for _ in 1...numberOfTransactionsToAdd {
             
-            let addedTransaction = Transaction()
+            let newTransaction = Transaction()
             
-            addedTransaction.transactionAmount = amount
-            addedTransaction.transactionName = name
-            addedTransaction.transactionDescription = desc
-            addedTransaction.transactionDate = datePicked
-            addedTransaction.transactionCategory = category
+            var timeAdded = 1.months
             
-            transactionArray.append(addedTransaction)
+            convertAmountToCurrency()
+
+            newTransaction.transactionAmount = amount
+            newTransaction.transactionName = nameTextField.text!
+            newTransaction.transactionDescription = descriptionTextField.text
+            newTransaction.transactionDate = datePicked
+            newTransaction.transactionCategory = category
             
-            datePicked = datePicked + 1.months
-            
-        }
-        
-        let transactionList = List<Transaction>()
-        
-        
-        for transaction in transactionArray {
-            
-            transactionList.append(transaction)
-            
-        }
-        
-        try! realm.write {
-            realm.add(transactionList)
+            switch recurringInterval {
+            case "Yearly":
+                timeAdded = 1.years
+            case "Monthly":
+                timeAdded = 1.months
+            case "Every Two Weeks":
+                timeAdded = 2.weeks
+            case "Weekly":
+                timeAdded = 1.weeks
+            case "Daily":
+                timeAdded = 1.days
+            default:
+                break
+            }
+            try! realm.write {
+                realm.add(newTransaction)
+            }
+            datePicked = datePicked + timeAdded
         }
         
         DataManager.shared.firstVC.tableView.reloadData()
@@ -234,23 +263,35 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
     }
     
+    func displaySelectedDate(_ date: Date) {
+        
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "MMMM d"
+        
+        let dateString = formatter.string(from: date)
+        
+        dateInsructionsLabel.text = dateString
+        
+    }
     
     //MARK: - IBActions
     @IBAction func nextPressed(_ sender: UIButton) {
         
         
-        if currencyTextField.text == "" {
+        if amountTextField.text == "" {
             print("Invalid amount")
         } else {
             buttonCounter += 1
         }
-        print(buttonCounter)
+        
         setupViews()
+        
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIButton) {
         
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
         
     }
     
@@ -261,21 +302,21 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         case 0:
             
             isExpense = true
-            if isExpense && currencyTextField.text != ""{
-                currencyTextField.addMinus()
+            if isExpense && amountTextField.text != ""{
+                amountTextField.addMinus()
             }
-            instructionsLabel.text = "Expense"
-            currencyTextField.textColor = UIColor(rgb: darkRed)
+            amountInstructionsLabel.text = "Expense"
+            amountTextField.textColor = UIColor(rgb: Constants.darkRed)
             
         case 1:
             
             if isExpense {
-                currencyTextField.dropMinus()
+                amountTextField.dropMinus()
             }
             isExpense = false
             
-            instructionsLabel.text = "Income"
-            currencyTextField.textColor = UIColor(rgb: darkGreen)
+            amountInstructionsLabel.text = "Income"
+            amountTextField.textColor = UIColor(rgb: Constants.darkGreen)
             
         default:
             break
@@ -294,82 +335,30 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
     }
     
-    @IBAction func recurringButtonPressed(_ sender: UIButton) {
+    @IBAction func recurringSwitchPressed(_ sender: UISwitch) {
         
-        
+        let recurringVC = storyboard?.instantiateViewController(withIdentifier: "RecurringViewController") as! RecurringViewController
+        recurringVC.intervalDelegate = self
+        present(recurringVC, animated: true, completion: nil)
         
     }
+    
     
     
     //MARK: - Calendar Delegate Methods
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
         datePicked = date
+        displaySelectedDate(date)
+        
         
     }
 }
 //MARK: - Extensions
-extension UIButton {
-    func roundCorners(){
-        
-        let radius = bounds.maxX / 16
-        
-        layer.cornerRadius = radius
-        
-    }
-}
 
-extension UIApplication {
-    func hideKeyboard() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
-extension UITextField {
-    func addMinus() {
-        
-        if text?.hasPrefix("-") == false {
-            self.text = "-\(text!)"
-        }
-    }
-}
-
-extension UITextField {
-    func dropMinus() {
-        
-        if let text = self.text {
-            if text.hasPrefix("-") {
-                self.text = String(text.dropFirst())
-            }
-        }
-    }
-}
-
-extension UIViewController: UITextFieldDelegate {
-    
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let dotString = "."
-        let dollarSign = "$"
-        let minusSign = "-$"
-        
-        if let text = textField.text{
-            if !text.contains(dollarSign){
-                textField.text = "-\(dollarSign)\(text)"
-            }
-
-            let backSpace = string.isEmpty
-            if backSpace && text == minusSign {
-                textField.text = ""
-            }
-            if !backSpace {
-                if text.contains(dotString) {
-                    if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
-                        return false
-                    }
-                }
-            }
-        }
-        return true
+extension AddTransactionViewController: IntervalDelegate {
+    func getInterval(interval: String) {
+        recurringInterval = interval
+        recursLabel.text = recurringInterval
     }
 }

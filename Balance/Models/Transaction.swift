@@ -16,7 +16,19 @@ class Transaction: Object {
     @objc dynamic var transactionAmount = 0.0
     @objc dynamic var transactionDate = Date()
     @objc dynamic var transactionCategory = ""
-    @objc dynamic var isExpense = true
+//    @objc dynamic var isExpense = true
     @objc dynamic var isRecurring = false
+    @objc dynamic var transactionID = UUID().uuidString
+    
+    convenience init(theDate: Date) {
+        self.init()
+        self.transactionDate = theDate
+    }
+    
+    override static func primaryKey() -> String? {
+        return "transactionID"
+    }
         
 }
+
+

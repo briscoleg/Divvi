@@ -106,6 +106,7 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
         dateLabel.text = dateString
                 
     }
+    
     func predicateForDayFromDate(date: Date) -> NSPredicate {
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
@@ -151,7 +152,10 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
         
-            cell.appearance.eventDefaultColor = .green
+        cell.appearance.eventDefaultColor = UIColor(rgb: Constants.darkGreen)
+        
+        calendar.appearance.todayColor = UIColor(rgb: Constants.darkGreen)
+        calendar.appearance.selectionColor = UIColor(rgb: Constants.darkBlue)
            
 }
     
@@ -196,61 +200,3 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
     }
         
 }
-//MARK: - Extensions
-extension UIButton {
-    func makeCircular(button: UIButton) {
-        
-        let button = UIButton()
-        
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-        button.layer.masksToBounds = false
-        button.layer.shadowRadius = 2.0
-        button.layer.shadowOpacity = 0.5
-        button.layer.cornerRadius = button.frame.width / 2
-        button.layer.borderColor = UIColor.black.cgColor
-        button.layer.borderWidth = 1.0
-    }
-}
-
-//extension Date {
-//    var startOfDay: Date {
-//        return Calendar.current.startOfDay(for: self)
-//    }
-//
-//    var endOfDay: Date {
-//        var components = DateComponents()
-//        components.day = 1
-//        components.second = -1
-//        return Calendar.current.date(byAdding: components, to: startOfDay)!
-//    }
-//
-//    var startOfMonth: Date {
-//        let components = Calendar.current.dateComponents([.year, .month], from: startOfDay)
-//        return Calendar.current.date(from: components)!
-//    }
-//
-//    var endOfMonth: Date {
-//        var components = DateComponents()
-//        components.month = 1
-//        components.second = -1
-//        return Calendar.current.date(byAdding: components, to: startOfMonth)!
-//    }
-//}
-
-//extension Date{
-//
-//func makeDayPredicate() -> NSPredicate {
-//    let calendar = Calendar.current
-//    var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self)
-//    components.hour = 00
-//    components.minute = 00
-//    components.second = 00
-//    let startDate = calendar.date(from: components)
-//    components.hour = 23
-//    components.minute = 59
-//    components.second = 59
-//    let endDate = calendar.date(from: components)
-//    return NSPredicate(format: "transactionDate >= %@ AND transactionDate =< %@", argumentArray: [startDate!, endDate!])
-//}
-//}

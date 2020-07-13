@@ -85,7 +85,15 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //Show details for transaction
+        
+        try! realm.write {
+            realm.delete(transaction[indexPath.row])
+            
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        
+        DataManager.shared.summaryVC.viewDidLoad()
+        
     }
         
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

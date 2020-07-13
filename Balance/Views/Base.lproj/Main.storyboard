@@ -33,7 +33,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="muf-GU-PwS" userLabel="Calendar Stack">
-                                <rect key="frame" x="0.0" y="336" width="414" height="520"/>
+                                <rect key="frame" x="0.0" y="376" width="414" height="520"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="13k-6e-xST" customClass="FSCalendar">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="350"/>
@@ -75,21 +75,21 @@
                             <constraint firstItem="muf-GU-PwS" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="0FQ-18-JuP"/>
                             <constraint firstItem="muf-GU-PwS" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="HyK-lR-0qy"/>
                             <constraint firstItem="6QW-LD-KPQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="30" id="RId-dc-TxO"/>
-                            <constraint firstAttribute="bottom" secondItem="muf-GU-PwS" secondAttribute="bottom" constant="40" id="Syk-Kt-pb7"/>
+                            <constraint firstAttribute="bottom" secondItem="muf-GU-PwS" secondAttribute="bottom" id="Syk-Kt-pb7"/>
                             <constraint firstItem="6QW-LD-KPQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="n1m-hZ-l3c"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="xS1-og-TMD">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="list.bullet" catalog="system" id="qXj-nT-LL0">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="magnifyingglass" catalog="system" id="qXj-nT-LL0">
                             <connections>
                                 <segue destination="xT5-y4-wVP" kind="show" id="nvO-qh-Co9"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="lEa-1o-KuZ">
                             <connections>
-                                <segue destination="7gh-FG-Lr7" kind="presentation" id="2wT-jb-r23"/>
+                                <segue destination="rn0-NK-qVf" kind="presentation" id="zWJ-QN-3Dw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -178,7 +178,7 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="fbh-Dh-4oa">
                             <connections>
                                 <action selector="addButtonPressed:" destination="xT5-y4-wVP" id="gNO-UZ-zZg"/>
-                                <segue destination="7gh-FG-Lr7" kind="presentation" id="L8Z-kI-jJp"/>
+                                <segue destination="rn0-NK-qVf" kind="presentation" id="yhy-Ub-w0l"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -191,186 +191,19 @@
             </objects>
             <point key="canvasLocation" x="2848" y="673"/>
         </scene>
-        <!--Add Transaction View Controller-->
-        <scene sceneID="ZcJ-Pg-Uyr">
-            <objects>
-                <viewController id="7gh-FG-Lr7" customClass="AddTransactionViewController" customModule="Balance" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="sGb-se-Ft9">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wQ3-mQ-day">
-                                <rect key="frame" x="321" y="20" width="48" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="4ZF-0T-tty"/>
-                                </constraints>
-                                <state key="normal" title="Cancel">
-                                    <color key="titleColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="cancelButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="Tz9-QZ-cyW"/>
-                                </connections>
-                            </button>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="tDX-K6-JDP" userLabel="Label TextField Stack">
-                                <rect key="frame" x="0.0" y="125" width="414" height="1097"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amount" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zHy-Mc-lkd">
-                                        <rect key="frame" x="165.5" y="0.0" width="83.5" height="30"/>
-                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="25"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="$48.12" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="45" translatesAutoresizingMaskIntoConstraints="NO" id="lu0-3L-P9u" userLabel="Currency Text Field">
-                                        <rect key="frame" x="57" y="70" width="300" height="80"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="300" id="CQW-9H-9vg"/>
-                                            <constraint firstAttribute="height" constant="80" id="pVT-Vj-c7m"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="70"/>
-                                        <textInputTraits key="textInputTraits" returnKeyType="continue"/>
-                                    </textField>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="9XP-AH-u4P" userLabel="Income or Expense">
-                                        <rect key="frame" x="135.5" y="190" width="143" height="41"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="x1G-dM-JfU"/>
-                                        </constraints>
-                                        <segments>
-                                            <segment title="Expense"/>
-                                            <segment title="Income"/>
-                                        </segments>
-                                        <connections>
-                                            <action selector="incomeSegmentedControlPressed:" destination="7gh-FG-Lr7" eventType="valueChanged" id="QWL-av-dFa"/>
-                                        </connections>
-                                    </segmentedControl>
-                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yqu-dd-27W" customClass="FSCalendar">
-                                        <rect key="frame" x="0.0" y="270" width="414" height="350"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="67n-86-RIe"/>
-                                        </constraints>
-                                    </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Transaction Recurs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iNk-Bz-Es4" userLabel="Transaction Recurs">
-                                        <rect key="frame" x="126" y="660" width="162" height="24"/>
-                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5RC-sO-BBD" userLabel="Name Text Field">
-                                        <rect key="frame" x="57" y="724" width="300" height="80"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="80" id="Ehb-LQ-pp7"/>
-                                            <constraint firstAttribute="width" constant="300" id="HR6-hd-f9W"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="50"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
-                                    </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add description (optional)" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mXq-Am-FE2">
-                                        <rect key="frame" x="102" y="844" width="210" height="23"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z8R-Lj-GzD" userLabel="Recurring Button">
-                                        <rect key="frame" x="184.5" y="907" width="45" height="45"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="45" id="bvo-dh-Zdx"/>
-                                            <constraint firstAttribute="width" constant="45" id="ct8-QB-G06"/>
-                                        </constraints>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <state key="normal" title="Recurring? " image="repeat">
-                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="recurringButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="YBG-sX-06A"/>
-                                            <segue destination="rJC-aw-VFl" kind="presentation" id="3e1-j2-4X7"/>
-                                        </connections>
-                                    </button>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="ktp-0m-TKG" userLabel="Next Back Stack">
-                                        <rect key="frame" x="94.5" y="992" width="225" height="105"/>
-                                        <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ItD-6b-ejd">
-                                                <rect key="frame" x="0.0" y="0.0" width="225" height="50"/>
-                                                <color key="backgroundColor" red="0.20392156862745098" green="0.59607843137254901" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="225" id="TKm-xV-ZrD"/>
-                                                    <constraint firstAttribute="height" constant="50" id="gJ4-wA-5gh"/>
-                                                </constraints>
-                                                <state key="normal" title="Next">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="nextPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="F1G-J3-i9b"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P33-qx-rJm" userLabel="Back Button">
-                                                <rect key="frame" x="75" y="55" width="75" height="50"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="50" id="lZw-0x-T0O"/>
-                                                    <constraint firstAttribute="width" constant="75" id="vgf-kB-mJo"/>
-                                                </constraints>
-                                                <state key="normal" title="Back">
-                                                    <color key="titleColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="backButtonPressed:" destination="7gh-FG-Lr7" eventType="touchUpInside" id="xVj-sT-8LH"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="ktp-0m-TKG" firstAttribute="top" secondItem="9XP-AH-u4P" secondAttribute="bottom" constant="75" id="1qg-gA-tu4"/>
-                                    <constraint firstItem="Yqu-dd-27W" firstAttribute="centerX" secondItem="tDX-K6-JDP" secondAttribute="centerX" id="5dA-H8-ch3"/>
-                                    <constraint firstItem="zHy-Mc-lkd" firstAttribute="centerX" secondItem="tDX-K6-JDP" secondAttribute="centerX" id="NZ4-YV-Grn"/>
-                                    <constraint firstItem="Yqu-dd-27W" firstAttribute="leading" secondItem="tDX-K6-JDP" secondAttribute="leading" id="YzF-gu-4mW"/>
-                                    <constraint firstAttribute="trailing" secondItem="Yqu-dd-27W" secondAttribute="trailing" id="gEB-Wt-A5J"/>
-                                    <constraint firstItem="lu0-3L-P9u" firstAttribute="centerX" secondItem="tDX-K6-JDP" secondAttribute="centerX" id="hPi-3L-4DU"/>
-                                </constraints>
-                            </stackView>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="tDX-K6-JDP" firstAttribute="top" secondItem="wQ3-mQ-day" secondAttribute="bottom" constant="40" id="4XH-vv-DjC"/>
-                            <constraint firstItem="tDX-K6-JDP" firstAttribute="trailing" secondItem="yRN-NO-PAa" secondAttribute="trailing" id="Cag-Fv-ANi"/>
-                            <constraint firstItem="wQ3-mQ-day" firstAttribute="top" secondItem="yRN-NO-PAa" secondAttribute="top" constant="20" id="QN8-7a-U2D"/>
-                            <constraint firstItem="tDX-K6-JDP" firstAttribute="leading" secondItem="yRN-NO-PAa" secondAttribute="leading" id="YB9-nG-dxg"/>
-                            <constraint firstItem="yRN-NO-PAa" firstAttribute="trailing" secondItem="wQ3-mQ-day" secondAttribute="trailing" constant="45" id="nDm-zM-xa7"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="yRN-NO-PAa"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="pJX-Ga-dk9">
-                        <nil key="title"/>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="backButton" destination="P33-qx-rJm" id="WWw-xE-0Kz"/>
-                        <outlet property="calendar" destination="Yqu-dd-27W" id="B6s-Dh-uuY"/>
-                        <outlet property="cancelButton" destination="wQ3-mQ-day" id="xwM-WC-np7"/>
-                        <outlet property="currencyTextField" destination="lu0-3L-P9u" id="hMz-Fp-zPk"/>
-                        <outlet property="descriptionTextField" destination="mXq-Am-FE2" id="w8v-e3-wDa"/>
-                        <outlet property="incomeSegmentedControl" destination="9XP-AH-u4P" id="C70-rj-2B4"/>
-                        <outlet property="instructionsLabel" destination="zHy-Mc-lkd" id="l6g-eC-Ofv"/>
-                        <outlet property="nameTextField" destination="5RC-sO-BBD" id="dgp-W1-DOJ"/>
-                        <outlet property="nextButton" destination="ItD-6b-ejd" id="aco-2n-YbY"/>
-                        <outlet property="recurringButton" destination="Z8R-Lj-GzD" id="tCT-FO-D4f"/>
-                        <outlet property="recursLabel" destination="iNk-Bz-Es4" id="P1b-DU-A2a"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DEt-dU-OL2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2058" y="-212"/>
-        </scene>
         <!--Recurring View Controller-->
         <scene sceneID="cvX-pF-q9M">
             <objects>
-                <viewController id="rJC-aw-VFl" customClass="RecurringViewController" customModule="Balance" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RecurringViewController" id="rJC-aw-VFl" customClass="RecurringViewController" customModule="Balance" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="iu9-7h-sdr">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jma-h4-ine">
-                                <rect key="frame" x="0.0" y="320" width="414" height="202"/>
+                                <rect key="frame" x="0.0" y="364" width="414" height="168"/>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="How often does this transaction occur?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="22W-nZ-ESZ">
-                                <rect key="frame" x="43" y="175" width="328.5" height="20"/>
+                                <rect key="frame" x="43" y="219" width="328.5" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="j2e-lI-3Rp"/>
                                 </constraints>
@@ -379,13 +212,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kk2-Mb-vY2" userLabel="Save Button">
-                                <rect key="frame" x="94.5" y="597" width="225" height="50"/>
+                                <rect key="frame" x="94.5" y="607" width="225" height="50"/>
                                 <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="bh5-R0-2s1"/>
                                     <constraint firstAttribute="width" constant="225" id="ibb-6P-yzN"/>
                                 </constraints>
-                                <state key="normal" title="Save">
+                                <state key="normal" title="Choose">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -393,7 +226,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I6Z-E3-TnH" userLabel="Cancel Button">
-                                <rect key="frame" x="326" y="20" width="48" height="30"/>
+                                <rect key="frame" x="326" y="64" width="48" height="30"/>
                                 <state key="normal" title="Cancel"/>
                                 <connections>
                                     <action selector="cancelButtonPressed:" destination="rJC-aw-VFl" eventType="touchUpInside" id="HuF-uz-m5w"/>
@@ -445,13 +278,234 @@
             </objects>
             <point key="canvasLocation" x="137.68115942028987" y="137.94642857142856"/>
         </scene>
+        <!--Add Transaction View Controller-->
+        <scene sceneID="JJU-X5-j0g">
+            <objects>
+                <viewController id="rn0-NK-qVf" customClass="AddTransactionViewController" customModule="Balance" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lBS-Zb-g0p">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="4dm-L6-x68" userLabel="Date Stack View">
+                                <rect key="frame" x="0.0" y="100" width="414" height="600"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Select a Date:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fVS-aY-Y2F" userLabel="Date Instructions Label">
+                                        <rect key="frame" x="136" y="0.0" width="142" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="25"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wo1-q2-t3E" userLabel="FSCalendar View" customClass="FSCalendar">
+                                        <rect key="frame" x="0.0" y="60" width="414" height="350"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="350" id="IFH-J1-hVP"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="selectionColor">
+                                                <color key="value" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="SNu-Zu-JWp" userLabel="Recur Stack View">
+                                        <rect key="frame" x="146.5" y="440" width="121" height="20.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zdY-tc-zAm" userLabel="Recur Label">
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KAN-vd-3mb" userLabel="Recur Switch">
+                                                <rect key="frame" x="72" y="0.0" width="51" height="20.5"/>
+                                                <connections>
+                                                    <action selector="recurringSwitchPressed:" destination="rn0-NK-qVf" eventType="valueChanged" id="soZ-JT-Cvp"/>
+                                                </connections>
+                                            </switch>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PcH-mW-ybM" userLabel="Date Add Transaction Button">
+                                        <rect key="frame" x="82" y="490.5" width="250" height="50"/>
+                                        <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="250" id="8nK-Kw-Fhf"/>
+                                            <constraint firstAttribute="height" constant="50" id="eE6-UT-dZF"/>
+                                        </constraints>
+                                        <state key="normal" title="Add Transaction">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="nextPressed:" destination="rn0-NK-qVf" eventType="touchUpInside" id="T1I-En-rHc"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojT-Lu-E6f" userLabel="Date Back Button">
+                                        <rect key="frame" x="190" y="570.5" width="34" height="29.5"/>
+                                        <state key="normal" title="Back"/>
+                                        <connections>
+                                            <action selector="backButtonPressed:" destination="rn0-NK-qVf" eventType="touchUpInside" id="8eC-Pe-JZI"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="wo1-q2-t3E" secondAttribute="trailing" id="HrD-Yv-hRw"/>
+                                    <constraint firstAttribute="height" constant="600" id="ozM-km-0Un"/>
+                                    <constraint firstItem="wo1-q2-t3E" firstAttribute="leading" secondItem="4dm-L6-x68" secondAttribute="leading" id="tlc-mo-S5G"/>
+                                </constraints>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="sjw-1e-S5V" userLabel="Name Stack View">
+                                <rect key="frame" x="0.0" y="100" width="414" height="350"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHJ-WR-ndh" userLabel="Name Instructions Label">
+                                        <rect key="frame" x="176" y="0.0" width="62" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="25"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="e.g. Starbucks" textAlignment="center" minimumFontSize="40" translatesAutoresizingMaskIntoConstraints="NO" id="dmN-L2-MWV" userLabel="Name Text Field">
+                                        <rect key="frame" x="32" y="60" width="350" height="94.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="350" id="lRd-4N-jQq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="70"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add description (optional)" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="p9x-lh-lP5" userLabel="Description Text Field">
+                                        <rect key="frame" x="97" y="184.5" width="220" height="25.5"/>
+                                        <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MS7-hW-Tk1" userLabel="Name Next Button">
+                                        <rect key="frame" x="82" y="240" width="250" height="50"/>
+                                        <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="250" id="24c-A4-hZi"/>
+                                            <constraint firstAttribute="height" constant="50" id="6tN-7x-emN"/>
+                                        </constraints>
+                                        <state key="normal" title="Next">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="nextPressed:" destination="rn0-NK-qVf" eventType="touchUpInside" id="nyS-oi-VL0"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Eqg-QH-crZ" userLabel="Name Back Button">
+                                        <rect key="frame" x="190" y="320" width="34" height="30"/>
+                                        <state key="normal" title="Back"/>
+                                        <connections>
+                                            <action selector="backButtonPressed:" destination="rn0-NK-qVf" eventType="touchUpInside" id="LMk-Gw-y4p"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="350" id="UFX-Cz-boM"/>
+                                </constraints>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleAspectFit" axis="vertical" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="OyK-bx-9cW" userLabel="Amount Stack View">
+                                <rect key="frame" x="0.0" y="80" width="414" height="350"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amount" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ofl-H9-GDF">
+                                        <rect key="frame" x="177" y="0.0" width="60" height="43"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="kdj-yg-YMw">
+                                        <rect key="frame" x="107" y="43" width="200" height="51"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="200" id="3N0-Pc-D5c"/>
+                                            <constraint firstAttribute="height" constant="50" id="Wzh-2O-bBF"/>
+                                        </constraints>
+                                        <segments>
+                                            <segment title="Expense"/>
+                                            <segment title="Income"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="incomeSegmentedControlPressed:" destination="rn0-NK-qVf" eventType="valueChanged" id="qxx-Xb-8r3"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="$26.93" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KgF-Wx-4Df">
+                                        <rect key="frame" x="57" y="93" width="300" height="207"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="300" id="lVh-qQ-fRu"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="70"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zS8-FX-1bF" userLabel="Amount Next Button">
+                                        <rect key="frame" x="82" y="300" width="250" height="50"/>
+                                        <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="250" id="1aJ-xF-FwX"/>
+                                            <constraint firstAttribute="height" constant="50" id="2Nd-0o-app"/>
+                                        </constraints>
+                                        <state key="normal" title="Next">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="nextPressed:" destination="rn0-NK-qVf" eventType="touchUpInside" id="lDD-BL-RfV"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="350" id="V5X-a5-msA"/>
+                                </constraints>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JpC-k2-UlV" userLabel="Cancel Button">
+                                <rect key="frame" x="326" y="40" width="48" height="30"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="cancelButtonPressed:" destination="rn0-NK-qVf" eventType="touchUpInside" id="JJy-Mp-OoU"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="Txk-1c-bp8" firstAttribute="trailing" secondItem="sjw-1e-S5V" secondAttribute="trailing" id="1QA-Hb-6is"/>
+                            <constraint firstItem="4dm-L6-x68" firstAttribute="top" secondItem="Txk-1c-bp8" secondAttribute="top" constant="100" id="Bok-4b-e12"/>
+                            <constraint firstItem="sjw-1e-S5V" firstAttribute="leading" secondItem="Txk-1c-bp8" secondAttribute="leading" id="Gl3-4S-13C"/>
+                            <constraint firstItem="Txk-1c-bp8" firstAttribute="trailing" secondItem="JpC-k2-UlV" secondAttribute="trailing" constant="40" id="Gue-hx-CLg"/>
+                            <constraint firstItem="OyK-bx-9cW" firstAttribute="trailing" secondItem="Txk-1c-bp8" secondAttribute="trailing" id="Rxw-A2-HAC"/>
+                            <constraint firstItem="OyK-bx-9cW" firstAttribute="leading" secondItem="Txk-1c-bp8" secondAttribute="leading" id="fYl-BI-ZCy"/>
+                            <constraint firstItem="4dm-L6-x68" firstAttribute="trailing" secondItem="Txk-1c-bp8" secondAttribute="trailing" id="hRh-20-goN"/>
+                            <constraint firstItem="4dm-L6-x68" firstAttribute="leading" secondItem="Txk-1c-bp8" secondAttribute="leading" id="nRm-Ng-fqH"/>
+                            <constraint firstItem="OyK-bx-9cW" firstAttribute="top" secondItem="JpC-k2-UlV" secondAttribute="bottom" constant="10" id="uFh-8p-L4D"/>
+                            <constraint firstItem="sjw-1e-S5V" firstAttribute="top" secondItem="Txk-1c-bp8" secondAttribute="top" constant="100" id="ugI-Me-p1m"/>
+                            <constraint firstItem="JpC-k2-UlV" firstAttribute="top" secondItem="Txk-1c-bp8" secondAttribute="top" constant="40" id="zR6-1g-f2K"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Txk-1c-bp8"/>
+                    </view>
+                    <connections>
+                        <outlet property="amountInstructionsLabel" destination="Ofl-H9-GDF" id="FVw-IY-kiq"/>
+                        <outlet property="amountNextButton" destination="zS8-FX-1bF" id="X6V-D9-r5M"/>
+                        <outlet property="amountStackView" destination="OyK-bx-9cW" id="91p-D7-Gyh"/>
+                        <outlet property="amountTextField" destination="KgF-Wx-4Df" id="Knj-gr-JXJ"/>
+                        <outlet property="calendar" destination="wo1-q2-t3E" id="6Gn-sz-jhy"/>
+                        <outlet property="cancelButton" destination="JpC-k2-UlV" id="keP-bB-WIs"/>
+                        <outlet property="dateAddTransactionButton" destination="PcH-mW-ybM" id="p38-bP-UB4"/>
+                        <outlet property="dateBackButton" destination="ojT-Lu-E6f" id="jkk-6Y-WhM"/>
+                        <outlet property="dateInsructionsLabel" destination="fVS-aY-Y2F" id="wTH-rw-pma"/>
+                        <outlet property="dateStackView" destination="4dm-L6-x68" id="jXm-0g-wmg"/>
+                        <outlet property="descriptionTextField" destination="p9x-lh-lP5" id="Yrc-bB-HCj"/>
+                        <outlet property="incomeSegmentedControl" destination="kdj-yg-YMw" id="Grc-Ra-9mP"/>
+                        <outlet property="nameBackButton" destination="Eqg-QH-crZ" id="sX1-1P-GGC"/>
+                        <outlet property="nameInstructionsLabel" destination="GHJ-WR-ndh" id="KTi-Ra-33u"/>
+                        <outlet property="nameNextButton" destination="MS7-hW-Tk1" id="PC0-hp-CU3"/>
+                        <outlet property="nameStackView" destination="sjw-1e-S5V" id="YED-SQ-PhL"/>
+                        <outlet property="nameTextField" destination="dmN-L2-MWV" id="8c4-nI-dLv"/>
+                        <outlet property="recurringSwitch" destination="KAN-vd-3mb" id="mua-Ya-fcl"/>
+                        <outlet property="recursLabel" destination="zdY-tc-zAm" id="Ndg-sR-8oE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VG5-rL-Fao" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2142" y="-204"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="2wT-jb-r23"/>
+        <segue reference="yhy-Ub-w0l"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="list.bullet" catalog="system" width="128" height="88"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <image name="plus" width="512" height="512"/>
-        <image name="repeat" width="512" height="512"/>
     </resources>
 </document>

@@ -20,8 +20,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="370" height="93"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Starbucks" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xKJ-Xx-NVy" userLabel="Name Label">
-                                <rect key="frame" x="30" y="34" width="89.5" height="25.5"/>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="21"/>
+                                <rect key="frame" x="30" y="35" width="200" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="QyE-4x-ZJr"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="19"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
