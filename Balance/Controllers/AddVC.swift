@@ -11,7 +11,7 @@ import FSCalendar
 import RealmSwift
 import SwiftDate
 
-class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
+class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
     
     //MARK: - IBOutlets
     @IBOutlet weak var cancelButton: UIButton!
@@ -40,9 +40,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     
     //Stacks
     @IBOutlet weak var amountStackView: UIStackView!
-    
     @IBOutlet weak var nameStackView: UIStackView!
-    
     @IBOutlet weak var dateStackView: UIStackView!
     
     
@@ -58,8 +56,6 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     var isExpense = true
     var recurringInterval = "None"
     var numberOfTransactionsToAdd = 1
-//    let darkRed = 0xc0392b
-//    let darkGreen = 0x2ecc71
     var component: Int?
     
     //MARK: - ViewDidLoad
@@ -69,6 +65,8 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         amountTextField.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
+        
+        title = "Add Transaction"
         
         setupAmountView()
         roundButtonCorners()
@@ -129,9 +127,9 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         amountTextField.becomeFirstResponder()
         amountTextField.keyboardType = .decimalPad
 
-        //Action
+        //Actions
         if isExpense {
-            amountTextField.textColor = UIColor(rgb: Constants.darkRed)
+            amountTextField.textColor = UIColor(rgb: Constants.red)
                }
         
     }
@@ -146,32 +144,13 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         nameStackView.isHidden = false
         
         //Setup Label
-        nameInstructionsLabel.text = "Name this transaction:"
+        nameInstructionsLabel.text = "Name:"
         
         //Setup Keyboard
         nameTextField.becomeFirstResponder()
 
         //Setup Instructions
-//        nameTextField.placeholder = "Starbucks"
-//        descriptionTextField.attributedPlaceholder = NSAttributedString(string: "Add description (optional)",
-//        attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
-        
-        
-        
-//        incomeSegmentedControl.isHidden = true
-//        instructionsLabel.isHidden = false
-//        amountInstructionsLabel.text = "Name:"
-//        descriptionTextField.isHidden = false
-       
-//        amountTextField.isHidden = true
-//        nameTextField.isHidden = false
-//        backButton.isHidden = false
-//        nextButton.isHidden = false
-//        calendar.isHidden = true
-//        recursLabel.isHidden = true
-//        nameNextButton.setTitle("Next", for: .normal)
-        
-        
+
     }
     
     func setupDateView() {
@@ -186,12 +165,9 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
 
         //Setup Instructions
         
-        amountInstructionsLabel.text = "Select a Date:"
-        recursLabel.text = "This transaction repeats:"
+        amountInstructionsLabel.text = "Date:"
+        recursLabel.text = "Repeat Transaction:"
 
-//        name = nameTextField.text!
-//        desc = descriptionTextField.text!
-        
     }
     
     func setNumberOfTransactions() {
@@ -199,15 +175,15 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         switch recurringInterval {
             
         case "Yearly":
-            numberOfTransactionsToAdd = 2
-        case "Monthly":
             numberOfTransactionsToAdd = 3
+        case "Monthly":
+            numberOfTransactionsToAdd = 12
         case "Every Two Weeks":
-            numberOfTransactionsToAdd = 4
+            numberOfTransactionsToAdd = 24
         case "Every Week":
             numberOfTransactionsToAdd = 5
         case "Every Day":
-            numberOfTransactionsToAdd = 6
+            numberOfTransactionsToAdd = 4
         case "Does Not Repeat":
             numberOfTransactionsToAdd = 1
         default:
@@ -271,8 +247,12 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
         let dateString = formatter.string(from: date)
         
-        dateInsructionsLabel.text = dateString
-        
+        if recurringSwitch.isOn {
+            dateInsructionsLabel.text = "Starts \(dateString)"
+
+        } else {
+            dateInsructionsLabel.text = dateString
+        }
     }
     
     //MARK: - IBActions
@@ -280,7 +260,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
         
         if amountTextField.text == "" {
-            print("Invalid amount")
+            amountTextField.placeholder = "Enter an amount"
         } else {
             buttonCounter += 1
         }
@@ -306,7 +286,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
                 amountTextField.addMinus()
             }
             amountInstructionsLabel.text = "Expense"
-            amountTextField.textColor = UIColor(rgb: Constants.darkRed)
+            amountTextField.textColor = UIColor(rgb: Constants.red)
             
         case 1:
             
@@ -316,7 +296,7 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
             isExpense = false
             
             amountInstructionsLabel.text = "Income"
-            amountTextField.textColor = UIColor(rgb: Constants.darkGreen)
+            amountTextField.textColor = UIColor(rgb: Constants.green)
             
         default:
             break
@@ -337,10 +317,21 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
     
     @IBAction func recurringSwitchPressed(_ sender: UISwitch) {
         
-        let recurringVC = storyboard?.instantiateViewController(withIdentifier: "RecurringViewController") as! RecurringViewController
-        recurringVC.intervalDelegate = self
-        present(recurringVC, animated: true, completion: nil)
-        
+        if recurringSwitch.isOn {
+            let recurringVC = storyboard?.instantiateViewController(withIdentifier: "RecurringViewController") as! RepeatVC
+            recurringVC.intervalDelegate = self
+            present(recurringVC, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)){
+                self.displaySelectedDate(self.datePicked)
+            }
+            
+            
+        } else {
+            recurringInterval = "None"
+            recursLabel.text = "Does not repeat"
+            displaySelectedDate(datePicked)
+            
+        }
     }
     
     
@@ -353,12 +344,21 @@ class AddTransactionViewController: UIViewController, FSCalendarDelegate, FSCale
         
         
     }
+    
+    func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
+                                    
+            calendar.appearance.todayColor = UIColor(rgb: Constants.yellow)
+            
+            calendar.appearance.selectionColor = UIColor(rgb: Constants.blue)
+               
+    }
+    
 }
 //MARK: - Extensions
 
-extension AddTransactionViewController: IntervalDelegate {
+extension AddVC: IntervalDelegate {
     func getInterval(interval: String) {
         recurringInterval = interval
-        recursLabel.text = recurringInterval
+        recursLabel.text = "Repeats \(recurringInterval)"
     }
 }

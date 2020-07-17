@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class TransactionTableViewController: UITableViewController, UIViewControllerTransitioningDelegate {
+class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -20,14 +20,14 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
     //    let delTransaction = self.realm.objects(Transaction.self)
     //        = { self.realm.objects(Transaction.self) }()
     
-    let addItemVC = AddTransactionViewController()
+    let addItemVC = AddVC()
     
     var transactionName = ""
     var transactionAmount = 0.0
     var transactionDate = Date()
     var transactionDescription = ""
-    let darkRed = 0xD93D24
-    let darkGreen = 0x59C13B
+//    let darkRed = 0xD93D24
+//    let darkGreen = 0x59C13B
     
     override func viewDidLoad() {
         
@@ -38,7 +38,7 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.rowHeight = 120.0
+        tableView.rowHeight = 90.0
         
         DataManager.shared.firstVC = self
         
@@ -74,26 +74,58 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
-            
+                        
             try! realm.write {
                 realm.delete(transaction[indexPath.row])
                 
                 tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+                
             }
         }
         DataManager.shared.summaryVC.viewDidLoad()
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
+//
+//        vc.transaction = transaction[indexPath.row]
         
-        try! realm.write {
-            realm.delete(transaction[indexPath.row])
-            
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+        let t = transaction[indexPath.row]
+        vc.transaction = t
+//
+        present(vc, animated: true, completion: nil)
+        
+        
+//
+//        DataManager.shared.summaryVC.viewDidLoad()
+        
+//        performSegue(withIdentifier: "DetailSegue", sender: self)
+        
+
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+                        
+            try! realm.write {
+                realm.delete(transaction[indexPath.row])
+                
+//                tableView.deleteRows(at: [indexPath], with: .automatic)
+                
         }
-        
         DataManager.shared.summaryVC.viewDidLoad()
         
+        let deleteAction = UIContextualAction(style: .normal, title: "", handler: {a,b,c in
+            // example of your delete function
+//            self.YourArray.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        })
+
+        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.backgroundColor = UIColor(rgb: Constants.red)
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
         
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,7 +139,7 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
         
         let formatter = DateFormatter()
         
-        formatter.dateFormat = "MMM dd, yyyy"
+        formatter.dateFormat = "MMMM dd, yyyy"
         
         let realmTransactionDate = transactions[indexPath.row].transactionDate
         
@@ -123,24 +155,45 @@ class TransactionTableViewController: UITableViewController, UIViewControllerTra
         
         let number = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
         
-        cell.amountLabel.text = number
+        let mutableAttributedString = NSMutableAttributedString(string: number!)
+        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
+            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 9), .baselineOffset: 6],
+                range: NSRange(range, in: mutableAttributedString.string))
+        }
+        
+        cell.amountLabel.attributedText = mutableAttributedString
         
         if transactions[indexPath.row].transactionAmount > 0 {
             
             
-            cell.amountLabel.textColor = UIColor(rgb: darkGreen)
-            cell.valueView.backgroundColor = UIColor(rgb: darkGreen)
+            cell.amountLabel.textColor = UIColor(rgb: Constants.green)
+            cell.valueView.backgroundColor = UIColor(rgb: Constants.green)
         } else {
-            cell.amountLabel.textColor = UIColor(rgb: darkRed)
-            cell.valueView.backgroundColor = UIColor(rgb: darkRed)
+            cell.amountLabel.textColor = UIColor(rgb: Constants.red)
+            cell.valueView.backgroundColor = UIColor(rgb: Constants.red)
         }
+        
+        
                 
-        cell.descriptionLabel.text = transactions[indexPath.row].transactionDescription
+//        cell.descriptionLabel.text = transactions[indexPath.row].transactionDescription
         
         return cell
     }
     
+    //Mark: - Navigation
+    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "DetailSegue" {
+//            guard let vc = segue.destination as? DetailVC else { return }
+//            guard let indexPath = tableView.indexPathForSelectedRow else { return }
+//            let t = transaction[indexPath.row]
+//            vc.transaction = t
+//        }
+//    }
+    
 }
+
+
 
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -20,53 +20,41 @@
                         <rect key="frame" x="5" y="10" width="436" height="153"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="baf-kG-9VO" userLabel="Value View">
-                                <rect key="frame" x="20" y="15" width="5" height="123"/>
+                                <rect key="frame" x="20" y="8" width="5" height="137"/>
                                 <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="5" id="qhY-H0-ogg"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-$24.64" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QOQ-Cg-P31" userLabel="Amount Label">
-                                <rect key="frame" x="343" y="66" width="63" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="June 22" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5mB-Gg-ZF8" userLabel="Date Label">
-                                <rect key="frame" x="45" y="10" width="57" height="20"/>
-                                <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="16"/>
+                                <rect key="frame" x="135" y="46" width="41" height="13.5"/>
+                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="11"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Starbucks" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wll-av-pYp" userLabel="Name Label">
-                                <rect key="frame" x="45" y="63.5" width="250" height="26.5"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="250" id="veB-fk-Q9h"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="22"/>
+                                <rect key="frame" x="135" y="61.5" width="106" height="30"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lFx-gG-KE5">
-                                <rect key="frame" x="45" y="122" width="32.5" height="16"/>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
-                                <nil key="textColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-$24.64" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QOQ-Cg-P31" userLabel="Amount Label">
+                                <rect key="frame" x="35" y="66.5" width="63" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemGray6Color" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="baf-kG-9VO" secondAttribute="bottom" constant="15" id="83A-mi-ecu"/>
-                            <constraint firstAttribute="bottom" secondItem="lFx-gG-KE5" secondAttribute="bottom" constant="15" id="AzK-2C-ANc"/>
-                            <constraint firstItem="wll-av-pYp" firstAttribute="leading" secondItem="baf-kG-9VO" secondAttribute="trailing" constant="20" id="KhM-7V-o6W"/>
+                            <constraint firstAttribute="bottom" secondItem="baf-kG-9VO" secondAttribute="bottom" constant="8" id="83A-mi-ecu"/>
                             <constraint firstItem="baf-kG-9VO" firstAttribute="leading" secondItem="pd9-GY-bKJ" secondAttribute="leading" constant="20" id="TjP-S8-JBA"/>
-                            <constraint firstItem="5mB-Gg-ZF8" firstAttribute="top" secondItem="pd9-GY-bKJ" secondAttribute="top" constant="10" id="dCe-2A-sRo"/>
-                            <constraint firstItem="baf-kG-9VO" firstAttribute="top" secondItem="pd9-GY-bKJ" secondAttribute="top" constant="15" id="gjU-sy-0nm"/>
-                            <constraint firstItem="lFx-gG-KE5" firstAttribute="leading" secondItem="baf-kG-9VO" secondAttribute="trailing" constant="20" id="kgX-fM-jLe"/>
-                            <constraint firstItem="5mB-Gg-ZF8" firstAttribute="leading" secondItem="baf-kG-9VO" secondAttribute="trailing" constant="20" id="mOW-of-drM"/>
-                            <constraint firstAttribute="trailing" secondItem="QOQ-Cg-P31" secondAttribute="trailing" constant="30" id="qxp-Cw-ht2"/>
-                            <constraint firstItem="wll-av-pYp" firstAttribute="centerY" secondItem="pd9-GY-bKJ" secondAttribute="centerY" id="tFm-Zg-Mky"/>
+                            <constraint firstItem="wll-av-pYp" firstAttribute="top" secondItem="5mB-Gg-ZF8" secondAttribute="bottom" constant="2" id="cM3-RE-0gu"/>
+                            <constraint firstItem="wll-av-pYp" firstAttribute="leading" secondItem="baf-kG-9VO" secondAttribute="trailing" constant="110" id="gKf-xS-aXj"/>
+                            <constraint firstItem="baf-kG-9VO" firstAttribute="top" secondItem="pd9-GY-bKJ" secondAttribute="top" constant="8" id="gjU-sy-0nm"/>
+                            <constraint firstItem="5mB-Gg-ZF8" firstAttribute="leading" secondItem="baf-kG-9VO" secondAttribute="trailing" constant="110" id="jjF-aj-IhE"/>
+                            <constraint firstItem="wll-av-pYp" firstAttribute="centerY" secondItem="pd9-GY-bKJ" secondAttribute="centerY" id="nn4-Er-IBo"/>
                             <constraint firstItem="QOQ-Cg-P31" firstAttribute="centerY" secondItem="pd9-GY-bKJ" secondAttribute="centerY" id="u2L-vp-iNH"/>
+                            <constraint firstItem="QOQ-Cg-P31" firstAttribute="leading" secondItem="baf-kG-9VO" secondAttribute="trailing" constant="10" id="vbM-Xu-MqY"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -83,7 +71,6 @@
             <connections>
                 <outlet property="amountLabel" destination="QOQ-Cg-P31" id="GGb-pi-Err"/>
                 <outlet property="dateLabel" destination="5mB-Gg-ZF8" id="aLS-Qt-qly"/>
-                <outlet property="descriptionLabel" destination="lFx-gG-KE5" id="79U-8x-Nbx"/>
                 <outlet property="nameLabel" destination="wll-av-pYp" id="76P-Wu-qbS"/>
                 <outlet property="transactionView" destination="pd9-GY-bKJ" id="JQ7-Nw-Nb0"/>
                 <outlet property="valueView" destination="baf-kG-9VO" id="DPP-kp-C12"/>

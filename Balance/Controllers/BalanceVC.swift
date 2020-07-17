@@ -12,21 +12,20 @@ import RealmSwift
 
 protocol CVarArg {
     }
-class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate, UITableViewDataSource {
+class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, UITableViewDelegate, UITableViewDataSource {
     
     
     //MARK: - IBOutlets
     @IBOutlet weak var calendar: FSCalendar!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var amountLabel: UILabel!
-    @IBOutlet weak var addButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var transactionsLabel: UILabel!
     
     //MARK: - Properties
     let realm = try! Realm()
     var transaction: Results<Transaction>!
-    let addItemVC = AddTransactionViewController()
+    let addItemVC = AddVC()
     var selectedCalendarDate = Date()
     var predicate = NSPredicate()
     var dateTappedOnCalendar = Date()
@@ -34,6 +33,12 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
     var startDate: Date?
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
+    
+    var dateFormatter2: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -46,7 +51,7 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
         tableView.dataSource = self
         
         DataManager.shared.summaryVC = self
-        
+                
         tableView.rowHeight = 40
         
         setupRealm()
@@ -79,7 +84,13 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
         
         let formattedLabel = formatDoubleToCurrencyString(from: transactionsTotalAtDate)
         
-        amountLabel.text = formattedLabel
+        let mutableAttributedString = NSMutableAttributedString(string: formattedLabel)
+        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
+            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 30, weight: .ultraLight), .baselineOffset: 20],
+                range: NSRange(range, in: mutableAttributedString.string))
+        }
+        
+        amountLabel.attributedText = mutableAttributedString
                 
     }
     
@@ -141,23 +152,103 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
 
+        let incomeTransaction = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount > 0", date)
+        
+        let expenseTransaction = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount < 0", date)
 
-        let results = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount > 0", date)
-
-        for _ in results {
+        for _ in incomeTransaction {
+            return 1
+        }
+        for _ in expenseTransaction {
             return 1
         }
         return 0
     }
     
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+        
+        let incomeTransaction = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount > 0", date)
+        
+        let expenseTransaction = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount < 0", date)
+        
+        for _ in incomeTransaction {
+            return [UIColor(rgb: Constants.green)]
+            }
+            for _ in expenseTransaction {
+                return [UIColor(rgb: Constants.red)]
+            }
+        return [UIColor(rgb: Constants.yellow)]
+    }
+//     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+//
+//         let expense = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount < 0", date)
+////
+//         if transaction.contains(expense) {
+//             return 1
+//         }
+//         if datesWithMultipleEvents.contains(dateString) {
+//             return 3
+//         }
+//         return 0
+//     }
+    
+//    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+//
+//
+//        let results = realm.objects(Transaction.self)
+//
+//        let incomePredicate = NSPredicate(format: "transactionAmount > %@", 0)
+//        let expensePredicate = NSPredicate(format: "transactionAmount < %@", 0)
+//
+//
+//        switch results {
+//        case realm.objects(Transaction.self).filter(incomePredicate):
+//            return [UIColor(rgb: Constants.green)]
+//        case realm.objects(Transaction.self).filter(expensePredicate):
+//            return [UIColor(rgb: Constants.red)]
+//        default:
+//            break
+//        }
+//
+//
+////        if transaction.filter("transactionAmount '0'") {
+////            return [UIColor(rgb: Constants.red)]
+////        } else if transaction.filter("transactionAmount < '0'") {
+////            return [UIColor(rgb: Constants.green)]
+////        }
+//        return nil
+//    }
+    
+//    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+//
+//        let realm = try! Realm()
+//
+//        let incomeTransaction = realm.objects(Transaction.self).filter("transactionAmount > 0")
+//
+//        let realmResults = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount > 0", date)
+////        let incomePredicate = NSPredicate(format: "transactionAmount > %@", 0)
+////
+////        let incomeResults = realm.objects(Transaction.self).filter(incomePredicate)
+//
+//        if realm {
+//            return [UIColor.magenta, appearance.eventDefaultColor, UIColor.black]
+//        }
+//        return nil
+//    }
+    
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
         
-        cell.appearance.eventDefaultColor = UIColor(rgb: Constants.darkGreen)
+        cell.appearance.eventDefaultColor = UIColor(rgb: Constants.green)
         
-        calendar.appearance.todayColor = UIColor(rgb: Constants.darkGreen)
-        calendar.appearance.selectionColor = UIColor(rgb: Constants.darkBlue)
+//        cell.appearance.color
+        
+        calendar.appearance.todayColor = UIColor(rgb: Constants.yellow)
+        
+        calendar.appearance.selectionColor = UIColor(rgb: Constants.blue)
            
 }
+    
+
     
     //MARK: - TableView Methods
     
@@ -191,12 +282,24 @@ class SummaryViewController: UIViewController, FSCalendarDelegate, FSCalendarDat
         currencyFormatter.numberStyle = .currency
         currencyFormatter.locale = Locale.current
         
-        let number = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
+        let amount = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
         
-        cell.amountLabel.text = number
+        cell.amountLabel.text = amount
                 
         return cell
         
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
+        //
+        //        vc.transaction = transaction[indexPath.row]
+                
+                let t = transaction[indexPath.row]
+                vc.transaction = t
+        //
+                present(vc, animated: true, completion: nil)
     }
         
 }

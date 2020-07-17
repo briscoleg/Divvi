@@ -12,12 +12,13 @@ protocol IntervalDelegate {
     func getInterval(interval: String)
 }
 
-class RecurringViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     //MARK: - IBOutlets
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var picker: UIPickerView!
+    @IBOutlet weak var repeatLabel: UILabel!
     
     //MARK: - Properties
     var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily", "Does Not Repeat"]
@@ -31,6 +32,8 @@ class RecurringViewController: UIViewController, UIPickerViewDelegate, UIPickerV
         
         picker.delegate = self
         picker.dataSource = self
+        
+        repeatLabel.text = "Repeats Monthly"
         
         
         saveButton.roundCorners()
@@ -67,7 +70,7 @@ class RecurringViewController: UIViewController, UIPickerViewDelegate, UIPickerV
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        label.text = "Occurs \(pickerData[row])"
+        repeatLabel.text = "Repeats \(pickerData[row])"
         intervalPicked = pickerData[row]
         print(intervalPicked)
         

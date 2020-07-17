@@ -21,8 +21,7 @@ class TransactionTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        transactionView.round()
-        valueView.round2()
+        valueView.round()
 
     }
 }

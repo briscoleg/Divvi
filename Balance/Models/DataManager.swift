@@ -11,7 +11,7 @@ import Foundation
 class DataManager {
     
     static let shared = DataManager()
-    var firstVC = TransactionTableViewController()
-    var summaryVC = SummaryViewController()
+    var firstVC = SearchVC()
+    var summaryVC = BalanceVC()
     
 }
