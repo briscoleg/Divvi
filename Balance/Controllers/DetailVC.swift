@@ -17,6 +17,7 @@ class DetailVC: UIViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var amountLabel: UILabel!
+    @IBOutlet weak var repeatLabel: UILabel!
     @IBOutlet weak var editButton: UIButton!
     
     let realm = try! Realm()
@@ -34,8 +35,8 @@ class DetailVC: UIViewController {
     func displayTransactionInfo() {
         
         nameLabel.text = transaction?.transactionName
-        descLabel.text = transaction?.transactionDescription
-        
+        descLabel.text = transaction!.transactionDescription!
+            
         formatNumber(transaction!.transactionAmount)
         formatDate(transaction!.transactionDate)
         

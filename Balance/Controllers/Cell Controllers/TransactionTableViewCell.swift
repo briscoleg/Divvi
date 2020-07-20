@@ -36,13 +36,3 @@ extension UIView {
 //        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
 }
-
-extension UIView {
-    func round2(){
-                
-        layer.cornerRadius = 2.5
-//        layer.masksToBounds = false
-        clipsToBounds = false
-//        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    }
-}

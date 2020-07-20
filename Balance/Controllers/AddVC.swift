@@ -47,16 +47,14 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
     
     //MARK: - Properties
     let realm = try! Realm()
-    public var buttonCounter = 1
+    var buttonCounter = 1
     var amount = 0.0
-//    var name = ""
-//    var desc: String?
     var datePicked = Date()
     var category = ""
     var isExpense = true
     var recurringInterval = "None"
     var numberOfTransactionsToAdd = 1
-    var component: Int?
+//    var component: Int?
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -65,9 +63,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         amountTextField.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
-        
-        title = "Add Transaction"
-        
+
         setupAmountView()
         roundButtonCorners()
         
@@ -90,7 +86,6 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         default:
             break
         }
-        
     }
     
     func convertAmountToCurrency() {
@@ -126,12 +121,14 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         //Setup Keyboard
         amountTextField.becomeFirstResponder()
         amountTextField.keyboardType = .decimalPad
+        
+        
+    
 
         //Actions
         if isExpense {
             amountTextField.textColor = UIColor(rgb: Constants.red)
                }
-        
     }
     
     func setupNameView() {
@@ -148,9 +145,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         
         //Setup Keyboard
         nameTextField.becomeFirstResponder()
-
-        //Setup Instructions
-
+        
     }
     
     func setupDateView() {
@@ -189,13 +184,10 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         default:
             break
         }
-        
     }
     
     func saveTransaction() {
         
-        
-        //        setTimeInterval()
         setNumberOfTransactions()
         
         for _ in 1...numberOfTransactionsToAdd {
@@ -319,8 +311,11 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         
         if recurringSwitch.isOn {
             let recurringVC = storyboard?.instantiateViewController(withIdentifier: "RecurringViewController") as! RepeatVC
+            
             recurringVC.intervalDelegate = self
+            
             present(recurringVC, animated: true, completion: nil)
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)){
                 self.displaySelectedDate(self.datePicked)
             }
@@ -342,13 +337,11 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         datePicked = date
         displaySelectedDate(date)
         
-        
     }
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
                                     
             calendar.appearance.todayColor = UIColor(rgb: Constants.yellow)
-            
             calendar.appearance.selectionColor = UIColor(rgb: Constants.blue)
                
     }

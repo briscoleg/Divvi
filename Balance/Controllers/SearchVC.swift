@@ -26,8 +26,6 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
     var transactionAmount = 0.0
     var transactionDate = Date()
     var transactionDescription = ""
-//    let darkRed = 0xD93D24
-//    let darkGreen = 0x59C13B
     
     override func viewDidLoad() {
         
@@ -64,7 +62,7 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
     }
     
     
-    // MARK: - TableView Datasource Methods
+    // MARK: - TableView Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -89,16 +87,13 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
-//
-//        vc.transaction = transaction[indexPath.row]
         
         let t = transaction[indexPath.row]
+        
         vc.transaction = t
-//
+
         present(vc, animated: true, completion: nil)
         
-        
-//
 //        DataManager.shared.summaryVC.viewDidLoad()
         
 //        performSegue(withIdentifier: "DetailSegue", sender: self)
@@ -179,17 +174,7 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
         
         return cell
     }
-    
-    //Mark: - Navigation
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "DetailSegue" {
-//            guard let vc = segue.destination as? DetailVC else { return }
-//            guard let indexPath = tableView.indexPathForSelectedRow else { return }
-//            let t = transaction[indexPath.row]
-//            vc.transaction = t
-//        }
-//    }
+
     
 }
 
@@ -197,20 +182,3 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
 
 
 
-public extension UIColor {
-    convenience init(red: Int, green: Int, blue: Int) {
-        assert(red >= 0 && red <= 255, "Invalid red component")
-        assert(green >= 0 && green <= 255, "Invalid green component")
-        assert(blue >= 0 && blue <= 255, "Invalid blue component")
-        
-        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
-    }
-    
-    convenience init(rgb: Int) {
-        self.init(
-            red: (rgb >> 16) & 0xFF,
-            green: (rgb >> 8) & 0xFF,
-            blue: rgb & 0xFF
-        )
-    }
-}

@@ -1,7 +1,6 @@
 {
   "images" : [
     {
-      "filename" : "Savings.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -10,6 +9,7 @@
       "scale" : "2x"
     },
     {
+      "filename" : "kisspng-t-shirt-computer-icons-futsal-football-sport-t-shirt-icon-5b3f5b0d394b07.8978962615308787332347.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

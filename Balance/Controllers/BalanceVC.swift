@@ -179,69 +179,11 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
             }
         return [UIColor(rgb: Constants.yellow)]
     }
-//     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-//
-//         let expense = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount < 0", date)
-////
-//         if transaction.contains(expense) {
-//             return 1
-//         }
-//         if datesWithMultipleEvents.contains(dateString) {
-//             return 3
-//         }
-//         return 0
-//     }
-    
-//    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
-//
-//
-//        let results = realm.objects(Transaction.self)
-//
-//        let incomePredicate = NSPredicate(format: "transactionAmount > %@", 0)
-//        let expensePredicate = NSPredicate(format: "transactionAmount < %@", 0)
-//
-//
-//        switch results {
-//        case realm.objects(Transaction.self).filter(incomePredicate):
-//            return [UIColor(rgb: Constants.green)]
-//        case realm.objects(Transaction.self).filter(expensePredicate):
-//            return [UIColor(rgb: Constants.red)]
-//        default:
-//            break
-//        }
-//
-//
-////        if transaction.filter("transactionAmount '0'") {
-////            return [UIColor(rgb: Constants.red)]
-////        } else if transaction.filter("transactionAmount < '0'") {
-////            return [UIColor(rgb: Constants.green)]
-////        }
-//        return nil
-//    }
-    
-//    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
-//
-//        let realm = try! Realm()
-//
-//        let incomeTransaction = realm.objects(Transaction.self).filter("transactionAmount > 0")
-//
-//        let realmResults = realm.objects(Transaction.self).filter("transactionDate == %@ && transactionAmount > 0", date)
-////        let incomePredicate = NSPredicate(format: "transactionAmount > %@", 0)
-////
-////        let incomeResults = realm.objects(Transaction.self).filter(incomePredicate)
-//
-//        if realm {
-//            return [UIColor.magenta, appearance.eventDefaultColor, UIColor.black]
-//        }
-//        return nil
-//    }
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
         
         cell.appearance.eventDefaultColor = UIColor(rgb: Constants.green)
-        
-//        cell.appearance.color
-        
+                
         calendar.appearance.todayColor = UIColor(rgb: Constants.yellow)
         
         calendar.appearance.selectionColor = UIColor(rgb: Constants.blue)

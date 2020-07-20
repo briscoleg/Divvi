@@ -60,7 +60,23 @@ extension UITextField {
     }
 }
 
-extension UIViewController: UITextFieldDelegate {
+extension Formatter {
+    static let withSeparator: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyGroupingSeparator = ","
+        formatter.locale = Locale(identifier: "en_US") //for USA's currency patter
+        return formatter
+    }()
+}
+
+extension Numeric {
+    var formattedWithSeparator: String {
+        return Formatter.withSeparator.string(for: self) ?? ""
+    }
+}
+
+extension AddVC: UITextFieldDelegate {
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
@@ -68,12 +84,22 @@ extension UIViewController: UITextFieldDelegate {
         let dollarSign = "$"
         let minusSign = "-$"
         
+      
         if let text = textField.text{
-            if !text.contains(dollarSign){
+
+
+
+            print(text)
+
+            if !text.contains(dollarSign) && isExpense {
                 textField.text = "-\(dollarSign)\(text)"
+            }
+            if !text.contains(dollarSign) && !isExpense {
+                textField.text = "\(dollarSign)\(text)"
             }
 
             let backSpace = string.isEmpty
+
             if backSpace && text == minusSign {
                 textField.text = ""
             }
@@ -88,3 +114,22 @@ extension UIViewController: UITextFieldDelegate {
         return true
     }
 }
+
+extension UIColor {
+    convenience init(red: Int, green: Int, blue: Int) {
+        assert(red >= 0 && red <= 255, "Invalid red component")
+        assert(green >= 0 && green <= 255, "Invalid green component")
+        assert(blue >= 0 && blue <= 255, "Invalid blue component")
+        
+        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+    }
+    
+    convenience init(rgb: Int) {
+        self.init(
+            red: (rgb >> 16) & 0xFF,
+            green: (rgb >> 8) & 0xFF,
+            blue: rgb & 0xFF
+        )
+    }
+}
+
