@@ -21,7 +21,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     @IBOutlet weak var repeatLabel: UILabel!
     
     //MARK: - Properties
-    var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily", "Does Not Repeat"]
+    var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily"]
     var intervalPicked = "Monthly"
     var intervalDelegate: IntervalDelegate!
     

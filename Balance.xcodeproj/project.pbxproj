@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C024E7C724BAB05F008D9E02 /* SaveTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C024E7C624BAB05F008D9E02 /* SaveTransaction.swift */; };
+		C019B92124C61DBD00EA8040 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C019B92024C61DBD00EA8040 /* ButtonViewController.swift */; };
 		C024E7C924BAB10E008D9E02 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C024E7C824BAB10E008D9E02 /* Extensions.swift */; };
 		C024E7CB24BD1F5B008D9E02 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C024E7CA24BD1F5A008D9E02 /* Constants.swift */; };
 		C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C02B84D824AACC3000B11C9C /* DataManager.swift */; };
 		C03388B724BE689800C9D7E6 /* DetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03388B624BE689800C9D7E6 /* DetailVC.swift */; };
 		C03388BB24BE6D6D00C9D7E6 /* CategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03388BA24BE6D6D00C9D7E6 /* CategoryVC.swift */; };
 		C037F70924C4A36600381D10 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C037F70724C4A36600381D10 /* CategoryCell.swift */; };
-		C037F70C24C4B55C00381D10 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = C037F70B24C4B55C00381D10 /* Category.swift */; };
 		C057F3B024B2A6E80007CAC0 /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */; };
 		C057F3B124B2A6E80007CAC0 /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C057F3AF24B2A6E80007CAC0 /* SummaryTableViewCell.xib */; };
 		C08A028524A3BCE60056F355 /* AddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028424A3BCE60056F355 /* AddVC.swift */; };
@@ -36,14 +35,13 @@
 		12B8086F49EABEA3EA0E5B35 /* Pods-Balance.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.debug.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.debug.xcconfig"; sourceTree = "<group>"; };
 		797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.release.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.release.xcconfig"; sourceTree = "<group>"; };
 		7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Balance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C024E7C624BAB05F008D9E02 /* SaveTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveTransaction.swift; sourceTree = "<group>"; };
+		C019B92024C61DBD00EA8040 /* ButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
 		C024E7C824BAB10E008D9E02 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C024E7CA24BD1F5A008D9E02 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C02B84D824AACC3000B11C9C /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		C03388B624BE689800C9D7E6 /* DetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVC.swift; sourceTree = "<group>"; };
 		C03388BA24BE6D6D00C9D7E6 /* CategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryVC.swift; sourceTree = "<group>"; };
 		C037F70724C4A36600381D10 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
-		C037F70B24C4B55C00381D10 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		C057F3AF24B2A6E80007CAC0 /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		C08A028424A3BCE60056F355 /* AddVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVC.swift; sourceTree = "<group>"; };
@@ -94,8 +92,8 @@
 		C03C99CA24B519E600139EE1 /* Cell Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */,
 				C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */,
+				C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */,
 				C037F70724C4A36600381D10 /* CategoryCell.swift */,
 			);
 			path = "Cell Controllers";
@@ -120,6 +118,7 @@
 				C0B35F8C24BA863800E0ED06 /* RepeatVC.swift */,
 				C03388BA24BE6D6D00C9D7E6 /* CategoryVC.swift */,
 				C03C99CA24B519E600139EE1 /* Cell Controllers */,
+				C019B92024C61DBD00EA8040 /* ButtonViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -137,9 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				C08A028624A3C4980056F355 /* Transaction.swift */,
-				C037F70B24C4B55C00381D10 /* Category.swift */,
 				C02B84D824AACC3000B11C9C /* DataManager.swift */,
-				C024E7C624BAB05F008D9E02 /* SaveTransaction.swift */,
 				C024E7C824BAB10E008D9E02 /* Extensions.swift */,
 				C024E7CA24BD1F5A008D9E02 /* Constants.swift */,
 			);
@@ -302,12 +299,11 @@
 				C08A028E24A3DF1B0056F355 /* SearchVC.swift in Sources */,
 				C0B35F8D24BA863800E0ED06 /* RepeatVC.swift in Sources */,
 				C024E7CB24BD1F5B008D9E02 /* Constants.swift in Sources */,
+				C019B92124C61DBD00EA8040 /* ButtonViewController.swift in Sources */,
 				C057F3B024B2A6E80007CAC0 /* SummaryTableViewCell.swift in Sources */,
-				C024E7C724BAB05F008D9E02 /* SaveTransaction.swift in Sources */,
 				C03388BB24BE6D6D00C9D7E6 /* CategoryVC.swift in Sources */,
 				C024E7C924BAB10E008D9E02 /* Extensions.swift in Sources */,
 				C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */,
-				C037F70C24C4B55C00381D10 /* Category.swift in Sources */,
 				C037F70924C4A36600381D10 /* CategoryCell.swift in Sources */,
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
 				C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */,

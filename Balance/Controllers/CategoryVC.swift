@@ -9,16 +9,22 @@
 import UIKit
 import RealmSwift
 
-private let reuseIdentifier = "CategoryCell"
+protocol CategoryDelegate {
+    func getCategory(category: String)
+}
+
+//private let reuseIdentifier = "CategoryCell"
 
 class CategoryVC: UICollectionViewController {
     
+    var categoryDelegate: CategoryDelegate!
     
-    let categories: [String] = ["Add Category",
+    
+    let categories: [String] = [
                                 "Income",
                                 "Housing",
                                 "Transport",
-                                "Food",
+                                "Food/Drink",
                                 "Utilities",
                                 "Clothing",
                                 "Entertainment",
@@ -26,44 +32,49 @@ class CategoryVC: UICollectionViewController {
                                 "Savings",
                                 "Debt",
                                 "Miscellaneous",
-                                "Add Category",
-                                "Income",
-                                "Housing",
-                                "Auto",
-                                "Food",
-                                "Utilities",
-                                "Clothing",
-                                "Entertainment",
-                                "Insurance",
-                                "Savings",
-                                "Debt",
-                                "Miscellaneous"
+                                "Medical",
+                                "Household",
+                                "Giving",
+                                "Travel",
+                                
     ]
     let images: [UIImage] = [
-        UIImage.init(named: "add")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "income")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "housing")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "transportation")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "food")!.withRenderingMode(.alwaysOriginal),
+        UIImage.init(named: "income")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "housing")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "transportation")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "food")!.withRenderingMode(.alwaysTemplate),
         UIImage.init(named: "utilities")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "clothing")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "entertainment")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "insurance")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "savings")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "debt")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "misc")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "add")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "income")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "housing")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "transportation")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "food")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "utilities")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "clothing")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "entertainment")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "insurance")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "savings")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "debt")!.withRenderingMode(.alwaysOriginal),
-        UIImage.init(named: "misc")!.withRenderingMode(.alwaysOriginal),
+        UIImage.init(named: "clothing")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "entertainment")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "insurance")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "savings")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "debt")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "misc")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "medical")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "household")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "giving")!.withRenderingMode(.alwaysTemplate),
+        UIImage.init(named: "travel")!.withRenderingMode(.alwaysTemplate),
+        
+    ]
+    
+    let colors: [UIColor] = [
+        UIColor(rgb: Constants.green),
+        UIColor(rgb: Constants.grey),
+        UIColor(rgb: Constants.red),
+        UIColor(rgb: Constants.yellow),
+        UIColor(rgb: Constants.black),
+        UIColor(rgb: Constants.grey),
+        UIColor(rgb: Constants.orange),
+        UIColor(rgb: Constants.blue),
+        UIColor(rgb: Constants.green),
+        UIColor(rgb: Constants.grey),
+        UIColor(rgb: Constants.red),
+        UIColor(rgb: Constants.blue),
+        UIColor(rgb: Constants.purple),
+        UIColor(rgb: Constants.yellow),
+        UIColor(rgb: Constants.red),
+        
+    
     ]
     
     
@@ -77,7 +88,6 @@ class CategoryVC: UICollectionViewController {
         
         collectionView.collectionViewLayout = layout
         
-        
         //        collectionView.register(CategoryCell.nib(), forCellWithReuseIdentifier: "CategoryCell")
         //        collectionView!.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
         
@@ -88,8 +98,10 @@ class CategoryVC: UICollectionViewController {
 extension CategoryVC {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //        collectionView.deselectItem(at: indexPath, animated: true)
-        //        print("You tapped me")
+        categoryDelegate.getCategory(category: categories[indexPath.row])
+        
+        dismiss(animated: true, completion: nil)
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -103,6 +115,7 @@ extension CategoryVC {
         if let categoryCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as? CategoryCell {
             
             categoryCell.configure(with: categories[indexPath.row], with: images[indexPath.row])
+            categoryCell.setColors(with: colors[indexPath.row])
             
             cell = categoryCell
             
@@ -110,5 +123,27 @@ extension CategoryVC {
         
         return cell
         
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+
+        case UICollectionView.elementKindSectionHeader:
+
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
+
+            headerView.backgroundColor = UIColor.blue
+            return headerView
+
+        case UICollectionView.elementKindSectionFooter:
+            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath)
+
+            footerView.backgroundColor = UIColor.green
+            return footerView
+
+        default:
+
+            assert(false, "Unexpected element kind")
+        }
     }
 }

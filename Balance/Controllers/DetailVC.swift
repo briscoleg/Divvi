@@ -22,6 +22,7 @@ class DetailVC: UIViewController {
     
     let realm = try! Realm()
     var transaction: Transaction?
+//    var transaction: Results<Transaction>!
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,7 @@ class DetailVC: UIViewController {
         
         nameLabel.text = transaction?.transactionName
         descLabel.text = transaction!.transactionDescription!
+        repeatLabel.text = "Repeats: \(transaction!.repeatInterval)"
             
         formatNumber(transaction!.transactionAmount)
         formatDate(transaction!.transactionDate)

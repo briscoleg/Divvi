@@ -14,8 +14,8 @@ import SwiftDate
 class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
     
     //MARK: - IBOutlets
-    @IBOutlet weak var cancelButton: UIButton!
-
+    @IBOutlet weak var navigationBar: UINavigationBar!
+    
     //Amount View Outlets
     @IBOutlet weak var amountInstructionsLabel: UILabel!
     @IBOutlet weak var incomeSegmentedControl: UISegmentedControl!
@@ -26,6 +26,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
     @IBOutlet weak var nameInstructionsLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var descriptionTextField: UITextField!
+    @IBOutlet weak var categoryButton: UIButton!
     @IBOutlet weak var nameNextButton: UIButton!
     @IBOutlet weak var nameBackButton: UIButton!
 
@@ -50,10 +51,10 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
     var buttonCounter = 1
     var amount = 0.0
     var datePicked = Date()
-    var category = ""
     var isExpense = true
-    var recurringInterval = "None"
+    var recurringInterval = "Does not repeat"
     var numberOfTransactionsToAdd = 1
+    var categoryPicked = ""
 //    var component: Int?
     
     //MARK: - ViewDidLoad
@@ -63,6 +64,10 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         amountTextField.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
+        
+        //Hide Nav Bar Line
+        navigationBar.setValue(true, forKey: "hidesShadow")
+        navigationBar.topItem?.title = "New Transaction"
 
         setupAmountView()
         roundButtonCorners()
@@ -114,6 +119,8 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         dateStackView.isHidden = true
         amountStackView.isHidden = false
         
+        amountInstructionsLabel.isHidden = true
+        
         //Setup Instructions
         amountInstructionsLabel.text = "Amount:"
 
@@ -139,6 +146,8 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         dateStackView.isHidden = true
         amountStackView.isHidden = true
         nameStackView.isHidden = false
+        
+        nameInstructionsLabel.isHidden = true
         
         //Setup Label
         nameInstructionsLabel.text = "Name:"
@@ -179,7 +188,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             numberOfTransactionsToAdd = 5
         case "Every Day":
             numberOfTransactionsToAdd = 4
-        case "Does Not Repeat":
+        case "Does not tepeat":
             numberOfTransactionsToAdd = 1
         default:
             break
@@ -202,7 +211,8 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             newTransaction.transactionName = nameTextField.text!
             newTransaction.transactionDescription = descriptionTextField.text
             newTransaction.transactionDate = datePicked
-            newTransaction.transactionCategory = category
+            newTransaction.transactionCategory = categoryPicked
+            newTransaction.repeatInterval = recurringInterval
             
             switch recurringInterval {
             case "Yearly":
@@ -224,7 +234,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             datePicked = datePicked + timeAdded
         }
         
-        DataManager.shared.firstVC.tableView.reloadData()
+//        DataManager.shared.firstVC.transactionTableView.reloadData()
         DataManager.shared.summaryVC.viewDidLoad()
         
         self.dismiss(animated: true, completion: nil)
@@ -261,11 +271,17 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         
     }
     
-    @IBAction func cancelButtonPressed(_ sender: UIButton) {
+//    @IBAction func cancelButtonPressed(_ sender: UIButton) {
+//
+//        dismiss(animated: true, completion: nil)
+//
+//    }
+    
+    @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
         
         dismiss(animated: true, completion: nil)
-        
     }
+    
     
     @IBAction func incomeSegmentedControlPressed(_ sender: UISegmentedControl) {
         
@@ -307,6 +323,17 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         
     }
     
+    @IBAction func categoryButtonPressed(_ sender: UIButton) {
+        
+        let categoryVC = storyboard?.instantiateViewController(withIdentifier: "CategoryVC") as! CategoryVC
+        
+        categoryVC.categoryDelegate = self
+        
+        present(categoryVC, animated: true, completion: nil)
+        
+    }
+    
+    
     @IBAction func recurringSwitchPressed(_ sender: UISwitch) {
         
         if recurringSwitch.isOn {
@@ -317,7 +344,9 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             present(recurringVC, animated: true, completion: nil)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)){
+                
                 self.displaySelectedDate(self.datePicked)
+                
             }
             
             
@@ -353,5 +382,12 @@ extension AddVC: IntervalDelegate {
     func getInterval(interval: String) {
         recurringInterval = interval
         recursLabel.text = "Repeats \(recurringInterval)"
+    }
+}
+
+extension AddVC: CategoryDelegate {
+    func getCategory(category: String) {
+        categoryPicked = category
+        categoryButton.setTitle("Category: \(categoryPicked)", for: .normal)
     }
 }

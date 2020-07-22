@@ -9,9 +9,11 @@
 import UIKit
 import RealmSwift
 
-class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
+class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var transactionTableView: UITableView!
+    @IBOutlet weak var navigationBar: UINavigationBar!
     
     lazy var realm = try! Realm()
     
@@ -33,17 +35,20 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
         
         setupRealm()
         
-        tableView.delegate = self
-        tableView.dataSource = self
+        transactionTableView.delegate = self
+        transactionTableView.dataSource = self
         
-        tableView.rowHeight = 90.0
+        transactionTableView.rowHeight = 90.0
         
         DataManager.shared.firstVC = self
         
-        tableView.register(UINib(nibName: "TransactionTableViewCell", bundle: nil), forCellReuseIdentifier: "TransactionTableViewCell")
+        transactionTableView.register(UINib(nibName: "TransactionTableViewCell", bundle: nil), forCellReuseIdentifier: "TransactionTableViewCell")
         
-        self.title = "Transactions"
+        //Hide Nav Bar Line
+        navigationBar.setValue(true, forKey: "hidesShadow")
+        navigationBar.topItem?.title = "Transactions"
         
+        searchBar.backgroundColor = .clear
     }
     
     func setupRealm() {
@@ -57,19 +62,29 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
         
         try! realm.write {
             realm.delete(transaction)
-            self.tableView.reloadData()
+            self.transactionTableView.reloadData()
         }
     }
+    
+    //MARK: - IBActions
+    
+    @IBAction func dismissPressed(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     
     
     // MARK: - TableView Methods
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return transaction.count
     }
+//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//
+//        return transaction.count
+//    }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
                         
@@ -84,13 +99,14 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
         DataManager.shared.summaryVC.viewDidLoad()
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
         
-        let t = transaction[indexPath.row]
+        let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)[indexPath.row]
+
         
-        vc.transaction = t
+        vc.transaction = transactions
 
         present(vc, animated: true, completion: nil)
         
@@ -101,7 +117,7 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
 
     }
     
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
                         
             try! realm.write {
@@ -123,7 +139,7 @@ class SearchVC: UITableViewController, UIViewControllerTransitioningDelegate {
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
         
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionTableViewCell", for: indexPath) as! TransactionTableViewCell
         

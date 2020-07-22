@@ -17,17 +17,14 @@ class CategoryCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-//        layer.borderColor = UIColor.black.cgColor
-//        layer.borderWidth = 1
-//        layer.cornerRadius = self.frame.size.width / 2
-//        layer.masksToBounds = true
-//        layer.
-//        layer.backgroundColor = UIColor(rgb: Constants.purple) as! CGColor
     }
-    
-//    public func configure(with image: UIImage) {
-//        categoryImage.image = image
-//    }
+
+    func setColors(with color: UIColor) {
+        
+        categoryName.textColor = color
+        categoryImage.tintColor = color
+        
+    }
     
     func configure (with category: String, with image: UIImage) {
         categoryName.text = category
@@ -35,11 +32,5 @@ class CategoryCell: UICollectionViewCell {
         
     }
     
-//    static func nib() -> UINib {
-//        
-//        return UINib(nibName: "CategoryCell", bundle: nil)
-//        
-//    }
-
 }
 

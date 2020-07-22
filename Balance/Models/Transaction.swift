@@ -17,7 +17,7 @@ class Transaction: Object {
     @objc dynamic var transactionDate = Date()
     @objc dynamic var transactionCategory = ""
 //    @objc dynamic var isExpense = true
-    @objc dynamic var isRecurring = false
+    @objc dynamic var repeatInterval = ""
     @objc dynamic var transactionID = UUID().uuidString
     
     convenience init(theDate: Date) {

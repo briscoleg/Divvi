@@ -15,5 +15,9 @@ struct Constants {
     static let blue = 0x3498db
     static let yellow = 0xf1c40f
     static let purple = 0x9b59b6
+    static let grey = 0x34495e
+    static let silver = 0xbdc3c7
+    static let black = 0x000000
+    static let orange = 0xd35400
 }
 
