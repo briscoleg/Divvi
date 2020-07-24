@@ -34,6 +34,20 @@ extension UIButton {
     }
 }
 
+extension UIView {
+    func makeCircular() {
+        
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        layer.masksToBounds = false
+        layer.shadowRadius = 2.0
+        layer.shadowOpacity = 0.5
+        layer.cornerRadius = frame.width / 2
+        layer.borderColor = UIColor.black.cgColor
+        layer.borderWidth = 1.0
+    }
+}
+
 extension UIApplication {
     func hideKeyboard() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)

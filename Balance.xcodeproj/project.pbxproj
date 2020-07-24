@@ -19,6 +19,8 @@
 		C08A028524A3BCE60056F355 /* AddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028424A3BCE60056F355 /* AddVC.swift */; };
 		C08A028724A3C4980056F355 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028624A3C4980056F355 /* Transaction.swift */; };
 		C08A028E24A3DF1B0056F355 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08A028D24A3DF1B0056F355 /* SearchVC.swift */; };
+		C092D3F424CB5C280006B050 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C092D3F324CB5C280006B050 /* SearchCell.swift */; };
+		C092D3F624CB5D7A0006B050 /* SearchCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C092D3F524CB5D7A0006B050 /* SearchCVC.swift */; };
 		C0B35F8D24BA863800E0ED06 /* RepeatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B35F8C24BA863800E0ED06 /* RepeatVC.swift */; };
 		C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */; };
 		C0C09DB324A422F3008ABF6A /* TransactionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */; };
@@ -47,6 +49,8 @@
 		C08A028424A3BCE60056F355 /* AddVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVC.swift; sourceTree = "<group>"; };
 		C08A028624A3C4980056F355 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		C08A028D24A3DF1B0056F355 /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
+		C092D3F324CB5C280006B050 /* SearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
+		C092D3F524CB5D7A0006B050 /* SearchCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCVC.swift; sourceTree = "<group>"; };
 		C0B35F8C24BA863800E0ED06 /* RepeatVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatVC.swift; sourceTree = "<group>"; };
 		C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewCell.swift; sourceTree = "<group>"; };
 		C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableViewCell.xib; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 				C057F3AE24B2A6E80007CAC0 /* SummaryTableViewCell.swift */,
 				C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */,
 				C037F70724C4A36600381D10 /* CategoryCell.swift */,
+				C092D3F324CB5C280006B050 /* SearchCell.swift */,
 			);
 			path = "Cell Controllers";
 			sourceTree = "<group>";
@@ -119,6 +124,7 @@
 				C03388BA24BE6D6D00C9D7E6 /* CategoryVC.swift */,
 				C03C99CA24B519E600139EE1 /* Cell Controllers */,
 				C019B92024C61DBD00EA8040 /* ButtonViewController.swift */,
+				C092D3F524CB5D7A0006B050 /* SearchCVC.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -307,7 +313,9 @@
 				C037F70924C4A36600381D10 /* CategoryCell.swift in Sources */,
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
 				C02B84D924AACC3000B11C9C /* DataManager.swift in Sources */,
+				C092D3F624CB5D7A0006B050 /* SearchCVC.swift in Sources */,
 				C08A028524A3BCE60056F355 /* AddVC.swift in Sources */,
+				C092D3F424CB5C280006B050 /* SearchCell.swift in Sources */,
 				C03388B724BE689800C9D7E6 /* DetailVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -32,6 +32,12 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
     
+    fileprivate lazy var dateFormatter2: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,8 +49,8 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         navigationBar.setValue(true, forKey: "hidesShadow")
         
         
-        
-        
+        let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
+        self.navigationItem.rightBarButtonItem = todayItem
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -70,6 +76,11 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
     }
     //MARK: - Methods
+    
+    @objc
+       func todayItemClicked(sender: AnyObject) {
+           self.calendar.setCurrentPage(Date(), animated: false)
+       }
     
     func setupRealm() {
         
@@ -174,6 +185,25 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
     }
     
+    func positiveAndNegativeTransactionPredicate(date: Date) -> NSPredicate {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 && transactionAmount < 0", argumentArray: [startDate!, endDate!])
+    }
+    
     //MARK - IBActions
     
     @IBAction func todayPressed(_ sender: UIButton) {
@@ -196,19 +226,29 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
+//        let t = realm.objects(Transaction.self)
+//
+//        let dateString = self.dateFormatter2.string(from: date)
+//
+//        if t.containsObject(dateString) {
+//            return 1
+//        }
+//        if t.containsObject(dateString) {
+//            return 3
+//        }
+//        return 0
+        
         let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
-        
+
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
-        
-        
+
         for _ in incomeTransaction {
             return 1
         }
         for _ in expenseTransaction {
             return 1
         }
-        
-        
+
         return 0
     }
     
@@ -218,12 +258,18 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
         
+//        let key = self.dateFormatter2.string(from: date)
+//        if let color = self.calendar(calendar, numberOfEventsFor: date) {
+//
+//        }
+        
         for _ in incomeTransaction {
             return [UIColor(rgb: Constants.green)]
         }
         for _ in expenseTransaction {
             return [UIColor(rgb: Constants.red)]
         }
+        
         return nil
     }
     
@@ -262,9 +308,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryTableViewCell", for: indexPath) as! SummaryTableViewCell
         
         let transactions = realm.objects(Transaction.self).filter(dateRangePredicate)
-        
-        //            "transactionDate >= %@ && transactionDate >= %@", startDate!, endDate!)
-        
+                
         cell.nameLabel.text = transactions[indexPath.row].transactionName
         
         let currencyFormatter = NumberFormatter()
@@ -274,6 +318,13 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         let amount = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
         
         cell.amountLabel.text = amount
+        
+        if transactions[indexPath.row].transactionAmount > 0 {
+            
+            cell.amountLabel.textColor = UIColor(rgb: Constants.green)
+        } else {
+            cell.amountLabel.textColor = UIColor(rgb: Constants.red)
+        }
         
         return cell
         
