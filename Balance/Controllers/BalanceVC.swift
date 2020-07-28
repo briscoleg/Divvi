@@ -20,6 +20,8 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var transactionsLabel: UILabel!
     @IBOutlet weak var navigationBar: UINavigationBar!
+    @IBOutlet weak var todayButton: UIButton!
+    
     
     //MARK: - Properties
     let realm = try! Realm()
@@ -44,6 +46,9 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         calendar.delegate = self
         calendar.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        todayButton.roundCorners()
         
         //Hide Nav Bar Line
         navigationBar.setValue(true, forKey: "hidesShadow")
@@ -51,10 +56,6 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
         self.navigationItem.rightBarButtonItem = todayItem
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        
         DataManager.shared.summaryVC = self
         
         tableView.rowHeight = 40
@@ -71,12 +72,8 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         tableView.register(UINib(nibName: "SummaryTableViewCell", bundle: nil), forCellReuseIdentifier: "SummaryTableViewCell")
         
-        //        print(Realm.Configuration.defaultConfiguration.fileURL!)
-        
-        
     }
     //MARK: - Methods
-    
     @objc
        func todayItemClicked(sender: AnyObject) {
            self.calendar.setCurrentPage(Date(), animated: false)
@@ -204,8 +201,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 && transactionAmount < 0", argumentArray: [startDate!, endDate!])
     }
     
-    //MARK - IBActions
-    
+    //MARK: - IBActions
     @IBAction func todayPressed(_ sender: UIButton) {
         
         calendar.setCurrentPage(Date(), animated: true)
@@ -226,18 +222,6 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
-//        let t = realm.objects(Transaction.self)
-//
-//        let dateString = self.dateFormatter2.string(from: date)
-//
-//        if t.containsObject(dateString) {
-//            return 1
-//        }
-//        if t.containsObject(dateString) {
-//            return 3
-//        }
-//        return 0
-        
         let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
 
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
@@ -257,11 +241,6 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
         
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
-        
-//        let key = self.dateFormatter2.string(from: date)
-//        if let color = self.calendar(calendar, numberOfEventsFor: date) {
-//
-//        }
         
         for _ in incomeTransaction {
             return [UIColor(rgb: Constants.green)]
@@ -288,6 +267,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     //MARK: - TableView Methods
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         let transactionCount = transaction.filter(dateRangePredicate).count
         
         if transactionCount == 0 {
@@ -333,16 +313,11 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
-        //
-        //        vc.transaction = transaction[indexPath.row]
         
         let transactions = realm.objects(Transaction.self).filter(dateRangePredicate)[indexPath.row]
         
         vc.transaction = transactions
         
-        //                let t = transaction[indexPath.row]
-        //                vc.transaction = t
-        //
         present(vc, animated: true, completion: nil)
     }
     

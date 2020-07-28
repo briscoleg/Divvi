@@ -44,7 +44,7 @@ extension UIView {
         layer.shadowOpacity = 0.5
         layer.cornerRadius = frame.width / 2
         layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 1.0
+//        layer.borderWidth = 1.0
     }
 }
 

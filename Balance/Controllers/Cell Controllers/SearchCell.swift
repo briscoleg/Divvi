@@ -12,7 +12,8 @@ class SearchCell: UICollectionViewCell {
     
     @IBOutlet weak var amountLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var itemCircle: UIView!
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
     
     
 }
