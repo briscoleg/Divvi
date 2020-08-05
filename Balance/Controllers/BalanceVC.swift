@@ -44,11 +44,13 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        calendar.scope = .week
+        
         calendar.delegate = self
         calendar.dataSource = self
         tableView.delegate = self
         tableView.dataSource = self
-        todayButton.roundCorners()
+        todayButton.makeCircular()
         
         //Hide Nav Bar Line
         navigationBar.setValue(true, forKey: "hidesShadow")
@@ -121,7 +123,11 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let dateString = formatter.string(from: date)
         
-        dateLabel.text = dateString
+        if dateString == formatter.string(from: Date()) {
+            dateLabel.text = "Today"
+        } else {
+            dateLabel.text = dateString
+        }
         
     }
     
@@ -205,6 +211,16 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     @IBAction func todayPressed(_ sender: UIButton) {
         
         calendar.setCurrentPage(Date(), animated: true)
+        
+        calendar.select(calendar.today)
+        
+        displaySelectedDate(Date())
+        
+        getTotalAtDate(Date() + 61199)
+        
+        dateRangePredicate = predicateForDayFromDate(date: Date())
+        
+        tableView.reloadData()
     }
     
     //MARK: - Calendar Methods
@@ -298,7 +314,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         let amount = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
         
         cell.amountLabel.text = amount
-        
+                
         if transactions[indexPath.row].transactionAmount > 0 {
             
             cell.amountLabel.textColor = UIColor(rgb: Constants.green)

@@ -98,6 +98,7 @@ extension SearchCVC: UICollectionViewDataSource {
         let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
         
         cell.imageView.image = UIImage(named: transactions[indexPath.item].transactionCategory)
+//        cell.imageView.tintColor = categories[indexPath.item].color
         cell.imageView.makeCircular()
         
         cell.nameLabel.text = transactions[indexPath.item].transactionName

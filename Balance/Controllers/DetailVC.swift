@@ -18,7 +18,6 @@ class DetailVC: UIViewController {
     @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var amountLabel: UILabel!
     @IBOutlet weak var repeatLabel: UILabel!
-    @IBOutlet weak var editButton: UIButton!
     
     let realm = try! Realm()
     var transaction: Transaction?
@@ -26,9 +25,7 @@ class DetailVC: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        editButton.roundCorners()
-        
+                
         displayTransactionInfo()
         
     }
@@ -73,12 +70,7 @@ class DetailVC: UIViewController {
         dateLabel.text = dateString
                 
     }
-    
-    @IBAction func editButtonPressed(_ sender: Any) {
-        
-        
-        
-    }
+
     
     @IBAction func dismissButtonPressed(_ sender: UIButton) {
         

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C00FF55924CF21F900B896F8 /* BudgetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00FF55824CF21F900B896F8 /* BudgetVC.swift */; };
-		C00FF55B24CF24A200B896F8 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00FF55A24CF24A200B896F8 /* Category.swift */; };
 		C00FF55D24CF25C300B896F8 /* BudgetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00FF55C24CF25C300B896F8 /* BudgetCell.swift */; };
 		C024E7C924BAB10E008D9E02 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C024E7C824BAB10E008D9E02 /* Extensions.swift */; };
 		C024E7CB24BD1F5B008D9E02 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C024E7CA24BD1F5A008D9E02 /* Constants.swift */; };
@@ -24,16 +23,18 @@
 		C092D3F424CB5C280006B050 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C092D3F324CB5C280006B050 /* SearchCell.swift */; };
 		C092D3F624CB5D7A0006B050 /* SearchCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C092D3F524CB5D7A0006B050 /* SearchCVC.swift */; };
 		C0B35F8D24BA863800E0ED06 /* RepeatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B35F8C24BA863800E0ED06 /* RepeatVC.swift */; };
+		C0B6DD7824D218F5009619AC /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B6DD7724D218F5009619AC /* ProgressBar.swift */; };
 		C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */; };
 		C0C09DB324A422F3008ABF6A /* TransactionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */; };
+		C0D56C9724D9EBCF00AD1D8E /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D56C9624D9EBCF00AD1D8E /* Category.swift */; };
 		C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DB5FFA24A160D900008F89 /* AppDelegate.swift */; };
 		C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DB5FFC24A160D900008F89 /* SceneDelegate.swift */; };
 		C0DB5FFF24A160D900008F89 /* BalanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DB5FFE24A160D900008F89 /* BalanceVC.swift */; };
 		C0DB600224A160D900008F89 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C0DB600024A160D900008F89 /* Main.storyboard */; };
 		C0DB600424A160DB00008F89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DB600324A160DB00008F89 /* Assets.xcassets */; };
 		C0DB600724A160DB00008F89 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C0DB600524A160DB00008F89 /* LaunchScreen.storyboard */; };
-		C0EA444924CF568A00D1A92E /* BudgetSubVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444824CF568A00D1A92E /* BudgetSubVC.swift */; };
-		C0EA444B24CF571300D1A92E /* BudgetSubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444A24CF571300D1A92E /* BudgetSubCell.swift */; };
+		C0EA444924CF568A00D1A92E /* SubVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444824CF568A00D1A92E /* SubVC.swift */; };
+		C0EA444B24CF571300D1A92E /* SubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444A24CF571300D1A92E /* SubCell.swift */; };
 		DBE0DAB289C83C0E100B40C7 /* Pods_Balance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +43,6 @@
 		797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Balance.release.xcconfig"; path = "Target Support Files/Pods-Balance/Pods-Balance.release.xcconfig"; sourceTree = "<group>"; };
 		7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Balance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C00FF55824CF21F900B896F8 /* BudgetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetVC.swift; sourceTree = "<group>"; };
-		C00FF55A24CF24A200B896F8 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		C00FF55C24CF25C300B896F8 /* BudgetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetCell.swift; sourceTree = "<group>"; };
 		C024E7C824BAB10E008D9E02 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C024E7CA24BD1F5A008D9E02 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -58,8 +58,10 @@
 		C092D3F324CB5C280006B050 /* SearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
 		C092D3F524CB5D7A0006B050 /* SearchCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCVC.swift; sourceTree = "<group>"; };
 		C0B35F8C24BA863800E0ED06 /* RepeatVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatVC.swift; sourceTree = "<group>"; };
+		C0B6DD7724D218F5009619AC /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		C0C09DB024A422F3008ABF6A /* TransactionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewCell.swift; sourceTree = "<group>"; };
 		C0C09DB124A422F3008ABF6A /* TransactionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableViewCell.xib; sourceTree = "<group>"; };
+		C0D56C9624D9EBCF00AD1D8E /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		C0DB5FF724A160D900008F89 /* Balance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Balance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0DB5FFA24A160D900008F89 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C0DB5FFC24A160D900008F89 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,8 +70,8 @@
 		C0DB600324A160DB00008F89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C0DB600624A160DB00008F89 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C0DB600824A160DB00008F89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C0EA444824CF568A00D1A92E /* BudgetSubVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetSubVC.swift; sourceTree = "<group>"; };
-		C0EA444A24CF571300D1A92E /* BudgetSubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetSubCell.swift; sourceTree = "<group>"; };
+		C0EA444824CF568A00D1A92E /* SubVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubVC.swift; sourceTree = "<group>"; };
+		C0EA444A24CF571300D1A92E /* SubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +111,7 @@
 				C037F70724C4A36600381D10 /* CategoryCell.swift */,
 				C092D3F324CB5C280006B050 /* SearchCell.swift */,
 				C00FF55C24CF25C300B896F8 /* BudgetCell.swift */,
-				C0EA444A24CF571300D1A92E /* BudgetSubCell.swift */,
+				C0EA444A24CF571300D1A92E /* SubCell.swift */,
 			);
 			path = "Cell Controllers";
 			sourceTree = "<group>";
@@ -134,7 +136,7 @@
 				C0B35F8C24BA863800E0ED06 /* RepeatVC.swift */,
 				C03388BA24BE6D6D00C9D7E6 /* CategoryVC.swift */,
 				C00FF55824CF21F900B896F8 /* BudgetVC.swift */,
-				C0EA444824CF568A00D1A92E /* BudgetSubVC.swift */,
+				C0EA444824CF568A00D1A92E /* SubVC.swift */,
 				C03C99CA24B519E600139EE1 /* Cell Controllers */,
 			);
 			path = Controllers;
@@ -153,10 +155,11 @@
 			isa = PBXGroup;
 			children = (
 				C08A028624A3C4980056F355 /* Transaction.swift */,
+				C0D56C9624D9EBCF00AD1D8E /* Category.swift */,
 				C02B84D824AACC3000B11C9C /* DataManager.swift */,
 				C024E7C824BAB10E008D9E02 /* Extensions.swift */,
 				C024E7CA24BD1F5A008D9E02 /* Constants.swift */,
-				C00FF55A24CF24A200B896F8 /* Category.swift */,
+				C0B6DD7724D218F5009619AC /* ProgressBar.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -313,14 +316,14 @@
 			files = (
 				C0DB5FFF24A160D900008F89 /* BalanceVC.swift in Sources */,
 				C0C09DB224A422F3008ABF6A /* TransactionTableViewCell.swift in Sources */,
-				C00FF55B24CF24A200B896F8 /* Category.swift in Sources */,
+				C0D56C9724D9EBCF00AD1D8E /* Category.swift in Sources */,
 				C08A028724A3C4980056F355 /* Transaction.swift in Sources */,
 				C08A028E24A3DF1B0056F355 /* SearchVC.swift in Sources */,
 				C0B35F8D24BA863800E0ED06 /* RepeatVC.swift in Sources */,
 				C024E7CB24BD1F5B008D9E02 /* Constants.swift in Sources */,
 				C057F3B024B2A6E80007CAC0 /* SummaryTableViewCell.swift in Sources */,
 				C03388BB24BE6D6D00C9D7E6 /* CategoryVC.swift in Sources */,
-				C0EA444B24CF571300D1A92E /* BudgetSubCell.swift in Sources */,
+				C0EA444B24CF571300D1A92E /* SubCell.swift in Sources */,
 				C024E7C924BAB10E008D9E02 /* Extensions.swift in Sources */,
 				C0DB5FFB24A160D900008F89 /* AppDelegate.swift in Sources */,
 				C037F70924C4A36600381D10 /* CategoryCell.swift in Sources */,
@@ -329,9 +332,10 @@
 				C092D3F624CB5D7A0006B050 /* SearchCVC.swift in Sources */,
 				C08A028524A3BCE60056F355 /* AddVC.swift in Sources */,
 				C00FF55D24CF25C300B896F8 /* BudgetCell.swift in Sources */,
-				C0EA444924CF568A00D1A92E /* BudgetSubVC.swift in Sources */,
+				C0EA444924CF568A00D1A92E /* SubVC.swift in Sources */,
 				C092D3F424CB5C280006B050 /* SearchCell.swift in Sources */,
 				C03388B724BE689800C9D7E6 /* DetailVC.swift in Sources */,
+				C0B6DD7824D218F5009619AC /* ProgressBar.swift in Sources */,
 				C00FF55924CF21F900B896F8 /* BudgetVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -477,15 +481,17 @@
 			baseConfigurationReference = 12B8086F49EABEA3EA0E5B35 /* Pods-Balance.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3DYT7LZ49B;
+				DEVELOPMENT_TEAM = Z4DLPBM8Q9;
 				INFOPLIST_FILE = Balance/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.boleg.Balance;
+				PRODUCT_BUNDLE_IDENTIFIER = com.briscoleg.Balance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -496,15 +502,17 @@
 			baseConfigurationReference = 797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3DYT7LZ49B;
+				DEVELOPMENT_TEAM = Z4DLPBM8Q9;
 				INFOPLIST_FILE = Balance/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.boleg.Balance;
+				PRODUCT_BUNDLE_IDENTIFIER = com.briscoleg.Balance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

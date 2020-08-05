@@ -79,10 +79,6 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return transaction.count
     }
-//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//
-//        return transaction.count
-//    }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
@@ -122,15 +118,12 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
                         
             try! realm.write {
                 realm.delete(transaction[indexPath.row])
-                
-//                tableView.deleteRows(at: [indexPath], with: .automatic)
-                
+                                
         }
         DataManager.shared.summaryVC.viewDidLoad()
         
         let deleteAction = UIContextualAction(style: .normal, title: "", handler: {a,b,c in
-            // example of your delete function
-//            self.YourArray.remove(at: indexPath.row)
+
             tableView.deleteRows(at: [indexPath], with: .automatic)
         })
 
@@ -142,10 +135,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionTableViewCell", for: indexPath) as! TransactionTableViewCell
-        
-//        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-//        
-//        let realm = try! Realm(configuration: config)
+
         let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
         
         let formatter = DateFormatter()
@@ -183,11 +173,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
             cell.amountLabel.textColor = UIColor(rgb: Constants.red)
             cell.valueView.backgroundColor = UIColor(rgb: Constants.red)
         }
-        
-        
-                
-//        cell.descriptionLabel.text = transactions[indexPath.row].transactionDescription
-        
+
         return cell
     }
 

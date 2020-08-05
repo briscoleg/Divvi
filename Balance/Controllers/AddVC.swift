@@ -234,7 +234,6 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             datePicked = datePicked + timeAdded
         }
         
-//        DataManager.shared.firstVC.transactionTableView.reloadData()
         DataManager.shared.summaryVC.viewDidLoad()
         
         self.dismiss(animated: true, completion: nil)
