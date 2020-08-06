@@ -47,7 +47,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Khl-4y-Tce" customClass="ProgressBar" customModule="Balance" customModuleProvider="target">
-                                                    <rect key="frame" x="193" y="14.5" width="136" height="146"/>
+                                                    <rect key="frame" x="193" y="21.5" width="136" height="146"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$352.78" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gse-Eb-YzP">
                                                             <rect key="frame" x="32.5" y="61.5" width="71.5" height="23"/>
@@ -73,10 +73,10 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="Khl-4y-Tce" secondAttribute="bottom" constant="7.5" id="1HA-99-mJw"/>
                                                 <constraint firstItem="PvS-j1-D0R" firstAttribute="centerY" secondItem="d8e-4V-Euo" secondAttribute="centerY" id="Ecz-BP-sYH"/>
-                                                <constraint firstItem="PvS-j1-D0R" firstAttribute="trailing" secondItem="Khl-4y-Tce" secondAttribute="trailing" constant="20" id="dAe-AV-VoT"/>
+                                                <constraint firstItem="PvS-j1-D0R" firstAttribute="leading" secondItem="Khl-4y-Tce" secondAttribute="trailing" constant="7.5" id="MYt-Ei-dh5"/>
                                                 <constraint firstAttribute="trailing" secondItem="PvS-j1-D0R" secondAttribute="trailing" constant="5" id="daQ-5P-CPd"/>
-                                                <constraint firstItem="Khl-4y-Tce" firstAttribute="centerY" secondItem="d8e-4V-Euo" secondAttribute="centerY" id="qmM-zQ-P91"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -108,7 +108,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YdR-qe-nmN"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Planning" id="EjP-Iu-d4i"/>
+                    <navigationItem key="navigationItem" title="Planning" id="EjP-Iu-d4i">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="lIU-AY-9HX">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="CP0-j9-ZAc" id="6pd-7v-2XX"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="tXi-qV-cic" id="c6E-AK-2BL"/>
                         <segue destination="fwU-wK-1aE" kind="show" identifier="goToBudgetSub" id="IzN-JU-f55"/>
@@ -145,14 +151,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rent/Mortgage" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oV4-2D-Sum">
-                                                    <rect key="frame" x="20" y="22.5" width="185" height="35"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="29"/>
+                                                    <rect key="frame" x="20" y="24.5" width="161" height="31.5"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="thin" pointSize="26"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$1,148.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gbJ-wI-6ng">
-                                                    <rect key="frame" x="243.5" y="27" width="94" height="26"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                                    <rect key="frame" x="246.5" y="27" width="91" height="26"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="21"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -188,7 +194,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="HZ5-0N-9xD"/>
                     </view>
-                    <navigationItem key="navigationItem" id="SjT-tr-awB"/>
+                    <navigationItem key="navigationItem" id="SjT-tr-awB">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="HVC-c8-aCD">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="fwU-wK-1aE" id="lhT-VT-dcK"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="nnG-B4-b8j" id="Jd4-Ok-wpX"/>
                     </connections>
@@ -914,7 +926,7 @@ July 22, 2020</string>
         <scene sceneID="vpv-q8-ifX">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UFr-s5-wGk" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Planning" image="planning" badgeValue="1" id="2Tx-TW-IMm">
+                    <tabBarItem key="tabBarItem" title="Planning" image="planning" id="2Tx-TW-IMm">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="5"/>
                     </tabBarItem>
                     <toolbarItems/>

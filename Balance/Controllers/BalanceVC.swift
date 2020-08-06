@@ -40,17 +40,23 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         return formatter
     }()
     
+    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
+
+    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        calendar.scope = .week
-        
+                        
         calendar.delegate = self
         calendar.dataSource = self
         tableView.delegate = self
         tableView.dataSource = self
         todayButton.makeCircular()
+        
+        if categories.count == 0 {
+        tabBarController!.tabBar.items![2].badgeValue = "1"
+        }
+
         
         //Hide Nav Bar Line
         navigationBar.setValue(true, forKey: "hidesShadow")
@@ -91,7 +97,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let transactionsTotalAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", date).sum(ofProperty: "transactionAmount")
         
-        let formattedLabel = formatDoubleToCurrencyString(from: transactionsTotalAtDate)
+        let formattedLabel = transactionsTotalAtDate.toCurrency()
         
         let mutableAttributedString = NSMutableAttributedString(string: formattedLabel)
         if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {

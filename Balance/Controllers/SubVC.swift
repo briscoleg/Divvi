@@ -20,7 +20,11 @@ class SubVC: UIViewController {
     
     lazy var subCategories = List<SubCategory>()
     
+    var categorySelected: Category?
     
+    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
+    
+    var viewTitle = ""
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -29,13 +33,9 @@ class SubVC: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        
-        
-        print(subCategories)
+        self.title = viewTitle
         
     }
-    
-    
     
     //MARK: - Methods
     
@@ -51,8 +51,56 @@ class SubVC: UIViewController {
     
     //MARK: - IBActions
     
-}
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+                
+        let alert = UIAlertController(title: "Add Subcategory", message: "", preferredStyle: .alert)
+                
+                let action = UIAlertAction(title: "Add", style: .default) { (action) in
+                    
+                    try! self.realm.write {
+                        
+                        let newSubCategory = SubCategory()
+                        newSubCategory.subCategoryName = textField.text!
+                        newSubCategory.amountBudgeted = 0.0
+                        
+                        self.subCategories.append(newSubCategory)
+                        
+                        self.realm.add(self.subCategories)
+                        
+                    }
+                    
+                    self.categories = self.realm.objects(Category.self)
 
+                    
+                    self.collectionView.reloadData()
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCategoryCollectionView"), object: nil)
+                    
+                    
+                }
+                let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (cancelAction) in
+                    self.dismiss(animated: true, completion: nil)
+                }
+                
+                alert.addTextField { (field) in
+                    
+                    textField = field
+                    textField.placeholder = "Enter a subcategory name"
+                    textField.autocapitalizationType = .words
+                    
+                    //Make Capital
+                    
+                    
+                }
+                alert.addAction(action)
+                alert.addAction(cancelAction)
+                
+                self.present(alert, animated: true, completion: nil)
+            }
+        
+    }
+    
 //MARK: - Extensions
 
 extension SubVC: UICollectionViewDataSource {
@@ -62,9 +110,9 @@ extension SubVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubCell", for: indexPath) as! SubCell
-        
+                
         cell.nameLabel.text = subCategories[indexPath.item].subCategoryName
-        cell.amountLabel.text = String(subCategories[indexPath.item].amountBudgeted)
+        cell.amountLabel.text = subCategories[indexPath.item].amountBudgeted.toCurrency()
         
         return cell
     }
@@ -77,18 +125,22 @@ extension SubVC: UICollectionViewDelegate {
         
         var textField = UITextField()
         
-        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName) Amount:", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName):", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
                         
-            var textFieldDoubleValue = textField.text?.toDouble()
+            let textFieldDoubleValue = textField.text?.toDouble()
             
             let categoryToUpdate = self.subCategories[indexPath.item]
                 
-//            try realm.write {
-//                categoryToUpdate.amountBudgeted = textFieldDoubleValue
-//                
-//            }
+            try! self.realm.write {
+                categoryToUpdate.amountBudgeted = textFieldDoubleValue!
+                
+            }
+            
+            collectionView.reloadData()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCategoryCollectionView"), object: nil)
+            
             
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (cancelAction) in
@@ -97,8 +149,9 @@ extension SubVC: UICollectionViewDelegate {
         
         alert.addTextField { (field) in
             
-            textField.placeholder = "Enter monthly amount"
             textField = field
+                        textField.placeholder = "Enter monthly total"
+
             textField.keyboardType = .decimalPad
             
         }
@@ -114,5 +167,18 @@ extension SubVC: UICollectionViewDelegate {
 extension String {
     func toDouble() -> Double? {
         return NumberFormatter().number(from: self)?.doubleValue
+    }
+}
+
+extension Double {
+    func toCurrency() -> String {
+        let formatter = NumberFormatter()
+        formatter.currencySymbol = "$"
+        formatter.numberStyle = .currency
+        
+        let formattedNumber = formatter.string(from: NSNumber(value: self))
+        
+        return formattedNumber!
+        
     }
 }

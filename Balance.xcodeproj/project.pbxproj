@@ -35,6 +35,7 @@
 		C0DB600724A160DB00008F89 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C0DB600524A160DB00008F89 /* LaunchScreen.storyboard */; };
 		C0EA444924CF568A00D1A92E /* SubVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444824CF568A00D1A92E /* SubVC.swift */; };
 		C0EA444B24CF571300D1A92E /* SubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444A24CF571300D1A92E /* SubCell.swift */; };
+		C0F7B2B324DB7C5C004AA40B /* SetupCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F7B2B224DB7C5C004AA40B /* SetupCategories.swift */; };
 		DBE0DAB289C83C0E100B40C7 /* Pods_Balance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,7 @@
 		C0DB600824A160DB00008F89 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C0EA444824CF568A00D1A92E /* SubVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubVC.swift; sourceTree = "<group>"; };
 		C0EA444A24CF571300D1A92E /* SubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCell.swift; sourceTree = "<group>"; };
+		C0F7B2B224DB7C5C004AA40B /* SetupCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupCategories.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 				C024E7C824BAB10E008D9E02 /* Extensions.swift */,
 				C024E7CA24BD1F5A008D9E02 /* Constants.swift */,
 				C0B6DD7724D218F5009619AC /* ProgressBar.swift */,
+				C0F7B2B224DB7C5C004AA40B /* SetupCategories.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				C03388B724BE689800C9D7E6 /* DetailVC.swift in Sources */,
 				C0B6DD7824D218F5009619AC /* ProgressBar.swift in Sources */,
 				C00FF55924CF21F900B896F8 /* BudgetVC.swift in Sources */,
+				C0F7B2B324DB7C5C004AA40B /* SetupCategories.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

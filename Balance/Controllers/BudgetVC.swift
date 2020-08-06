@@ -20,7 +20,7 @@ class BudgetVC: UIViewController {
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     
-    var selectedCategory: Category!
+//    var selectedCategory: Category!
     
     
     //MARK: - ViewDidLoad
@@ -30,80 +30,80 @@ class BudgetVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "reloadCategoryCollectionView"), object: nil)
+        
         //        populateDefaultCategories()
         //        populateDefaultColors()
         
-        setupCategories()
         
-        print(Realm.Configuration.defaultConfiguration.fileURL)
+        tabBarController!.tabBar.items![2].badgeValue = nil
+
         
+//        print(Realm.Configuration.defaultConfiguration.fileURL)
         
-        
+
         
     }
+    
     
     //MARK: -  Methods
     
-    private func populateDefaultCategories() {
-        if categories.count == 0 {
-            try! realm.write() {
-                
-                let defaultCategories =
-                    ["Income", "Housing", "Transportation", "Food", "Utilities", "Clothing", "Entertainment", "Insurance", "Savings", "Debt" ]
-                
-                for category in defaultCategories {
-                    let newCategory = Category()
-                    newCategory.categoryName = category
-                    
-                    realm.add(newCategory)
-                }
-            }
-            
-            categories = realm.objects(Category.self)
-        }
+    @objc private func refresh() {
+        self.collectionView.reloadData()
     }
     
-    private func setupCategories() {
+    
+    
+
+//MARK: - IBActions
+
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
-        if categories.count == 0 {
-            
-            let paycheck = SubCategory()
-            paycheck.subCategoryName = "Paycheck"
-            paycheck.amountBudgeted = 0.0
-            
-            let bonus = SubCategory()
-            bonus.subCategoryName = "Bonus"
-            bonus.amountBudgeted = 0.0
-            
-            let incomeCategory = Category()
-            
-            incomeCategory.categoryName = "Income"
-            incomeCategory.categoryColor = 0x20bf6b
-            incomeCategory.subCategories.append(paycheck)
-            incomeCategory.subCategories.append(bonus)
-            
-            let mortgageRent = SubCategory()
-            mortgageRent.subCategoryName = "Mortgage/Rent"
-            mortgageRent.amountBudgeted = 0.0
-            
-            let housingCategory = Category()
-            housingCategory.categoryName = "Housing"
-            housingCategory.categoryColor = 0xa5b1c2
-            housingCategory.subCategories.append(mortgageRent)
-            
-            try! realm.write() {
+        var textField = UITextField()
                 
+        let alert = UIAlertController(title: "Add Category", message: "", preferredStyle: .alert)
                 
-                realm.add(incomeCategory)
-                realm.add(housingCategory)
+                let action = UIAlertAction(title: "Add", style: .default) { (action) in
+                    
+                    try! self.realm.write {
+                        
+                        let newCategory = Category()
+                        newCategory.categoryName = textField.text!
+                        newCategory.categoryColor = 0xd8d8d8
+                        
+                        self.realm.add(newCategory)
+                        
+                    }
+                    
+                    self.categories = self.realm.objects(Category.self)
+
+                    
+                    self.collectionView.reloadData()
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCategoryCollectionView"), object: nil)
+                    
+                    
+                }
+                let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (cancelAction) in
+                    self.dismiss(animated: true, completion: nil)
+                }
+                
+                alert.addTextField { (field) in
+                    
+                    textField = field
+                    textField.placeholder = "Enter a category name"
+                    textField.autocapitalizationType = .words
+                    
+                    
+                }
+                alert.addAction(action)
+                alert.addAction(cancelAction)
+                
+                self.present(alert, animated: true, completion: nil)
             }
             
-            categories = realm.objects(Category.self)
             
         }
-    }
-}
-
+        
 //MARK: - Delegate Methods
 extension BudgetVC: UICollectionViewDelegate {
     
@@ -111,7 +111,9 @@ extension BudgetVC: UICollectionViewDelegate {
         
         if let vc = storyboard?.instantiateViewController(identifier: "SubVC") as? SubVC {
             
+            vc.categorySelected = categories[indexPath.item]
             vc.subCategories = categories[indexPath.item].subCategories
+            vc.viewTitle = categories[indexPath.item].categoryName
             navigationController?.pushViewController(vc, animated: true)
             
         }
@@ -131,9 +133,19 @@ extension BudgetVC: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BudgetCell", for: indexPath) as! BudgetCell
         
         cell.nameLabel.text = categories[indexPath.item].categoryName
-        cell.nameLabel.textColor = UIColor.black
-        cell.amountBudgetedLabel.textColor = UIColor.black
-        cell.amountSpentLabel.textColor = UIColor.black
+        
+        let incomeCategoryTotal: Double = categories[indexPath.item].subCategories.sum(ofProperty: "amountBudgeted")
+        
+        cell.amountBudgetedLabel.text = incomeCategoryTotal.toCurrency()
+        
+//        let categoryTotal: Double = realm.objects(Category.self).filter("ANY subCategories == %@",categories[indexPath.item].subCategories).sum(ofProperty: "amountBudgeted")
+        
+//        let categoryTotal2: Double = incomeCategory
+        
+//        print(categoryTotal)
+        
+//        cell.amountBudgetedLabel.text =
+//            String(format: "%.2f", categories[indexPath.item].subCategories[indexPath.item].amountBudgeted)
         
         //        let realmColor = UIColor(rgb: categories[indexPath.item].color)
         
