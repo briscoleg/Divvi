@@ -116,7 +116,7 @@ extension SubVC: UICollectionViewDataSource {
         
         return cell
     }
-    
+        
 }
 
 extension SubVC: UICollectionViewDelegate {
@@ -134,7 +134,12 @@ extension SubVC: UICollectionViewDelegate {
             let categoryToUpdate = self.subCategories[indexPath.item]
                 
             try! self.realm.write {
+                
+                if self.categorySelected?.categoryName == "Income" {
                 categoryToUpdate.amountBudgeted = textFieldDoubleValue!
+                } else {
+                    categoryToUpdate.amountBudgeted = -textFieldDoubleValue!
+                }
                 
             }
             
@@ -160,6 +165,7 @@ extension SubVC: UICollectionViewDelegate {
         
         self.present(alert, animated: true, completion: nil)
     }
+    
     
     
 }

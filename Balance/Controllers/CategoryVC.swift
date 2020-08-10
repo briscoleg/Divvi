@@ -24,7 +24,7 @@ class CategoryVC: UICollectionViewController {
                                 "Income",
                                 "Housing",
                                 "Transport",
-                                "Food",
+                                "Food/Drink",
                                 "Utilities",
                                 "Clothing",
                                 "Entertainment",

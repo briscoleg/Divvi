@@ -46,7 +46,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Khl-4y-Tce" customClass="ProgressBar" customModule="Balance" customModuleProvider="target">
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Khl-4y-Tce" customClass="CircularGraph" customModule="Balance" customModuleProvider="target">
                                                     <rect key="frame" x="193" y="21.5" width="136" height="146"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$352.78" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gse-Eb-YzP">
@@ -157,13 +157,13 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$1,148.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gbJ-wI-6ng">
-                                                    <rect key="frame" x="246.5" y="27" width="91" height="26"/>
+                                                    <rect key="frame" x="221.5" y="27" width="91" height="26"/>
                                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="21"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TaN-ny-BU8">
-                                                    <rect key="frame" x="357.5" y="32" width="12.5" height="16.5"/>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pencil" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TaN-ny-BU8">
+                                                    <rect key="frame" x="332.5" y="32.5" width="17.5" height="15.5"/>
                                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </imageView>
                                             </subviews>
@@ -171,7 +171,7 @@
                                                 <constraint firstItem="gbJ-wI-6ng" firstAttribute="centerY" secondItem="QXQ-5m-0BV" secondAttribute="centerY" id="0Uv-Jj-Bw2"/>
                                                 <constraint firstItem="oV4-2D-Sum" firstAttribute="leading" secondItem="QXQ-5m-0BV" secondAttribute="leading" constant="20" id="M36-Uf-bq9"/>
                                                 <constraint firstItem="oV4-2D-Sum" firstAttribute="centerY" secondItem="QXQ-5m-0BV" secondAttribute="centerY" id="Pjy-Rh-1oi"/>
-                                                <constraint firstAttribute="trailing" secondItem="TaN-ny-BU8" secondAttribute="trailing" constant="5" id="RGU-wc-xyA"/>
+                                                <constraint firstAttribute="trailing" secondItem="TaN-ny-BU8" secondAttribute="trailing" constant="25" id="RGU-wc-xyA"/>
                                                 <constraint firstItem="TaN-ny-BU8" firstAttribute="centerY" secondItem="QXQ-5m-0BV" secondAttribute="centerY" id="Wdd-FV-ph0"/>
                                                 <constraint firstItem="TaN-ny-BU8" firstAttribute="leading" secondItem="gbJ-wI-6ng" secondAttribute="trailing" constant="20" id="tUp-Ko-G0x"/>
                                             </constraints>
@@ -950,6 +950,7 @@ July 22, 2020</string>
         <image name="chevron.right" catalog="system" width="96" height="128"/>
         <image name="house" width="170.66667175292969" height="170.66667175292969"/>
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>
+        <image name="pencil" catalog="system" width="128" height="113"/>
         <image name="planning" width="48" height="48"/>
         <image name="plus" catalog="system" width="128" height="113"/>
     </resources>

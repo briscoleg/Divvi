@@ -34,11 +34,11 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
     
-    fileprivate lazy var dateFormatter2: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
+//    fileprivate lazy var dateFormatter2: DateFormatter = {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        return formatter
+//    }()
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
 

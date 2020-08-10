@@ -12,7 +12,7 @@ class BudgetCell: UICollectionViewCell {
     
     //MARK: - IBOutlets
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var progressRingView: ProgressBar!
+    @IBOutlet weak var progressRingView: CircularGraph!
     @IBOutlet weak var amountSpentLabel: UILabel!
     @IBOutlet weak var amountBudgetedLabel: UILabel!
 

@@ -51,6 +51,8 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
         searchBar.backgroundColor = .clear
     }
     
+    
+    
     func setupRealm() {
         
         transaction = realm.objects(Transaction.self)
