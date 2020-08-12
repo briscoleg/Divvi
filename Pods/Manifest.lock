@@ -6,11 +6,13 @@ PODS:
   - RealmSwift (4.4.1):
     - Realm (= 4.4.1)
   - SwiftDate (6.1.0)
+  - SwipeCellKit (2.7.1)
 
 DEPENDENCIES:
   - FSCalendar
   - RealmSwift
   - SwiftDate
+  - SwipeCellKit
 
 SPEC REPOS:
   trunk:
@@ -18,13 +20,15 @@ SPEC REPOS:
     - Realm
     - RealmSwift
     - SwiftDate
+    - SwipeCellKit
 
 SPEC CHECKSUMS:
   FSCalendar: 5245140456fcbcac5824c203b98bd8068bdfee1a
   Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
   RealmSwift: 3eb8924ff7100df5928c7602f71d0fec51e7c9c5
   SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
+  SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: 8a7285ab0a80fd76767059405b681156e8852efd
+PODFILE CHECKSUM: b5d791a26f72e1589d916b301c67bb7e44fc4c41
 
 COCOAPODS: 1.9.1

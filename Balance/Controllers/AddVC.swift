@@ -11,7 +11,7 @@ import FSCalendar
 import RealmSwift
 import SwiftDate
 
-class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate {
+class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITableViewDelegate, UITextFieldDelegate {
     
     //MARK: - IBOutlets
     @IBOutlet weak var navigationBar: UINavigationBar!
@@ -208,10 +208,10 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             convertAmountToCurrency()
 
             newTransaction.transactionAmount = amount
-            newTransaction.transactionName = nameTextField.text!
+//            newTransaction.transactionName = nameTextField.text!
             newTransaction.transactionDescription = descriptionTextField.text
             newTransaction.transactionDate = datePicked
-            newTransaction.transactionCategory = categoryPicked
+            newTransaction.transactionCategory!.categoryName = categoryPicked
             newTransaction.repeatInterval = recurringInterval
             
             switch recurringInterval {
@@ -234,7 +234,9 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
             datePicked = datePicked + timeAdded
         }
         
-        DataManager.shared.summaryVC.viewDidLoad()
+//        DataManager.shared.summaryVC.viewDidLoad()
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         
         self.dismiss(animated: true, completion: nil)
         
@@ -326,7 +328,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         
         let categoryVC = storyboard?.instantiateViewController(withIdentifier: "CategoryVC") as! CategoryVC
         
-        categoryVC.categoryDelegate = self
+//        categoryVC.categoryDelegate = self
         
         present(categoryVC, animated: true, completion: nil)
         
@@ -338,7 +340,7 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
         if recurringSwitch.isOn {
             let recurringVC = storyboard?.instantiateViewController(withIdentifier: "RecurringViewController") as! RepeatVC
             
-            recurringVC.intervalDelegate = self
+//            recurringVC.intervalDelegate = self
             
             present(recurringVC, animated: true, completion: nil)
             
@@ -377,16 +379,16 @@ class AddVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, UITable
 }
 //MARK: - Extensions
 
-extension AddVC: IntervalDelegate {
-    func getInterval(interval: String) {
-        recurringInterval = interval
-        recursLabel.text = "Repeats \(recurringInterval)"
-    }
-}
-
-extension AddVC: CategoryDelegate {
-    func getCategory(category: String) {
-        categoryPicked = category
-        categoryButton.setTitle("Category: \(categoryPicked)", for: .normal)
-    }
-}
+//extension AddVC: RepeatDelegate {
+//    func getRepeatInterval(interval: String) {
+//        recurringInterval = interval
+//        recursLabel.text = "Repeats \(recurringInterval)"
+//    }
+//}
+//
+//extension AddVC: CategoryDelegate {
+//    func getCategory(from category: Category) {
+//        categoryPicked = category
+//        categoryButton.setTitle("Category: \(categoryPicked)", for: .normal)
+//    }
+//}

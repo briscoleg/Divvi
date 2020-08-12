@@ -12,23 +12,28 @@ class CategoryCell: UICollectionViewCell {
 
     @IBOutlet weak var categoryImage: UIImageView!
     @IBOutlet weak var categoryName: UILabel!
+    @IBOutlet weak var circleView: UIView!
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        circleView.makeCircular()
+        
     }
 
-    func setColors(with color: UIColor) {
-        
-        categoryName.textColor = color
-        categoryImage.tintColor = color
-        
-    }
+//    func setColors(with color: UIColor) {
+//        
+////        categoryName.textColor = color
+////        categoryImage.tintColor = color
+//        
+//        circleView.backgroundColor = color
+//        
+//    }
     
-    func configure (with category: String, with image: UIImage) {
-        categoryName.text = category
-        categoryImage.image = image
+    func configureCategory (with category: Category) {
+        categoryName.text = category.categoryName
+        categoryImage.image = UIImage(named: category.categoryName)
         
     }
     

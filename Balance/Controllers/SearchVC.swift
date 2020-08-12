@@ -24,7 +24,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
     
     let addItemVC = AddVC()
     
-    var transactionName = ""
+//    var transactionName = ""
     var transactionAmount = 0.0
     var transactionDate = Date()
     var transactionDescription = ""
@@ -40,7 +40,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
         
         transactionTableView.rowHeight = 90.0
         
-        DataManager.shared.firstVC = self
+//        DataManager.shared.firstVC = self
         
         transactionTableView.register(UINib(nibName: "TransactionTableViewCell", bundle: nil), forCellReuseIdentifier: "TransactionTableViewCell")
         
@@ -94,7 +94,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
                 
             }
         }
-        DataManager.shared.summaryVC.viewDidLoad()
+//        DataManager.shared.summaryVC.viewDidLoad()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -122,7 +122,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
                 realm.delete(transaction[indexPath.row])
                                 
         }
-        DataManager.shared.summaryVC.viewDidLoad()
+//        DataManager.shared.summaryVC.viewDidLoad()
         
         let deleteAction = UIContextualAction(style: .normal, title: "", handler: {a,b,c in
 
@@ -150,7 +150,7 @@ class SearchVC: UIViewController, UIViewControllerTransitioningDelegate, UITable
         
         cell.dateLabel.text = dateString
         
-        cell.nameLabel.text = transactions[indexPath.row].transactionName
+//        cell.nameLabel.text = transactions[indexPath.row].transactionName
         
         let currencyFormatter = NumberFormatter()
         currencyFormatter.numberStyle = .currency

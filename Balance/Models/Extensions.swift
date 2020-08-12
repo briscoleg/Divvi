@@ -90,44 +90,44 @@ extension Numeric {
     }
 }
 
-extension AddVC: UITextFieldDelegate {
-    
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let dotString = "."
-        let dollarSign = "$"
-        let minusSign = "-$"
-        
-      
-        if let text = textField.text{
-
-
-
-            print(text)
-
-            if !text.contains(dollarSign) && isExpense {
-                textField.text = "-\(dollarSign)\(text)"
-            }
-            if !text.contains(dollarSign) && !isExpense {
-                textField.text = "\(dollarSign)\(text)"
-            }
-
-            let backSpace = string.isEmpty
-
-            if backSpace && text == minusSign {
-                textField.text = ""
-            }
-            if !backSpace {
-                if text.contains(dotString) {
-                    if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
-                        return false
-                    }
-                }
-            }
-        }
-        return true
-    }
-}
+//extension Add2VC: UITextFieldDelegate {
+//
+//    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//
+//        let dotString = "."
+//        let dollarSign = "$"
+//        let minusSign = "-$"
+//
+//
+//        if let text = textField.text{
+//
+//
+//
+//            print(text)
+//
+//            if !text.contains(dollarSign) && isExpense {
+//                textField.text = "-\(dollarSign)\(text)"
+//            }
+//            if !text.contains(dollarSign) && !isExpense {
+//                textField.text = "\(dollarSign)\(text)"
+//            }
+//
+//            let backSpace = string.isEmpty
+//
+//            if backSpace && text == minusSign {
+//                textField.text = ""
+//            }
+//            if !backSpace {
+//                if text.contains(dotString) {
+//                    if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
+//                        return false
+//                    }
+//                }
+//            }
+//        }
+//        return true
+//    }
+//}
 
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {

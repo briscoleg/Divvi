@@ -8,8 +8,8 @@
 
 import UIKit
 
-protocol IntervalDelegate {
-    func getInterval(interval: String)
+protocol RepeatDelegate {
+    func getRepeatInterval(interval: String)
 }
 
 class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
@@ -21,9 +21,9 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     @IBOutlet weak var repeatLabel: UILabel!
     
     //MARK: - Properties
-    var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily"]
+    var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily", "Never"]
     var intervalPicked = "Monthly"
-    var intervalDelegate: IntervalDelegate!
+    var repeatDelegate: RepeatDelegate!
     
     
     //MARK: - ViewDidLoad
@@ -34,7 +34,6 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
         picker.dataSource = self
         
         repeatLabel.text = "Repeats Monthly"
-        
         
         saveButton.roundCorners()
         
@@ -48,7 +47,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     //MARK: - IBActions
     @IBAction func savePressed(_ sender: UIButton) {
         
-        intervalDelegate.getInterval(interval: intervalPicked)
+        repeatDelegate.getRepeatInterval(interval: intervalPicked)
         
         self.dismiss(animated: true, completion: nil)
         
@@ -56,7 +55,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     @IBAction func cancelButtonPressed(_ sender: UIButton) {
         
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
         
     }
     

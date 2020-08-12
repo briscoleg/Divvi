@@ -8,16 +8,18 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
 class SearchCVC: UIViewController{
-
+    
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
     
     //MARK: - Properties
     let realm = try! Realm()
-    var transaction: Results<Transaction>!
-    let categoryVC = CategoryVC()
+    lazy var transaction: Results<Transaction> = { self.realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true) }()
+//    lazy var categories: Results<Category> = { self.realm.objects(Category.self).sorted(byKeyPath: "transactionDate", ascending: true) }()
+//    let categoryVC = CategoryVC()
     
     
     override func viewDidLoad() {
@@ -26,34 +28,34 @@ class SearchCVC: UIViewController{
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         
         
-        setupRealm()
+        
     }
     
     //MARK: - Methods
-    func setupRealm() {
-        
-        transaction = realm.objects(Transaction.self)
-        
+    
+    @objc private func refresh() {
+        self.collectionView.reloadData()
     }
     
     func displayAmount(with amount: Double) -> NSAttributedString {
-
+        
         let currencyFormatter = NumberFormatter()
         currencyFormatter.numberStyle = .currency
         currencyFormatter.locale = Locale.current
-
+        
         let number = currencyFormatter.string(from: NSNumber(value: amount))
-
+        
         let mutableAttributedString = NSMutableAttributedString(string: number!)
         if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
             mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 9), .baselineOffset: 6],
-                range: NSRange(range, in: mutableAttributedString.string))
+                                                  range: NSRange(range, in: mutableAttributedString.string))
         }
         
         return mutableAttributedString
-
+        
     }
     
     func setCategoryImage() {
@@ -71,56 +73,88 @@ class SearchCVC: UIViewController{
 }
 
 extension SearchCVC: UICollectionViewDelegate {
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
         
         let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)[indexPath.row]
-
+        
         vc.transaction = transactions
-
+        
         present(vc, animated: true, completion: nil)
         
     }
-
-
+    
+    
 }
 
-extension SearchCVC: UICollectionViewDataSource {
+extension SearchCVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
+    func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            
+//            let transactions = self.realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
+            
+            try! self.realm.write {
+                self.realm.delete(self.transaction[indexPath.item])
+                
+                
+                
+            }
+            
+            collectionView.reloadData()
+            
+            NotificationCenter.default.post(name: NSNotification.Name("transactionDeleted"), object: nil)
+            
+        }
+        
+        // customize the action appearance
+        deleteAction.image = UIImage(named: "delete")
+        
+        return [deleteAction]
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return transaction.count
     }
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCell", for: indexPath) as! SearchCell
         
-        let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
+        cell.delegate = self
         
-        cell.imageView.image = UIImage(named: transactions[indexPath.item].transactionCategory)
-//        cell.imageView.tintColor = categories[indexPath.item].color
-        cell.imageView.makeCircular()
+//        let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
         
-        cell.nameLabel.text = transactions[indexPath.item].transactionName
-        cell.amountLabel.attributedText = displayAmount(with: transactions[indexPath.item].transactionAmount)
+        cell.imageView.image = UIImage(named: transaction[indexPath.item].transactionCategory!.categoryName)
+        cell.circleView.backgroundColor = UIColor(rgb: transaction[indexPath.item].transactionCategory!.categoryColor)
+//        UIColor(rgb: categories[indexPath.item].categoryColor)
+//        cell.imageView.makeCircular()
+        
+        cell.descLabel.text = transaction[indexPath.item].transactionDescription
+        cell.amountLabel.attributedText = displayAmount(with: transaction[indexPath.item].transactionAmount)
         
         let formatter = DateFormatter()
         
         formatter.dateFormat = "MMMM dd, yyyy"
         
-        let dateString = formatter.string(from: transactions[indexPath.item].transactionDate)
+        let dateString = formatter.string(from: transaction[indexPath.item].transactionDate)
         
         cell.dateLabel.text = dateString
         
         
         
-        if transactions[indexPath.row].transactionAmount > 0 {
+        if transaction[indexPath.row].transactionAmount > 0 {
             
             cell.amountLabel.textColor = UIColor(rgb: Constants.green)
-//            cell.colorBar.backgroundColor = UIColor(rgb: Constants.green)
+            //            cell.colorBar.backgroundColor = UIColor(rgb: Constants.green)
         } else {
             cell.amountLabel.textColor = UIColor(rgb: Constants.red)
-//            cell.colorBar.backgroundColor = UIColor(rgb: Constants.red)
+            //            cell.colorBar.backgroundColor = UIColor(rgb: Constants.red)
         }
         
         return cell
@@ -129,15 +163,15 @@ extension SearchCVC: UICollectionViewDataSource {
 }
 
 extension UIImageView {
-func applyshadowWithCorner(containerView : UIView, cornerRadious : CGFloat){
-    containerView.clipsToBounds = false
-    containerView.layer.shadowColor = UIColor.black.cgColor
-    containerView.layer.shadowOpacity = 1
-    containerView.layer.shadowOffset = CGSize.zero
-    containerView.layer.shadowRadius = 10
-    containerView.layer.cornerRadius = cornerRadious
-    containerView.layer.shadowPath = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: cornerRadious).cgPath
-    self.clipsToBounds = true
-    self.layer.cornerRadius = cornerRadious
-}
+    func applyshadowWithCorner(containerView : UIView, cornerRadious : CGFloat){
+        containerView.clipsToBounds = false
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowOpacity = 1
+        containerView.layer.shadowOffset = CGSize.zero
+        containerView.layer.shadowRadius = 10
+        containerView.layer.cornerRadius = cornerRadious
+        containerView.layer.shadowPath = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: cornerRadious).cgPath
+        self.clipsToBounds = true
+        self.layer.cornerRadius = cornerRadious
+    }
 }

@@ -25,7 +25,9 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     
     //MARK: - Properties
     let realm = try! Realm()
-    var transaction: Results<Transaction>!
+    lazy var transaction: Results<Transaction> = { self.realm.objects(Transaction.self) }()
+    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
+
     let addItemVC = AddVC()
     var selectedCalendarDate = Date()
     var dateTappedOnCalendar = Date()
@@ -34,41 +36,36 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
     
-//    fileprivate lazy var dateFormatter2: DateFormatter = {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd"
-//        return formatter
-//    }()
-    
-    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
-
-    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-                        
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
+        
         calendar.delegate = self
         calendar.dataSource = self
+        
         tableView.delegate = self
         tableView.dataSource = self
+        
         todayButton.makeCircular()
         
-        if categories.count == 0 {
-        tabBarController!.tabBar.items![2].badgeValue = "1"
-        }
-
+        setupCategories()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
         
         //Hide Nav Bar Line
         navigationBar.setValue(true, forKey: "hidesShadow")
         
-        
         let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
         self.navigationItem.rightBarButtonItem = todayItem
-        DataManager.shared.summaryVC = self
+        //        DataManager.shared.summaryVC = self
         
         tableView.rowHeight = 40
-        
-        setupRealm()
         
         getTotalAtDate(Date())
         
@@ -82,15 +79,17 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
     }
     //MARK: - Methods
-    @objc
-       func todayItemClicked(sender: AnyObject) {
-           self.calendar.setCurrentPage(Date(), animated: false)
-       }
     
-    func setupRealm() {
-        
-        transaction = realm.objects(Transaction.self)
-        
+    //Refresh page when Transaction/Category/Subcategory added or deleted
+    @objc private func refresh() {
+        tableView.reloadData()
+        calendar.reloadData()
+        getTotalAtDate(Date() + 61199)
+        displaySelectedDate(Date())
+    }
+    
+    @objc func todayItemClicked(sender: AnyObject) {
+        self.calendar.setCurrentPage(Date(), animated: false)
     }
     
     func getTotalAtDate(_ date: Date) {
@@ -213,6 +212,262 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 && transactionAmount < 0", argumentArray: [startDate!, endDate!])
     }
     
+    func setupCategories() {
+    
+    if categories.count == 0 {
+        
+        //Show Badge
+        tabBarController!.tabBar.items![2].badgeValue = "1"
+        
+        //Income Category
+        let paycheck = SubCategory()
+        paycheck.subCategoryName = "Paycheck"
+        paycheck.amountBudgeted = 0.0
+        
+        let bonus = SubCategory()
+        bonus.subCategoryName = "Bonus"
+        bonus.amountBudgeted = 0.0
+        
+        let rentalIncome = SubCategory()
+        rentalIncome.subCategoryName = "Rental Income"
+        rentalIncome.amountBudgeted = 0.0
+        
+        let dividendIncome = SubCategory()
+        dividendIncome.subCategoryName = "Dividend"
+        dividendIncome.amountBudgeted = 0.0
+        
+        let incomeCategory = Category()
+        incomeCategory.categoryName = "Income"
+        incomeCategory.categoryColor = 0x20bf6b
+        incomeCategory.subCategories.append(paycheck)
+        incomeCategory.subCategories.append(bonus)
+        incomeCategory.subCategories.append(rentalIncome)
+        incomeCategory.subCategories.append(dividendIncome)
+        
+        //Housing Category
+        let mortgageRent = SubCategory()
+        mortgageRent.subCategoryName = "Mortgage/Rent"
+        mortgageRent.amountBudgeted = 0.0
+        
+        let propertyTaxes = SubCategory()
+        propertyTaxes.subCategoryName = "Property Taxes"
+        propertyTaxes.amountBudgeted = 0.0
+        
+        let hoaFees = SubCategory()
+        hoaFees.subCategoryName = "HOA Fees"
+        hoaFees.amountBudgeted = 0.0
+        
+        let householdRepairs = SubCategory()
+        householdRepairs.subCategoryName = "Household Repairs"
+        householdRepairs.amountBudgeted = 0.0
+        
+        let housingCategory = Category()
+        housingCategory.categoryName = "Housing"
+        housingCategory.categoryColor = 0x778ca3
+        housingCategory.subCategories.append(mortgageRent)
+        housingCategory.subCategories.append(propertyTaxes)
+        housingCategory.subCategories.append(hoaFees)
+        housingCategory.subCategories.append(householdRepairs)
+        
+        //Transportation Category
+        let carPayment = SubCategory()
+        carPayment.subCategoryName = "Car Payment"
+        carPayment.amountBudgeted = 0.0
+        
+        let gasFuel = SubCategory()
+        gasFuel.subCategoryName = "Gas/Fuel"
+        gasFuel.amountBudgeted = 0.0
+        
+        let carRepairs = SubCategory()
+        carRepairs.subCategoryName = "Car Repairs"
+        carRepairs.amountBudgeted = 0.0
+        
+        let carRegistration = SubCategory()
+        carRegistration.subCategoryName = "Registration"
+        carRegistration.amountBudgeted = 0.0
+        
+        let transportationCategory = Category()
+        transportationCategory.categoryName = "Transportation"
+        transportationCategory.categoryColor = 0xeb3b5a
+        
+        transportationCategory.subCategories.append(carPayment)
+        transportationCategory.subCategories.append(gasFuel)
+        transportationCategory.subCategories.append(carRepairs)
+        transportationCategory.subCategories.append(carRegistration)
+        
+        //Food Category
+        let groceries = SubCategory()
+        groceries.subCategoryName = "Groceries"
+        groceries.amountBudgeted = 0.0
+        
+        let restaurants = SubCategory()
+        restaurants.subCategoryName = "Restaurants"
+        restaurants.amountBudgeted = 0.0
+        
+        let bars = SubCategory()
+        bars.subCategoryName = "Bars"
+        bars.amountBudgeted = 0.0
+        
+        let foodCategory = Category()
+        foodCategory.categoryName = "Food"
+        foodCategory.categoryColor = 0xfed330
+        
+        foodCategory.subCategories.append(groceries)
+        foodCategory.subCategories.append(restaurants)
+        foodCategory.subCategories.append(bars)
+        
+        //Clothing Category
+        let essentialClothing = SubCategory()
+        essentialClothing.subCategoryName = "Essential Clothing"
+        essentialClothing.amountBudgeted = 0.0
+        
+        let shoes = SubCategory()
+        shoes.subCategoryName = "Shoes"
+        shoes.amountBudgeted = 0.0
+        
+        let clothingCategory = Category()
+        clothingCategory.categoryName = "Clothing"
+        clothingCategory.categoryColor = 0xfa8231
+        
+        clothingCategory.subCategories.append(essentialClothing)
+        clothingCategory.subCategories.append(shoes)
+        
+        //Utilities Category
+        let electricity = SubCategory()
+        electricity.subCategoryName = "Electricity"
+        electricity.amountBudgeted = 0.0
+        
+        let water = SubCategory()
+        water.subCategoryName = "Water"
+        water.amountBudgeted = 0.0
+        
+        let trashSewer = SubCategory()
+        trashSewer.subCategoryName = "Trash/Sewer"
+        trashSewer.amountBudgeted = 0.0
+        
+        let internet = SubCategory()
+        internet.subCategoryName = "Internet"
+        internet.amountBudgeted = 0.0
+        
+        let cable = SubCategory()
+        cable.subCategoryName = "Cable"
+        cable.amountBudgeted = 0.0
+        
+        let cellPhone = SubCategory()
+        cellPhone.subCategoryName = "Cell Phone"
+        cellPhone.amountBudgeted = 0.0
+        
+        let utilitiesCategory = Category()
+        utilitiesCategory.categoryName = "Utilities"
+        utilitiesCategory.categoryColor = 0x45aaf2
+        
+        utilitiesCategory.subCategories.append(electricity)
+        utilitiesCategory.subCategories.append(water)
+        utilitiesCategory.subCategories.append(trashSewer)
+        utilitiesCategory.subCategories.append(internet)
+        utilitiesCategory.subCategories.append(cable)
+        utilitiesCategory.subCategories.append(cellPhone)
+        
+        //Insurance Category
+        let carInsurance = SubCategory()
+        carInsurance.subCategoryName = "Car/Truck"
+        carInsurance.amountBudgeted = 0.0
+        
+        let healthInsurance = SubCategory()
+        healthInsurance.subCategoryName = "Health"
+        healthInsurance.amountBudgeted = 0.0
+        
+        let dentalInsurance = SubCategory()
+        dentalInsurance.subCategoryName = "Dental"
+        dentalInsurance.amountBudgeted = 0.0
+        
+        let homeOwnersInsurance = SubCategory()
+        homeOwnersInsurance.subCategoryName = "Homeowner's"
+        homeOwnersInsurance.amountBudgeted = 0.0
+        
+        let rentersInsurance = SubCategory()
+        rentersInsurance.subCategoryName = "Renter's"
+        rentersInsurance.amountBudgeted = 0.0
+        
+        
+        let insuranceCategory = Category()
+        insuranceCategory.categoryName = "Insurance"
+        insuranceCategory.categoryColor = 0xfc5c65
+        
+        insuranceCategory.subCategories.append(carInsurance)
+        insuranceCategory.subCategories.append(healthInsurance)
+        insuranceCategory.subCategories.append(dentalInsurance)
+        insuranceCategory.subCategories.append(homeOwnersInsurance)
+        insuranceCategory.subCategories.append(rentersInsurance)
+        
+        //Entertainment Category
+        let movies = SubCategory()
+        movies.subCategoryName = "Movies"
+        movies.amountBudgeted = 0.0
+        
+        let shopping = SubCategory()
+        shopping.subCategoryName = "Shopping"
+        shopping.amountBudgeted = 0.0
+        
+        let entertainmentCategory = Category()
+        entertainmentCategory.categoryName = "Entertainment"
+        entertainmentCategory.categoryColor = 0xa55eea
+        entertainmentCategory.subCategories.append(movies)
+        entertainmentCategory.subCategories.append(shopping)
+        
+        //Savings Category
+        let emergencyFund = SubCategory()
+        emergencyFund.subCategoryName = "Emergency Fund"
+        emergencyFund.amountBudgeted = 0.0
+        
+        let carFund = SubCategory()
+        carFund.subCategoryName = "Car Fund"
+        carFund.amountBudgeted = 0.0
+        
+        let savingsCategory = Category()
+        savingsCategory.categoryName = "Savings"
+        savingsCategory.categoryColor = 0x20bf6b
+        
+        savingsCategory.subCategories.append(emergencyFund)
+        savingsCategory.subCategories.append(carFund)
+        
+        //Debt Category
+        let creditCard = SubCategory()
+        creditCard.subCategoryName = "Credit Card Payment"
+        creditCard.amountBudgeted = 0.0
+        
+        let loanPayment = SubCategory()
+        loanPayment.subCategoryName = "Loan Payment"
+        loanPayment.amountBudgeted = 0.0
+        
+        let debtCategory = Category()
+        debtCategory.categoryName = "Debt"
+        debtCategory.categoryColor = 0xeb3b5a
+        
+        debtCategory.subCategories.append(creditCard)
+        debtCategory.subCategories.append(loanPayment)
+        
+        try! realm.write() {
+            
+            
+            realm.add(incomeCategory)
+            realm.add(housingCategory)
+            realm.add(transportationCategory)
+            realm.add(foodCategory)
+            realm.add(clothingCategory)
+            realm.add(utilitiesCategory)
+            realm.add(insuranceCategory)
+            realm.add(entertainmentCategory)
+            realm.add(savingsCategory)
+            realm.add(debtCategory)
+        }
+        
+        categories = realm.objects(Category.self)
+        
+    }
+    
+    }
+    
     //MARK: - IBActions
     @IBAction func todayPressed(_ sender: UIButton) {
         
@@ -245,16 +500,16 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
         let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
-
+        
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
-
+        
         for _ in incomeTransaction {
             return 1
         }
         for _ in expenseTransaction {
             return 1
         }
-
+        
         return 0
     }
     
@@ -310,8 +565,8 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryTableViewCell", for: indexPath) as! SummaryTableViewCell
         
         let transactions = realm.objects(Transaction.self).filter(dateRangePredicate)
-                
-        cell.nameLabel.text = transactions[indexPath.row].transactionName
+        
+        cell.descLabel.text = transactions[indexPath.row].transactionCategory?.categoryName
         
         let currencyFormatter = NumberFormatter()
         currencyFormatter.numberStyle = .currency
@@ -320,7 +575,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         let amount = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
         
         cell.amountLabel.text = amount
-                
+        
         if transactions[indexPath.row].transactionAmount > 0 {
             
             cell.amountLabel.textColor = UIColor(rgb: Constants.green)

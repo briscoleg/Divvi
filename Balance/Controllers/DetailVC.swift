@@ -14,7 +14,6 @@ import RealmSwift
 class DetailVC: UIViewController {
     
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descLabel: UILabel!
     @IBOutlet weak var amountLabel: UILabel!
     @IBOutlet weak var repeatLabel: UILabel!
@@ -32,8 +31,7 @@ class DetailVC: UIViewController {
     
     func displayTransactionInfo() {
         
-        nameLabel.text = transaction?.transactionName
-        descLabel.text = transaction!.transactionDescription!
+        descLabel.text = transaction?.transactionDescription
         repeatLabel.text = "Repeats: \(transaction!.repeatInterval)"
             
         formatNumber(transaction!.transactionAmount)

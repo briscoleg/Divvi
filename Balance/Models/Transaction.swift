@@ -11,11 +11,11 @@ import RealmSwift
 
 class Transaction: Object {
     
-    @objc dynamic var transactionName = ""
+//    @objc dynamic var transactionName = ""
     @objc dynamic var transactionDescription: String? = nil
     @objc dynamic var transactionAmount = 0.0
     @objc dynamic var transactionDate = Date()
-    @objc dynamic var transactionCategory = ""
+    @objc dynamic var transactionCategory: Category? = nil
     @objc dynamic var repeatInterval = ""
     @objc dynamic var transactionID = UUID().uuidString
     
