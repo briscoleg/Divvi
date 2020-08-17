@@ -15,18 +15,22 @@ class BudgetCell: UICollectionViewCell {
     @IBOutlet weak var progressRingView: CircularGraph!
     @IBOutlet weak var amountSpentLabel: UILabel!
     @IBOutlet weak var amountBudgetedLabel: UILabel!
-
+    @IBOutlet weak var imageView: UIImageView!
+    
     
     //MARK: - Layout Subviews
     override func layoutSubviews() {
         super.layoutSubviews()
  }
     
+    
+    
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         
-        configureCell()
+//        configureCell()
 
     }
+    
     
         
     //MARK: - Methods
@@ -45,6 +49,7 @@ extension UICollectionViewCell {
         layer.borderWidth = 5.0
         layer.borderColor = UIColor.clear.cgColor
         backgroundColor = UIColor.white
+        
 //        layer.masksToBounds = true
 //
 //        layer.shadowColor = UIColor.black.cgColor
@@ -72,27 +77,27 @@ extension UICollectionViewCell {
         }
 }
 
-extension UIColor {
-
-    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
-        return self.adjust(by: abs(percentage) )
-    }
-
-    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
-        return self.adjust(by: -1 * abs(percentage) )
-    }
-
-    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
-        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-        if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
-            return UIColor(red: min(red + percentage/100, 1.0),
-                           green: min(green + percentage/100, 1.0),
-                           blue: min(blue + percentage/100, 1.0),
-                           alpha: alpha)
-        } else {
-            return nil
-        }
-    }
-}
+//extension UIColor {
+//
+//    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
+//        return self.adjust(by: abs(percentage) )
+//    }
+//
+//    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
+//        return self.adjust(by: -1 * abs(percentage) )
+//    }
+//
+//    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+//        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+//        if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+//            return UIColor(red: min(red + percentage/100, 1.0),
+//                           green: min(green + percentage/100, 1.0),
+//                           blue: min(blue + percentage/100, 1.0),
+//                           alpha: alpha)
+//        } else {
+//            return nil
+//        }
+//    }
+//}
 
 

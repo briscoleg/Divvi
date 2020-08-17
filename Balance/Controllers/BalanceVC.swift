@@ -21,6 +21,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     @IBOutlet weak var transactionsLabel: UILabel!
     @IBOutlet weak var navigationBar: UINavigationBar!
     @IBOutlet weak var todayButton: UIButton!
+    @IBOutlet weak var addButton: UIBarButtonItem!
     
     
     //MARK: - Properties
@@ -28,13 +29,14 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     lazy var transaction: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
 
-    let addItemVC = AddVC()
+//    let addItemVC = AddVC()
     var selectedCalendarDate = Date()
     var dateTappedOnCalendar = Date()
     let todaysDate = Date()
     var startDate: Date?
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
+    
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -44,14 +46,19 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         calendar.delegate = self
         calendar.dataSource = self
+//        calendar.appearance.
         
         tableView.delegate = self
         tableView.dataSource = self
         
-        todayButton.makeCircular()
+//        todayButton.makeCircular()
+        
+        calendar.select(calendar.today)
+        calendar.setCurrentPage(Date(), animated: true)
+
         
         setupCategories()
-        
+                
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
@@ -77,6 +84,10 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         tableView.register(UINib(nibName: "SummaryTableViewCell", bundle: nil), forCellReuseIdentifier: "SummaryTableViewCell")
         
+//        stepCalendarView(index: 1)
+        
+        calendar.appearance.headerMinimumDissolvedAlpha = 0
+        
     }
     //MARK: - Methods
     
@@ -86,6 +97,38 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         calendar.reloadData()
         getTotalAtDate(Date() + 61199)
         displaySelectedDate(Date())
+    }
+    
+    private func stepCalendarView(index: Int) {
+        let previousMonth = Calendar.current.date(byAdding: self.calendar.scope.asCalendarComponent(), value: index, to: calendar.currentPage)
+        calendar.setCurrentPage(previousMonth!, animated: true)
+    }
+    
+    func createAddButton() {
+        
+        let button = UIButton()
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+
+        let image = UIImage(systemName: "plus")!
+
+        UIGraphicsBeginImageContextWithOptions(button.frame.size, false, image.scale)
+        let rect  = CGRect(x: 0, y: 0, width: button.frame.size.width, height: button.frame.size.height)
+        UIBezierPath(roundedRect: rect, cornerRadius: rect.width/2).addClip()
+        image.draw(in: rect)
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+
+        let color = UIColor(rgb: Constants.blue)
+        button.backgroundColor = color
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        let barButton = UIBarButtonItem()
+        barButton.customView = button
+        self.navigationItem.rightBarButtonItem = barButton
+            
+//            [addRightBarButtonWithImage(UIImage(named: "menu")!), UIBarButtonItem(customView: addButton)]
+        
     }
     
     @objc func todayItemClicked(sender: AnyObject) {
@@ -469,7 +512,7 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     }
     
     //MARK: - IBActions
-    @IBAction func todayPressed(_ sender: UIButton) {
+    @IBAction func todayButtonPressed(_ sender: UIButton) {
         
         calendar.setCurrentPage(Date(), animated: true)
         
@@ -599,4 +642,13 @@ class BalanceVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     }
     
     
+}
+
+extension FSCalendarScope {
+    func asCalendarComponent() -> Calendar.Component {
+        switch (self) {
+        case .month: return .month
+        case .week: return .weekOfYear
+        }
+     }
 }

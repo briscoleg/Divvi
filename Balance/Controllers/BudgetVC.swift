@@ -33,11 +33,19 @@ class BudgetVC: UIViewController {
         collectionView.dataSource = self
         
         
-//        progressRingSetup()
+        
+        
+        //        self.perform(#selector(animateProgress), with: nil, afterDelay: 2.0)
+        
+        
+        //        progressRingSetup()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        
         
         //        populateDefaultCategories()
         //        populateDefaultColors()
@@ -53,63 +61,63 @@ class BudgetVC: UIViewController {
     }
     
     
+    
     //MARK: -  Methods
     
-    @objc private func refresh() {
-        self.collectionView.reloadData()
+    @objc func animateProgress() {
+        
     }
     
-//    private func progressRingSetup() {
-//
-//        let center = view.center
-//
-//        let trackLayer = CAShapeLayer()
-//
-//        let circularPath = UIBezierPath(arcCenter: center, radius: 100, startAngle: -CGFloat.pi / 2, endAngle: CGFloat.pi * 2, clockwise: true)
-//
-//        trackLayer.path = circularPath.cgPath
-//
-//        trackLayer.strokeColor = UIColor.lightGray.cgColor
-//
-//        trackLayer.lineWidth = 10
-//
-//        trackLayer.lineCap = .round
-//
-//        view.layer.addSublayer(trackLayer)
-//
-//        shapeLayer.path = circularPath.cgPath
-//
-//        shapeLayer.strokeColor = UIColor.red.cgColor
-//
-//        shapeLayer.lineWidth = 10
-//
-//        shapeLayer.lineCap = .round
-//
-//        shapeLayer.fillColor = UIColor.clear.cgColor
-//
-//        shapeLayer.strokeEnd = 0
-//
-//        view.layer.addSublayer(shapeLayer)
-//
-//        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
-//
-//    }
+    @objc private func refresh() {
+        collectionView.reloadData()
+    }
     
-//    @objc private func handleTap() {
-//        
-//        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
-//        
-//        basicAnimation.toValue = 1
-//        
-//        basicAnimation.duration = 2
-//        
-//        basicAnimation.fillMode = .forwards
-//        
-//        basicAnimation.isRemovedOnCompletion = false
-//        
-//        shapeLayer.add(basicAnimation, forKey: "customKey")
-//        
-//    }
+    func getPredicateForSelectedMonth(date: Date) -> NSPredicate {
+        
+        let startDate = Date()
+        
+        let selectedYear = 2020
+        let selectedMonth = 9
+        
+        var components = DateComponents()
+        components.month = selectedMonth
+        components.year = selectedYear
+        let startDateOfMonth = Calendar.current.date(from: components)
+
+        //Now create endDateOfMonth using startDateOfMonth
+        components.year = 0
+        components.month = 1
+        components.day = -1
+        
+        let endDateOfMonth = Calendar.current.date(byAdding: components, to: startDate)
+        
+        let predicate = NSPredicate(format: "%K >= %@ && %K <= %@", "DateAttribute", startDateOfMonth! as NSDate, "DateAttribute", endDateOfMonth! as NSDate)
+        
+        return predicate
+    }
+    
+    func predicateForMonthFromDate(date: Date) -> NSPredicate {
+                
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.day = 01
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.day = 31
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
+    }
     
     
     
@@ -178,6 +186,7 @@ extension BudgetVC: UICollectionViewDelegate {
             
         }
     }
+    
 }
 
 //MARK: - DataSource Methods
@@ -190,57 +199,40 @@ extension BudgetVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        let datePredicate = predicateForMonthFromDate(date: Date())
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BudgetCell", for: indexPath) as! BudgetCell
         
         cell.nameLabel.text = categories[indexPath.item].categoryName
         
-        let plannedTotal: Double = categories[indexPath.item].subCategories.sum(ofProperty: "amountBudgeted")
+        let plannedTotal: Double = abs(categories[indexPath.item].subCategories.sum(ofProperty: "amountBudgeted"))
         
         cell.amountBudgetedLabel.text = plannedTotal.toCurrency()
         
-        let transactionCategoryTotal: Double = transactions.filter(NSPredicate(format: "transactionCategory == %@ ", categories[indexPath.row])).sum(ofProperty: "transactionAmount")
+//        let transactionCategoryTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ ", categories[indexPath.row])).sum(ofProperty: "transactionAmount"))
                 
-//        let transactionCategoryTotal = transactions.filter(NSPredicate(format: "transactionCategory"))
-//
+        let transactionCategoryTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ ", categories[indexPath.row])).filter(datePredicate).sum(ofProperty: "transactionAmount"))
+        
         cell.amountSpentLabel.text = transactionCategoryTotal.toCurrency()
         
-        //Progress Ring
-        
-        
-        
-    
         cell.progressRingView.progressLayerStrokeColor = UIColor(rgb: categories[indexPath.item].categoryColor)
         
         let plannedToSpentRatio = transactionCategoryTotal / plannedTotal
         
-        print(plannedToSpentRatio)
+        cell.progressRingView.animateProgress(duration: 1.0, value: plannedToSpentRatio)
         
-        cell.progressRingView.progressLayerStrokeEnd = CGFloat(plannedToSpentRatio)
-    
-    //        let categoryTotal: Double = realm.objects(Category.self).filter("ANY subCategories == %@",categories[indexPath.item].subCategories).sum(ofProperty: "amountBudgeted")
-    
-    //        let categoryTotal2: Double = incomeCategory
-    
-    //        print(categoryTotal)
-    
-    //        cell.amountBudgetedLabel.text =
-    //            String(format: "%.2f", categories[indexPath.item].subCategories[indexPath.item].amountBudgeted)
-    
-    //        let realmColor = UIColor(rgb: categories[indexPath.item].color)
-    
-    cell.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.25)
-    //        cell.backgroundColor = realmColor
-    
-    //        cell.progressRingView.foregroundCircleColor = UIColor(rgb: categories[indexPath.item].categoryColor).cgColor
-    cell.progressRingView.backgroundColor = UIColor.clear
+        cell.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.25)
+        
+        cell.progressRingView.backgroundColor = UIColor.clear
+        
+        cell.layer.shadowColor = UIColor.darkGray.cgColor
+        cell.layer.cornerRadius = 7.5
+        
+        cell.imageView.image = UIImage(named: categories[indexPath.item].categoryName)
+        
+        return cell
+    }
     
     
-    cell.layer.shadowColor = UIColor.darkGray.cgColor
     
-    return cell
-}
-
-
-
-
 }

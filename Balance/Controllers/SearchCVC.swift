@@ -14,6 +14,7 @@ class SearchCVC: UIViewController{
     
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     //MARK: - Properties
     let realm = try! Realm()
@@ -30,7 +31,9 @@ class SearchCVC: UIViewController{
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+
+        addInputAccessoryForSearchbars(searchBar: searchBar)
         
     }
     
@@ -91,17 +94,14 @@ extension SearchCVC: UICollectionViewDelegate {
 
 extension SearchCVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
     func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        
         guard orientation == .right else { return nil }
         
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            
-//            let transactions = self.realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
-            
+                        
             try! self.realm.write {
                 self.realm.delete(self.transaction[indexPath.item])
-                
-                
                 
             }
             
@@ -112,7 +112,8 @@ extension SearchCVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate
         }
         
         // customize the action appearance
-        deleteAction.image = UIImage(named: "delete")
+        deleteAction.image = UIImage(systemName: "trash.fill")
+        deleteAction.backgroundColor = UIColor(rgb: Constants.red)
         
         return [deleteAction]
     }
@@ -128,13 +129,9 @@ extension SearchCVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate
         
         cell.delegate = self
         
-//        let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)
-        
         cell.imageView.image = UIImage(named: transaction[indexPath.item].transactionCategory!.categoryName)
+        cell.imageView.tintColor = .white
         cell.circleView.backgroundColor = UIColor(rgb: transaction[indexPath.item].transactionCategory!.categoryColor)
-//        UIColor(rgb: categories[indexPath.item].categoryColor)
-//        cell.imageView.makeCircular()
-        
         cell.descLabel.text = transaction[indexPath.item].transactionDescription
         cell.amountLabel.attributedText = displayAmount(with: transaction[indexPath.item].transactionAmount)
         
@@ -151,10 +148,10 @@ extension SearchCVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate
         if transaction[indexPath.row].transactionAmount > 0 {
             
             cell.amountLabel.textColor = UIColor(rgb: Constants.green)
-            //            cell.colorBar.backgroundColor = UIColor(rgb: Constants.green)
+
         } else {
             cell.amountLabel.textColor = UIColor(rgb: Constants.red)
-            //            cell.colorBar.backgroundColor = UIColor(rgb: Constants.red)
+
         }
         
         return cell

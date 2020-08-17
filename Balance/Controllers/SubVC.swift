@@ -27,6 +27,10 @@ class SubVC: UIViewController {
     
     var viewTitle = ""
     
+    var screenSize: CGRect!
+    var screenWidth: CGFloat!
+    var screenHeight: CGFloat!
+    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +40,42 @@ class SubVC: UIViewController {
         
         self.title = viewTitle
         
+        screenSize = UIScreen.main.bounds
+        screenWidth = screenSize.width
+        screenHeight = screenSize.height
+        
+        let layout = UICollectionViewFlowLayout()
+//
+        layout.sectionInset = UIEdgeInsets(top: 50, left: 0, bottom: 10, right: 0)
+        
+        layout.sectionInset = UIEdgeInsets(top: 25, left: 25, bottom: 25, right: 25)
+
+        layout.itemSize = CGSize(width: screenWidth/2.5, height: screenWidth/2.5)
+
+        layout.minimumInteritemSpacing = 0
+
+        layout.minimumLineSpacing = 25
+
+        collectionView.collectionViewLayout = layout
+        
+//        let itemSpacing: CGFloat = 3
+//        let itemsInOneLine: CGFloat = 3
+//        let flow = UICollectionView().collectionViewLayout as! UICollectionViewFlowLayout
+//        flow.sectionInset = UIEdgeInsets(top: itemSpacing, left: itemSpacing, bottom: itemSpacing, right: itemSpacing)
+//        flow.minimumInteritemSpacing = itemSpacing
+//        flow.minimumLineSpacing = itemSpacing
+//        let cellWidth = (UIScreen.main.bounds.width - (itemSpacing * 2) - ((itemsInOneLine - 1) * itemSpacing)) / itemsInOneLine
+//        flow.itemSize = CGSize(width: cellWidth, height: cellWidth)
+        
+        collectionView.collectionViewLayout = layout
+
+        
+        collectionView.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.25)
+        
+        
     }
+    
+    
     
     //MARK: - Methods
     
@@ -140,7 +179,10 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
         cell.delegate = self
         
         cell.nameLabel.text = subCategories[indexPath.item].subCategoryName
-        cell.amountLabel.text = subCategories[indexPath.item].amountBudgeted.toCurrency()
+        let absAmountBudgeted = abs(subCategories[indexPath.item].amountBudgeted)
+        cell.amountLabel.text = absAmountBudgeted.toCurrency()
+        cell.backgroundColor = UIColor(white: 1, alpha: 0.5)
+        cell.layer.cornerRadius = 10
         
         return cell
     }

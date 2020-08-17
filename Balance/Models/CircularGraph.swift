@@ -13,9 +13,9 @@ class CircularGraph: UIView {
     let trackLayer = CAShapeLayer()
     let progressLayer = CAShapeLayer()
     
-    var percentageValue = CGFloat()
+//    var percentageValue = CGFloat()
     
-    var lineWidth: CGFloat = 15 { didSet { updatePath() } }
+    var lineWidth: CGFloat = 20 { didSet { updatePath() } }
     
     var trackLayerFillColor: UIColor = .clear { didSet { trackLayer.fillColor = trackLayerFillColor.cgColor } }
     var progressLayerFillColor: UIColor = .clear { didSet { progressLayer.fillColor = progressLayerFillColor.cgColor } }
@@ -28,23 +28,26 @@ class CircularGraph: UIView {
     
     var trackLayerStrokeEnd: CGFloat = 1 { didSet { trackLayer.strokeEnd = trackLayerStrokeEnd } }
     var progressLayerStrokeEnd: CGFloat = 1 { didSet { CATransaction.begin()
-    CATransaction.setDisableActions(true)
-    progressLayer.strokeEnd = progressLayerStrokeEnd
-    CATransaction.commit() } }
+        
+        CATransaction.setDisableActions(true)
+        
+        progressLayer.strokeEnd = progressLayerStrokeEnd
+                
+        CATransaction.commit() } }
     
     override init(frame: CGRect) {
-      super.init(frame: frame)
-      configure()
+        super.init(frame: frame)
+        configure()
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
-      super.init(coder: aDecoder)
-      configure()
+        super.init(coder: aDecoder)
+        configure()
     }
-
+    
     override func layoutSubviews() {
-      super.layoutSubviews()
-      updatePath()
+        super.layoutSubviews()
+        updatePath()
     }
     
     func configure() {
@@ -65,29 +68,46 @@ class CircularGraph: UIView {
     }
     
     func updatePath() {
-      //The actual calculation for the circular graph
-      let arcCenter = CGPoint(x: bounds.midX, y: bounds.midY)
-      let radius = (min(bounds.width, bounds.height) - lineWidth) / 2
-      let circularPath = UIBezierPath(arcCenter: arcCenter, radius: radius, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
-
-      trackLayer.path = circularPath.cgPath
-      trackLayer.lineWidth = lineWidth
-
-      progressLayer.path = circularPath.cgPath
-      progressLayer.lineWidth = lineWidth
+        //The actual calculation for the circular graph
+        let arcCenter = CGPoint(x: bounds.midX, y: bounds.midY)
+        let radius = (min(bounds.width, bounds.height) - lineWidth) / 2
+        let circularPath = UIBezierPath(arcCenter: arcCenter, radius: radius, startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
+         
+        trackLayer.path = circularPath.cgPath
+        trackLayer.lineWidth = lineWidth
+        
+        progressLayer.path = circularPath.cgPath
+        progressLayer.lineWidth = lineWidth
         progressLayer.lineCap = .round
-
-      //Set the frame in order to rotate the outer circular paths to start at 12 o'clock
-      trackLayer.transform = CATransform3DIdentity
-      trackLayer.frame = bounds
-      trackLayer.transform = CATransform3DMakeRotation(-CGFloat.pi/2, 0, 0, 1)
-
-      progressLayer.transform = CATransform3DIdentity
-      progressLayer.frame = bounds
-      progressLayer.transform = CATransform3DMakeRotation(-CGFloat.pi/2, 0, 0, 1)
+        
+        //Set the frame in order to rotate the outer circular paths to start at 12 o'clock
+        trackLayer.transform = CATransform3DIdentity
+        trackLayer.frame = bounds
+        trackLayer.transform = CATransform3DMakeRotation(-CGFloat.pi/2, 0, 0, 1)
+        
+        progressLayer.transform = CATransform3DIdentity
+        progressLayer.frame = bounds
+        progressLayer.transform = CATransform3DMakeRotation(-CGFloat.pi/2, 0, 0, 1)
+                
     }
     
+    func animateProgress(duration: TimeInterval, value: Double) {
+        
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        
+        basicAnimation.duration = duration
+        basicAnimation.fromValue = 0
+        basicAnimation.toValue = value
+
+//        basicAnimation.timingFunction = CAMediaTimingFunction(name: .linear)
+        
+        progressLayer.strokeEnd = CGFloat(value)
+
+        progressLayer.add(basicAnimation, forKey: "animateProgress")
+        
     }
+    
+}
 
 //class CustomCell: UICollectionViewCell {
 //

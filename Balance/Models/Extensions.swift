@@ -18,21 +18,21 @@ extension UIButton {
     }
 }
 
-extension UIButton {
-    func makeCircular(button: UIButton) {
-        
-        let button = UIButton()
-        
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-        button.layer.masksToBounds = false
-        button.layer.shadowRadius = 2.0
-        button.layer.shadowOpacity = 0.5
-        button.layer.cornerRadius = button.frame.width / 2
-        button.layer.borderColor = UIColor.black.cgColor
-        button.layer.borderWidth = 1.0
-    }
-}
+//extension UIButton {
+//    func makeButtonCircular(button: UIButton) {
+//        
+//        let button = UIButton()
+//        
+//        button.layer.shadowColor = UIColor.black.cgColor
+//        button.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+//        button.layer.masksToBounds = false
+//        button.layer.shadowRadius = 2.0
+//        button.layer.shadowOpacity = 0.5
+//        button.layer.cornerRadius = button.frame.width / 2
+//        button.layer.borderColor = UIColor.black.cgColor
+//        button.layer.borderWidth = 1.0
+//    }
+//}
 
 extension UIView {
     func makeCircular() {
@@ -147,3 +147,75 @@ extension UIColor {
     }
 }
 
+extension UIViewController {
+    func addInputAccessoryForTextFields(textFields: [UITextField], dismissable: Bool = true, previousNextable: Bool = false) {
+        for (index, textField) in textFields.enumerated() {
+            let toolbar: UIToolbar = UIToolbar()
+            toolbar.sizeToFit()
+
+            var items = [UIBarButtonItem]()
+            if previousNextable {
+                let previousButton = UIBarButtonItem(image: UIImage(systemName: "arrow.left"), style: .plain, target: nil, action: nil)
+                previousButton.width = 30
+                if textField == textFields.first {
+                    previousButton.isEnabled = false
+                } else {
+                    previousButton.target = textFields[index - 1]
+                    previousButton.action = #selector(UITextField.becomeFirstResponder)
+                }
+                
+                let nextButton = UIBarButtonItem(image: UIImage(systemName: "arrow.right"), style: .plain, target: nil, action: nil)
+                nextButton.width = 30
+                if textField == textFields.last {
+                    nextButton.isEnabled = false
+                } else {
+                    nextButton.target = textFields[index + 1]
+                    nextButton.action = #selector(UITextField.becomeFirstResponder)
+                }
+                items.append(contentsOf: [previousButton, nextButton])
+            }
+            
+            let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: view, action: #selector(UIView.endEditing))
+            items.append(contentsOf: [spacer, doneButton])
+            
+            
+            toolbar.setItems(items, animated: false)
+            textField.inputAccessoryView = toolbar
+            
+            //        toolbar.backgroundColor = UIColor(red: 204, green: 207, blue: 214)
+            //        toolbar.alpha = 0.8
+            
+            
+        }
+        
+    }
+    
+}
+
+extension UIViewController {
+    func addInputAccessoryForSearchbars(searchBar: UISearchBar) {
+        
+            let toolbar: UIToolbar = UIToolbar()
+            toolbar.sizeToFit()
+
+            var items = [UIBarButtonItem]()
+            
+            let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: view, action: #selector(UIView.endEditing))
+            items.append(contentsOf: [spacer, doneButton])
+            
+            
+            toolbar.setItems(items, animated: false)
+            searchBar.inputAccessoryView = toolbar
+            
+            //        toolbar.backgroundColor = UIColor(red: 204, green: 207, blue: 214)
+            //        toolbar.alpha = 0.8
+            
+            
+        }
+        
+    }
+    
