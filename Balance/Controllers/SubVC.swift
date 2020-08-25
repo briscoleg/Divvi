@@ -46,15 +46,15 @@ class SubVC: UIViewController {
         
         let layout = UICollectionViewFlowLayout()
 //
-        layout.sectionInset = UIEdgeInsets(top: 50, left: 0, bottom: 10, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         
         layout.sectionInset = UIEdgeInsets(top: 25, left: 25, bottom: 25, right: 25)
 
-        layout.itemSize = CGSize(width: screenWidth/2.5, height: screenWidth/2.5)
+        layout.itemSize = CGSize(width: screenWidth/1.1, height: 100)
 
         layout.minimumInteritemSpacing = 0
 
-        layout.minimumLineSpacing = 25
+        layout.minimumLineSpacing = 10
 
         collectionView.collectionViewLayout = layout
         
@@ -103,7 +103,7 @@ class SubVC: UIViewController {
                 
                 let newSubCategory = SubCategory()
                 newSubCategory.subCategoryName = textField.text!
-                newSubCategory.amountBudgeted = 0.0
+                newSubCategory.subCategoryAmountBudgeted = 0.0
                 
                 self.subCategories.append(newSubCategory)
                 
@@ -119,7 +119,7 @@ class SubVC: UIViewController {
             
             
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (cancelAction) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
             self.dismiss(animated: true, completion: nil)
         }
         
@@ -150,12 +150,10 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
     func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         guard orientation == .right else { return nil }
         
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+        let deleteAction = SwipeAction(style: .destructive, title: "") { action, indexPath in
             
             try! self.realm.write {
                 self.realm.delete(self.subCategories[indexPath.row])
-                
-                
                 
             }
             
@@ -164,7 +162,7 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
         }
         
         // customize the action appearance
-        deleteAction.image = UIImage(named: "delete")
+        deleteAction.image = UIImage(systemName: "trash")
         
         return [deleteAction]
     }
@@ -179,7 +177,7 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
         cell.delegate = self
         
         cell.nameLabel.text = subCategories[indexPath.item].subCategoryName
-        let absAmountBudgeted = abs(subCategories[indexPath.item].amountBudgeted)
+        let absAmountBudgeted = abs(subCategories[indexPath.item].subCategoryAmountBudgeted)
         cell.amountLabel.text = absAmountBudgeted.toCurrency()
         cell.backgroundColor = UIColor(white: 1, alpha: 0.5)
         cell.layer.cornerRadius = 10
@@ -201,16 +199,23 @@ extension SubVC: UICollectionViewDelegate {
             
             let textFieldDoubleValue = textField.text?.toDouble()
             
-            let categoryToUpdate = self.subCategories[indexPath.item]
+            let subCategoryAmountToUpdate = self.subCategories[indexPath.item]
+            
+            let categoryAmountToUpdate = self.categorySelected?.categoryAmountBudgeted
             
             try! self.realm.write {
                 
                 if self.categorySelected?.categoryName == "Income" {
-                    categoryToUpdate.amountBudgeted = textFieldDoubleValue!
+                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = textFieldDoubleValue!
                 } else {
-                    categoryToUpdate.amountBudgeted = -textFieldDoubleValue!
+                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = -textFieldDoubleValue!
                 }
                 
+                let sumOfSubCategories: Double = self.subCategories.sum(ofProperty: "subCategoryAmountBudgeted")
+                
+                self.categorySelected?.categoryAmountBudgeted = sumOfSubCategories
+                
+                print(self.categorySelected?.categoryAmountBudgeted)
             }
             
             collectionView.reloadData()
@@ -218,7 +223,7 @@ extension SubVC: UICollectionViewDelegate {
             
             
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (cancelAction) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
             self.dismiss(animated: true, completion: nil)
         }
         
@@ -242,21 +247,4 @@ extension SubVC: UICollectionViewDelegate {
     
 }
 
-extension String {
-    func toDouble() -> Double? {
-        return NumberFormatter().number(from: self)?.doubleValue
-    }
-}
 
-extension Double {
-    func toCurrency() -> String {
-        let formatter = NumberFormatter()
-        formatter.currencySymbol = "$"
-        formatter.numberStyle = .currency
-        
-        let formattedNumber = formatter.string(from: NSNumber(value: self))
-        
-        return formattedNumber!
-        
-    }
-}

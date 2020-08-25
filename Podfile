@@ -11,5 +11,6 @@ pod 'FSCalendar'
 pod 'RealmSwift'
 pod 'SwiftDate'
 pod 'SwipeCellKit'
-
+pod 'MKRingProgressView'
+pod 'SideMenu'
 end

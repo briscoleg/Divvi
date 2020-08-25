@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MKRingProgressView
 
 class BudgetCell: UICollectionViewCell {
     
@@ -27,7 +28,10 @@ class BudgetCell: UICollectionViewCell {
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         
-//        configureCell()
+//       UIView.animate(withDuration: 2.0) {
+//           
+//        self.progressRingView.progress = 0.5
+//       }
 
     }
     

@@ -13,6 +13,8 @@ class BudgetVC: UIViewController {
     
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var incomeRing: CircularGraph!
+    @IBOutlet weak var expenseRing: CircularGraph!
     
     //MARK: - Properties
     
@@ -21,6 +23,12 @@ class BudgetVC: UIViewController {
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self)}()
+    
+    var category: Category?
+    
+    lazy var subCategories1: Results<SubCategory> = { self.realm.objects(SubCategory.self)}()
+    
+    
     
     //    var selectedCategory: Category!
     
@@ -32,42 +40,16 @@ class BudgetVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        
-        
-        
-        //        self.perform(#selector(animateProgress), with: nil, afterDelay: 2.0)
-        
-        
-        //        progressRingSetup()
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
-        
-        
-        //        populateDefaultCategories()
-        //        populateDefaultColors()
-        
-        
-        tabBarController!.tabBar.items![2].badgeValue = nil
-        
-        
-        //        print(Realm.Configuration.defaultConfiguration.fileURL)
-        
-        
-        
+
     }
-    
-    
     
     //MARK: -  Methods
-    
-    @objc func animateProgress() {
-        
-    }
-    
+
     @objc private func refresh() {
         collectionView.reloadData()
     }
@@ -109,7 +91,7 @@ class BudgetVC: UIViewController {
         
         let startDate = calendar.date(from: components)
         
-        components.day = 31
+        components.day = Date().day
         components.hour = 23
         components.minute = 59
         components.second = 59
@@ -151,7 +133,7 @@ class BudgetVC: UIViewController {
             
             
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive) { (cancelAction) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
             self.dismiss(animated: true, completion: nil)
         }
         
@@ -172,7 +154,7 @@ class BudgetVC: UIViewController {
     
 }
 
-//MARK: - Delegate Methods
+//MARK: - CollectionView Delegate Methods
 extension BudgetVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -182,14 +164,16 @@ extension BudgetVC: UICollectionViewDelegate {
             vc.categorySelected = categories[indexPath.item]
             vc.subCategories = categories[indexPath.item].subCategories
             vc.viewTitle = categories[indexPath.item].categoryName
-            navigationController?.pushViewController(vc, animated: true)
+            show(vc, sender: self)
+//            navigationController?.pushViewController(vc, animated: true)
+//            present(vc, animated: true, completion: nil)
             
         }
     }
     
 }
 
-//MARK: - DataSource Methods
+//MARK: - CollectionView DataSource Methods
 extension BudgetVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -199,33 +183,37 @@ extension BudgetVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let datePredicate = predicateForMonthFromDate(date: Date())
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BudgetCell", for: indexPath) as! BudgetCell
+        
+        let datePredicate = predicateForMonthFromDate(date: Date())
         
         cell.nameLabel.text = categories[indexPath.item].categoryName
         
-        let plannedTotal: Double = abs(categories[indexPath.item].subCategories.sum(ofProperty: "amountBudgeted"))
+//        let plannedTotal: Double = abs(categories[indexPath.item].subCategories.sum(ofProperty: "subCategoryAmountBudgeted"))
         
-        cell.amountBudgetedLabel.text = plannedTotal.toCurrency()
+        let plannedTotal: Double = abs(categories[indexPath.item].categoryAmountBudgeted)
         
-//        let transactionCategoryTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ ", categories[indexPath.row])).sum(ofProperty: "transactionAmount"))
-                
-        let transactionCategoryTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ ", categories[indexPath.row])).filter(datePredicate).sum(ofProperty: "transactionAmount"))
+        cell.amountBudgetedLabel.text = "\(plannedTotal.toCurrency())\n Planned"
+          
+        let transactionCategoryTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.row])).filter(datePredicate).sum(ofProperty: "transactionAmount"))
         
-        cell.amountSpentLabel.text = transactionCategoryTotal.toCurrency()
+        if categories[indexPath.item].categoryName == "Income" {
+            cell.amountSpentLabel.text = "\(transactionCategoryTotal.toCurrency()) \nEarned"
+        } else {
+        cell.amountSpentLabel.text = "\(transactionCategoryTotal.toCurrency()) \nSpent"
+        }
+        cell.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.25)
+
+        let plannedToSpentRatio = transactionCategoryTotal / plannedTotal
         
         cell.progressRingView.progressLayerStrokeColor = UIColor(rgb: categories[indexPath.item].categoryColor)
         
-        let plannedToSpentRatio = transactionCategoryTotal / plannedTotal
-        
-        cell.progressRingView.animateProgress(duration: 1.0, value: plannedToSpentRatio)
-        
-        cell.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.25)
-        
+        cell.progressRingView.animateProgress(duration: 0.75, value: plannedToSpentRatio)
+
         cell.progressRingView.backgroundColor = UIColor.clear
         
         cell.layer.shadowColor = UIColor.darkGray.cgColor
+       
         cell.layer.cornerRadius = 7.5
         
         cell.imageView.image = UIImage(named: categories[indexPath.item].categoryName)
@@ -233,6 +221,63 @@ extension BudgetVC: UICollectionViewDataSource {
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+
+        // 1
+        switch kind {
+        // 2
+        case UICollectionView.elementKindSectionHeader:
+          // 3
+          guard
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+              ofKind: kind,
+              withReuseIdentifier: "HeaderView",
+              for: indexPath) as? HeaderView
+            
+          
+            else {
+              fatalError("Invalid view type")
+          }
+          
+          
+          let incomePlannedTotal = categories[0].categoryAmountBudgeted
+          
+          headerView.incomeAmountLabel.text = incomePlannedTotal.toCurrency()
+                      
+          let expensesPlannedTotal: Double = abs(categories.filter(NSPredicate(format: "categoryName != %@", "Income")).sum(ofProperty: "categoryAmountBudgeted"))
+          
+          headerView.expenseAmountLabel.text = expensesPlannedTotal.toCurrency()
+          
+          let incomeMinusExpenseAmount = incomePlannedTotal - expensesPlannedTotal
+          
+          let incomeToExpenseRatio =  expensesPlannedTotal / incomePlannedTotal
+          
+          headerView.netAmountLabel.text = incomeMinusExpenseAmount.toCurrency()
+
+          headerView.progressBar.progress = Float(incomeToExpenseRatio)
+          
+          headerView.progressBar.trackTintColor = UIColor(rgb: Constants.green)
+          
+          if incomeMinusExpenseAmount == 0 {
+            headerView.progressBar.progressTintColor = UIColor(rgb: Constants.blue)
+          } else {
+            headerView.progressBar.progressTintColor = UIColor(rgb: Constants.red)
+          }
+          
+          if incomeMinusExpenseAmount > 0 {
+            headerView.adviceLabel.text = "Great job! You're under budget! You can pay off debt or add to savings!"
+          } else if incomeMinusExpenseAmount < 0 {
+            headerView.adviceLabel.text = "Uh oh! Your planned expenses are more than this month's income! Add more income or cut your expenses!"
+          } else {
+            headerView.adviceLabel.text = "You're right on track! Awesome Job! 🙌"
+          }
+          
+          return headerView
+        default:
+          // 4
+          assert(false, "Invalid element type")
+        }
     
-    
+    }
+        
 }

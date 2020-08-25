@@ -13,6 +13,7 @@ class Category: Object {
     
     @objc dynamic var categoryName = ""
     @objc dynamic var categoryColor = 0xa55eea
+    @objc dynamic var categoryAmountBudgeted = 0.0
     var subCategories = List<SubCategory>()
     
 }
@@ -20,6 +21,6 @@ class Category: Object {
 class SubCategory: Object {
     
     @objc dynamic var subCategoryName = ""
-    @objc dynamic var amountBudgeted = 0.0
+    @objc dynamic var subCategoryAmountBudgeted = 0.0
     
 }

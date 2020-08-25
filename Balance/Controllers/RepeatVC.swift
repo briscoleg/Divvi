@@ -33,7 +33,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
         picker.delegate = self
         picker.dataSource = self
         
-        repeatLabel.text = "Repeats Monthly"
+        repeatLabel.text = "Repeat Monthly"
         
         saveButton.roundCorners()
         
@@ -69,7 +69,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        repeatLabel.text = "Repeats \(pickerData[row])"
+        repeatLabel.text = "Repeat \(pickerData[row])"
         intervalPicked = pickerData[row]
         print(intervalPicked)
         

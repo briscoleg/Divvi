@@ -62,6 +62,7 @@ class CircularGraph: UIView {
         progressLayer.strokeStart = progressLayerStrokeStart
         progressLayer.strokeEnd = progressLayerStrokeEnd
         
+        
         layer.addSublayer(trackLayer)
         layer.addSublayer(progressLayer)
         

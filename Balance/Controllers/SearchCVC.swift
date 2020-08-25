@@ -32,8 +32,10 @@ class SearchCVC: UIViewController{
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
 
-        addInputAccessoryForSearchbars(searchBar: searchBar)
+        addKeyboardAccessoryForSearchbar(searchBar: searchBar)
         
     }
     

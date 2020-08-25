@@ -20,6 +20,7 @@ class AddTransactionVC: UIViewController {
     @IBOutlet weak var dateButton: UIButton!
     @IBOutlet weak var repeatButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var navigationBar: UINavigationBar!
     
     //MARK: - Properties
     let amountFieldAccessory: UIView = {
@@ -58,7 +59,7 @@ class AddTransactionVC: UIViewController {
     let nextAccessoryButton: UIButton! = {
         let nextAccessoryButton = UIButton(type: .custom)
         nextAccessoryButton.setTitleColor(.link, for: .normal)
-        nextAccessoryButton.setTitle("Next", for: .normal)
+        nextAccessoryButton.setTitle("Category", for: .normal)
         nextAccessoryButton.setTitleColor(.white, for: .disabled)
         nextAccessoryButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         nextAccessoryButton.showsTouchWhenHighlighted = true
@@ -67,6 +68,8 @@ class AddTransactionVC: UIViewController {
     }()
     
     let realm = try! Realm()
+    
+    var transaction: Transaction?
     
     var amount = 0.0
     var categoryPicked: Category?
@@ -81,11 +84,15 @@ class AddTransactionVC: UIViewController {
         
         amountTextField.delegate = self
         
+        
+        setEditFields()
+        
+        
         amountTextField.becomeFirstResponder()
         
-                addAmountFieldAccessory()
+        addAmountFieldAccessory()
         
-        //        addDescriptionFieldAccessory()
+//                addDescriptionFieldAccessory()
         
         saveButton.roundCorners()
         
@@ -93,11 +100,30 @@ class AddTransactionVC: UIViewController {
         
         addInputAccessoryForTextFields(textFields: [descriptionTextField], dismissable: true, previousNextable: false)
         
-        
-        
     }
     
     //MARK: - Methods
+    
+    func setEditFields() {
+        
+        if transaction == nil {
+            return
+        } else {
+            amountTextField.text = String(format: "%.2f", transaction!.transactionAmount)
+            categoryPicked = transaction?.transactionCategory
+            categoryButton.setTitle(categoryPicked!.categoryName, for: .normal)
+            categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
+            categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
+            
+            descriptionTextField.text = transaction?.transactionDescription
+            
+            navigationBar.topItem?.title = "Edit Transaction"
+        }
+    }
+        
+        @objc func hideKeyboard() {
+            descriptionTextField.resignFirstResponder()
+        }
     
     func convertAmountToCurrency() {
         
@@ -115,61 +141,88 @@ class AddTransactionVC: UIViewController {
         switch repeatInterval {
             
         case "Yearly":
-            numberOfTransactionsToAdd = 3
-        case "Monthly":
-            numberOfTransactionsToAdd = 12
-        case "Every Two Weeks":
-            numberOfTransactionsToAdd = 24
-        case "Every Week":
             numberOfTransactionsToAdd = 5
+        case "Monthly":
+            numberOfTransactionsToAdd = 60
+        case "Every Two Weeks":
+            numberOfTransactionsToAdd = 60
+        case "Every Week":
+            numberOfTransactionsToAdd = 60
         case "Every Day":
-            numberOfTransactionsToAdd = 4
+            numberOfTransactionsToAdd = 60
         case "Never":
             numberOfTransactionsToAdd = 1
         default:
             break
         }
     }
+    @objc func objcSaveTransaction() {
+        saveTransaction()
+    }
+    fileprivate func saveEdit() {
+        //            let editedTransaction = Transaction()
+        
+        //            convertAmountToCurrency()
+        
+        try! realm.write {
+            transaction!.transactionAmount = amountTextField.text!.toDouble()
+            transaction!.transactionDescription = descriptionTextField.text!
+            transaction!.transactionDate = datePicked
+            transaction!.transactionCategory = categoryPicked
+            transaction!.repeatInterval = repeatInterval
+            
+        }
+    }
     
     func saveTransaction() {
         
-        setNumberOfTransactions()
-        
-        for _ in 1...numberOfTransactionsToAdd {
+        guard amountTextField.text != "" else { amountTextField.placeholder = "Enter an Amount"; return }
+        guard categoryPicked != nil else { categoryButton.setTitle("Select a Category", for: .normal); return }
+                    
+        if navigationBar.topItem?.title == "Edit Transaction" {
             
-            let newTransaction = Transaction()
+            saveEdit()
             
-            var timeAdded = 1.months
+        } else {
             
-            convertAmountToCurrency()
+            setNumberOfTransactions()
             
-            newTransaction.transactionAmount = amount
-            newTransaction.transactionDescription = descriptionTextField.text
-            newTransaction.transactionDate = datePicked
-            newTransaction.transactionCategory = categoryPicked
-            newTransaction.repeatInterval = repeatInterval
-            
-            switch repeatInterval {
-            case "Yearly":
-                timeAdded = 1.years
-            case "Monthly":
-                timeAdded = 1.months
-            case "Every Two Weeks":
-                timeAdded = 2.weeks
-            case "Weekly":
-                timeAdded = 1.weeks
-            case "Daily":
-                timeAdded = 1.days
-            default:
-                break
+            for _ in 1...numberOfTransactionsToAdd {
+                
+                let newTransaction = Transaction()
+                
+                var timeAdded = 1.months
+                
+//                convertAmountToCurrency()
+                
+                newTransaction.transactionAmount = amountTextField.text!.toDouble()
+                newTransaction.transactionDescription = descriptionTextField.text
+                newTransaction.transactionDate = datePicked
+                newTransaction.transactionCategory = categoryPicked
+                newTransaction.repeatInterval = repeatInterval
+                
+                switch repeatInterval {
+                case "Yearly":
+                    timeAdded = 1.years
+                case "Monthly":
+                    timeAdded = 1.months
+                case "Every Two Weeks":
+                    timeAdded = 2.weeks
+                case "Weekly":
+                    timeAdded = 1.weeks
+                case "Daily":
+                    timeAdded = 1.days
+                default:
+                    break
+                }
+                try! realm.write {
+                    realm.add(newTransaction)
+                }
+                
+                datePicked = datePicked + timeAdded
             }
-            try! realm.write {
-                realm.add(newTransaction)
-            }
             
-            datePicked = datePicked + timeAdded
         }
-        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         
         self.dismiss(animated: true, completion: nil)
@@ -238,7 +291,7 @@ class AddTransactionVC: UIViewController {
         amountFieldAccessory.addSubview(keyboardDismissButton)
         amountFieldAccessory.addSubview(plusMinusButton)
         amountFieldAccessory.addSubview(nextAccessoryButton)
-        
+                
         
         NSLayoutConstraint.activate([
             
@@ -283,6 +336,8 @@ class AddTransactionVC: UIViewController {
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
                 amountFieldAccessory.centerYAnchor),
             
+            //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
+            //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
             
             plusMinusButton.centerXAnchor.constraint(equalTo:
                 amountFieldAccessory.centerXAnchor),
@@ -378,6 +433,7 @@ class AddTransactionVC: UIViewController {
     
     @IBAction func dismissPressed(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
+      
     }
     
     
@@ -403,7 +459,7 @@ extension AddTransactionVC: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let dotString = "."
-        let dollarSign = "$"
+//        let dollarSign = "$"
         let minusSign = "-$"
         
         
@@ -413,11 +469,11 @@ extension AddTransactionVC: UITextFieldDelegate {
             
             print(text)
             
-            if !text.contains(dollarSign) && isExpense {
-                textField.text = "-\(dollarSign)\(text)"
+            if !text.contains("-") && isExpense {
+                textField.text = "-\(text)"
             }
-            if !text.contains(dollarSign) && !isExpense {
-                textField.text = "\(dollarSign)\(text)"
+            if !isExpense {
+                textField.text = "\(text)"
             }
             
             let backSpace = string.isEmpty
@@ -443,13 +499,14 @@ extension AddTransactionVC: CategoryDelegate {
         categoryButton.setTitle(categoryPicked!.categoryName, for: .normal)
         categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
         categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
+        descriptionTextField.becomeFirstResponder()
     }
 }
 
 extension AddTransactionVC: RepeatDelegate {
     func getRepeatInterval(interval: String) {
         repeatInterval = interval
-        repeatButton.setTitle("Repeats: \(repeatInterval)", for: .normal)
+        repeatButton.setTitle(repeatInterval, for: .normal)
     }
 }
 
@@ -461,3 +518,16 @@ extension AddTransactionVC: DateDelegate {
     }
 }
 
+extension UIViewController {
+    func convertStringToDouble(from string: String) -> Double {
+        
+        let formatter = NumberFormatter()
+        formatter.currencySymbol = "$"
+        formatter.numberStyle = .currency
+        let number = formatter.number(from: string)
+        let doubleValue = number!.doubleValue
+        
+        return doubleValue
+        
+    }
+}

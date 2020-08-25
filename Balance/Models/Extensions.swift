@@ -38,7 +38,7 @@ extension UIView {
     func makeCircular() {
         
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
+        layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
         layer.masksToBounds = false
         layer.shadowRadius = 1.0
         layer.shadowOpacity = 0.1
@@ -147,7 +147,7 @@ extension UIColor {
     }
 }
 
-extension UIViewController {
+extension AddTransactionVC {
     func addInputAccessoryForTextFields(textFields: [UITextField], dismissable: Bool = true, previousNextable: Bool = false) {
         for (index, textField) in textFields.enumerated() {
             let toolbar: UIToolbar = UIToolbar()
@@ -178,9 +178,11 @@ extension UIViewController {
             let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
             
             let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: view, action: #selector(UIView.endEditing))
-            items.append(contentsOf: [spacer, doneButton])
             
-            
+            let saveButton = UIBarButtonItem(image: UIImage(systemName: "checkmark"), style: .done, target: nil, action: #selector(objcSaveTransaction))
+            let hideButton = UIBarButtonItem(image: UIImage(systemName: "keyboard.chevron.compact.down"), style: .plain, target: nil, action: #selector(hideKeyboard))
+            items.append(contentsOf: [hideButton, spacer, saveButton])
+
             toolbar.setItems(items, animated: false)
             textField.inputAccessoryView = toolbar
             
@@ -194,8 +196,20 @@ extension UIViewController {
     
 }
 
+extension UIView {
+    func round(){
+        
+        let radius = bounds.maxX / 16
+        
+        layer.cornerRadius = radius
+        clipsToBounds = true
+//        layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+    }
+}
+
+
 extension UIViewController {
-    func addInputAccessoryForSearchbars(searchBar: UISearchBar) {
+    func addKeyboardAccessoryForSearchbar(searchBar: UISearchBar) {
         
             let toolbar: UIToolbar = UIToolbar()
             toolbar.sizeToFit()
@@ -218,4 +232,69 @@ extension UIViewController {
         }
         
     }
-    
+
+extension UIColor {
+
+    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: abs(percentage) )
+    }
+
+    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: -1 * abs(percentage) )
+    }
+
+    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        if self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            return UIColor(red: min(red + percentage/100, 1.0),
+                           green: min(green + percentage/100, 1.0),
+                           blue: min(blue + percentage/100, 1.0),
+                           alpha: alpha)
+        } else {
+            return nil
+        }
+    }
+}
+
+extension String {
+    func toDouble() -> Double {
+        return NumberFormatter().number(from: self)?.doubleValue ?? 0.0
+    }
+}
+
+extension Double {
+    func toCurrency() -> String {
+        
+        let formatter = NumberFormatter()
+        formatter.currencySymbol = "$"
+        formatter.numberStyle = .currency
+
+        let formattedNumber = formatter.string(from: NSNumber(value: self))
+
+        return formattedNumber!
+//
+//        let formatter = NumberFormatter()
+//        formatter.currencySymbol = "$"
+//        formatter.numberStyle = .currency
+//        let number = formatter.number(from: self)
+//        let doubleValue = number?.doubleValue
+//
+//        return doubleValue!
+//
+        
+        
+    }
+}
+
+extension Double {
+    func toString() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        
+        let formattedNumber = formatter.string(from: NSNumber(value: self))
+        
+//        return formattedNumber!
+        
+        return NumberFormatter().string(from: NSNumber(value: self))!
+    }
+}
