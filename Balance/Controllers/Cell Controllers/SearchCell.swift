@@ -16,6 +16,7 @@ class SearchCell: SwipeCollectionViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var circleView: UIView!
+    @IBOutlet weak var balanceLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

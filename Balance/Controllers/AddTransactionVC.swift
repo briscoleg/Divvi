@@ -82,6 +82,9 @@ class AddTransactionVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if categoryPicked != nil {
+            getCategory(from: categoryPicked!)
+        }
         amountTextField.delegate = self
         
         
@@ -96,7 +99,11 @@ class AddTransactionVC: UIViewController {
         
         saveButton.roundCorners()
         
-        amountTextField.textColor = UIColor(rgb: Constants.red)
+        if categoryPicked?.categoryName == "Income" {
+            amountTextField.textColor = UIColor(rgb: Constants.green)
+        } else {
+            amountTextField.textColor = UIColor(rgb: Constants.red)
+        }
         
         addInputAccessoryForTextFields(textFields: [descriptionTextField], dismissable: true, previousNextable: false)
         
@@ -160,10 +167,7 @@ class AddTransactionVC: UIViewController {
         saveTransaction()
     }
     fileprivate func saveEdit() {
-        //            let editedTransaction = Transaction()
-        
-        //            convertAmountToCurrency()
-        
+      
         try! realm.write {
             transaction!.transactionAmount = amountTextField.text!.toDouble()
             transaction!.transactionDescription = descriptionTextField.text!
@@ -182,6 +186,8 @@ class AddTransactionVC: UIViewController {
         if navigationBar.topItem?.title == "Edit Transaction" {
             
             saveEdit()
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
             
         } else {
             
@@ -237,9 +243,12 @@ class AddTransactionVC: UIViewController {
         
         let dateString = formatter.string(from: date)
         
-        if repeatInterval == "Never" {
+        if repeatInterval != "Never" && datePicked.day == Date().day {
+            dateButton.setTitle("Starts Today", for: .normal)
+        } else if repeatInterval != "Never" {
             dateButton.setTitle("Starts \(dateString)", for: .normal)
-            
+        } else if repeatInterval == "Never" && datePicked.day == Date().day {
+            dateButton.setTitle("Today", for: .normal)
         } else {
             dateButton.setTitle(dateString, for: .normal)
         }
@@ -500,6 +509,11 @@ extension AddTransactionVC: CategoryDelegate {
         categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
         categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
         descriptionTextField.becomeFirstResponder()
+        if categoryPicked?.categoryName == "Income" {
+            amountTextField.dropMinus()
+            isExpense = false
+            amountTextField.textColor = UIColor(rgb: Constants.green)
+        }
     }
 }
 
@@ -507,6 +521,7 @@ extension AddTransactionVC: RepeatDelegate {
     func getRepeatInterval(interval: String) {
         repeatInterval = interval
         repeatButton.setTitle(repeatInterval, for: .normal)
+        displayRepeatInterval(datePicked)
     }
 }
 
@@ -514,6 +529,7 @@ extension AddTransactionVC: DateDelegate {
     func getCalendarDate(from date: Date) {
         datePicked = date
         displaySelectedDate(date)
+        displayRepeatInterval(date)
         //        displaySelectedInterval(date)
     }
 }

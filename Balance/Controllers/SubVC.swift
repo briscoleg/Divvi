@@ -10,7 +10,6 @@ import UIKit
 import RealmSwift
 import SwipeCellKit
 
-
 class SubVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
@@ -25,6 +24,8 @@ class SubVC: UIViewController {
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     
+    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())).filter(NSPredicate(format: "transactionCategory == %@", categorySelected as! CVarArg)).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    
     var viewTitle = ""
     
     var screenSize: CGRect!
@@ -38,39 +39,53 @@ class SubVC: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionCleared"), object: nil)
+        
+        
         self.title = viewTitle
+        //        self.view.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.25)
         
         screenSize = UIScreen.main.bounds
         screenWidth = screenSize.width
         screenHeight = screenSize.height
         
         let layout = UICollectionViewFlowLayout()
-//
+        //
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         
-        layout.sectionInset = UIEdgeInsets(top: 25, left: 25, bottom: 25, right: 25)
-
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 25, bottom: 10, right: 25)
+        
         layout.itemSize = CGSize(width: screenWidth/1.1, height: 100)
-
+        
         layout.minimumInteritemSpacing = 0
-
+        
         layout.minimumLineSpacing = 10
-
-        collectionView.collectionViewLayout = layout
         
-//        let itemSpacing: CGFloat = 3
-//        let itemsInOneLine: CGFloat = 3
-//        let flow = UICollectionView().collectionViewLayout as! UICollectionViewFlowLayout
-//        flow.sectionInset = UIEdgeInsets(top: itemSpacing, left: itemSpacing, bottom: itemSpacing, right: itemSpacing)
-//        flow.minimumInteritemSpacing = itemSpacing
-//        flow.minimumLineSpacing = itemSpacing
-//        let cellWidth = (UIScreen.main.bounds.width - (itemSpacing * 2) - ((itemsInOneLine - 1) * itemSpacing)) / itemsInOneLine
-//        flow.itemSize = CGSize(width: cellWidth, height: cellWidth)
+        layout.headerReferenceSize = CGSize(width: 0, height: 50)
         
         collectionView.collectionViewLayout = layout
-
         
-        collectionView.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.25)
+        //        let itemSpacing: CGFloat = 3
+        //        let itemsInOneLine: CGFloat = 3
+        //        let flow = UICollectionView().collectionViewLayout as! UICollectionViewFlowLayout
+        //        flow.sectionInset = UIEdgeInsets(top: itemSpacing, left: itemSpacing, bottom: itemSpacing, right: itemSpacing)
+        //        flow.minimumInteritemSpacing = itemSpacing
+        //        flow.minimumLineSpacing = itemSpacing
+        //        let cellWidth = (UIScreen.main.bounds.width - (itemSpacing * 2) - ((itemsInOneLine - 1) * itemSpacing)) / itemsInOneLine
+        //        flow.itemSize = CGSize(width: cellWidth, height: cellWidth)
+        
+        //        collectionView.collectionViewLayout = layout
+        
+        
+        
+        //        collectionView.register(SearchCell.self, forCellWithReuseIdentifier: "SearchCell")
+        //        collectionView.register(SubCell.self, forCellWithReuseIdentifier: "SubCell")
+        
+        
         
         
     }
@@ -78,6 +93,28 @@ class SubVC: UIViewController {
     
     
     //MARK: - Methods
+    
+    @objc func refresh() {
+        collectionView.reloadData()
+    }
+    
+    func displayAmount(with amount: Double) -> NSAttributedString {
+        
+        let currencyFormatter = NumberFormatter()
+        currencyFormatter.numberStyle = .currency
+        currencyFormatter.locale = Locale.current
+        
+        let number = currencyFormatter.string(from: NSNumber(value: amount))
+        
+        let mutableAttributedString = NSMutableAttributedString(string: number!)
+        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
+            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 9), .baselineOffset: 6],
+                                                  range: NSRange(range, in: mutableAttributedString.string))
+        }
+        
+        return mutableAttributedString
+        
+    }
     
     func convertStringtoDouble(with amount: String) -> Double {
         
@@ -89,62 +126,46 @@ class SubVC: UIViewController {
         
     }
     
+    func currentMonthPredicate(date: Date) -> NSPredicate {
+        
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.day = 01
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.day = 31
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
+    }
+    
     //MARK: - IBActions
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
-        var textField = UITextField()
-        
-        let alert = UIAlertController(title: "Add Subcategory", message: "", preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: "Add", style: .default) { (action) in
-            
-            try! self.realm.write {
-                
-                let newSubCategory = SubCategory()
-                newSubCategory.subCategoryName = textField.text!
-                newSubCategory.subCategoryAmountBudgeted = 0.0
-                
-                self.subCategories.append(newSubCategory)
-                
-                self.realm.add(self.subCategories)
-                
-            }
-            
-            self.categories = self.realm.objects(Category.self)
-            
-            
-            self.collectionView.reloadData()
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCategoryCollectionView"), object: nil)
-            
-            
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
-            self.dismiss(animated: true, completion: nil)
-        }
-        
-        alert.addTextField { (field) in
-            
-            textField = field
-            textField.placeholder = "Enter a subcategory name"
-            textField.autocapitalizationType = .words
-            
-            //Make Capital
-            
-            
-        }
-        alert.addAction(action)
-        alert.addAction(cancelAction)
+        if let vc =  storyboard?.instantiateViewController(identifier: "AddTransactionVC") as? AddTransactionVC {
+        vc.modalPresentationStyle = .fullScreen
+        vc.categoryPicked = categorySelected
+        self.present(vc, animated: true, completion: nil)
         
         
-        
-        self.present(alert, animated: true, completion: nil)
     }
     
+    
+}
 }
 
-//MARK: - Extensions
-
+//MARK: - CollectionView DataSource
 extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
     
     func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
@@ -168,83 +189,136 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return subCategories.count
+        
+        return transactions.count
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubCell", for: indexPath) as! SubCell
         
-        cell.delegate = self
+        let transactionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubCell", for: indexPath) as! SubCell
         
-        cell.nameLabel.text = subCategories[indexPath.item].subCategoryName
-        let absAmountBudgeted = abs(subCategories[indexPath.item].subCategoryAmountBudgeted)
-        cell.amountLabel.text = absAmountBudgeted.toCurrency()
-        cell.backgroundColor = UIColor(white: 1, alpha: 0.5)
-        cell.layer.cornerRadius = 10
+        transactionCell.contentView.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.5)
         
-        return cell
+        transactionCell.nameLabel.text = transactions[indexPath.item].transactionDescription
+        
+        transactionCell.dateLabel.text = transactions[indexPath.item].transactionDate.dateToString()
+        
+        transactionCell.amountLabel.text = transactions[indexPath.item].transactionAmount.toCurrency()
+        
+        let balanceAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", transactions[indexPath.item].transactionDate).sum(ofProperty: "transactionAmount")
+        
+        transactionCell.balanceLabel.text = balanceAtDate.toCurrency()
+        
+        if transactions[indexPath.item].isCleared == false {
+            transactionCell.nameLabel.textColor = .lightGray
+            transactionCell.amountLabel.textColor = .lightGray
+            transactionCell.dateLabel.textColor = .lightGray
+            transactionCell.balanceLabel.textColor = .lightGray
+        } else {
+            transactionCell.nameLabel.textColor = .black
+            transactionCell.amountLabel.textColor = .black
+            transactionCell.dateLabel.textColor = .black
+            transactionCell.balanceLabel.textColor = .black
+        }
+        transactionCell.backgroundColor = UIColor(white: 1, alpha: 0.5)
+        transactionCell.layer.cornerRadius = 10
+        
+        return transactionCell
     }
-    
 }
 
+
+//MARK: - CollectionView Delegate
 extension SubVC: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        // 2
+        case UICollectionView.elementKindSectionHeader:
+            // 3
+            guard
+                let headerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: "SubHeaderView",
+                    for: indexPath) as? SubHeaderView
+                else {
+                    fatalError("Invalid view type")
+            }
+            let totalPlanned: Double = transactions.sum(ofProperty: "transactionAmount")
+            let totalSpent: Double = transactions.filter(NSPredicate(format: "isCleared == 1")).sum(ofProperty: "transactionAmount")
+            
+            headerView.totalPlannedLabel.text = "Planned: \(abs(totalPlanned).toCurrency())"
+            
+            headerView.totalSpentLabel.text = "Spent: \(abs(totalSpent).toCurrency())"
+            
+            return headerView
+        default:
+            // 4
+            assert(false, "Invalid element type")
+        }
+        
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        var textField = UITextField()
         
-        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName):", message: "", preferredStyle: .alert)
         
-        let action = UIAlertAction(title: "Add", style: .default) { (action) in
-            
-            let textFieldDoubleValue = textField.text?.toDouble()
-            
-            let subCategoryAmountToUpdate = self.subCategories[indexPath.item]
-            
-            let categoryAmountToUpdate = self.categorySelected?.categoryAmountBudgeted
-            
-            try! self.realm.write {
-                
-                if self.categorySelected?.categoryName == "Income" {
-                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = textFieldDoubleValue!
-                } else {
-                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = -textFieldDoubleValue!
-                }
-                
-                let sumOfSubCategories: Double = self.subCategories.sum(ofProperty: "subCategoryAmountBudgeted")
-                
-                self.categorySelected?.categoryAmountBudgeted = sumOfSubCategories
-                
-                print(self.categorySelected?.categoryAmountBudgeted)
-            }
-            
-            collectionView.reloadData()
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCategoryCollectionView"), object: nil)
-            
-            
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
-            self.dismiss(animated: true, completion: nil)
-        }
-        
-        alert.addTextField { (field) in
-            
-            textField = field
-            textField.placeholder = "Enter monthly total"
-            
-            textField.keyboardType = .decimalPad
-            
-        }
-        alert.addAction(action)
-        alert.addAction(cancelAction)
-        
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
-        
-        self.present(alert, animated: true, completion: nil)
+//        var textField = UITextField()
+//
+//        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName):", message: "", preferredStyle: .alert)
+//
+//        let action = UIAlertAction(title: "Add", style: .default) { (action) in
+//
+//            let textFieldDoubleValue = textField.text?.toDouble()
+//
+//            let subCategoryAmountToUpdate = self.subCategories[indexPath.item]
+//
+//            let categoryAmountToUpdate = self.categorySelected?.categoryAmountBudgeted
+//
+//            try! self.realm.write {
+//
+//                if self.categorySelected?.categoryName == "Income" {
+//                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = textFieldDoubleValue!
+//                } else {
+//                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = -textFieldDoubleValue!
+//                }
+//
+//                let sumOfSubCategories: Double = self.subCategories.sum(ofProperty: "subCategoryAmountBudgeted")
+//
+//                self.categorySelected?.categoryAmountBudgeted = sumOfSubCategories
+//
+//                print(self.categorySelected?.categoryAmountBudgeted)
+//            }
+//
+//            collectionView.reloadData()
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
+//
+//
+//        }
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+//            self.dismiss(animated: true, completion: nil)
+//        }
+//
+//        alert.addTextField { (field) in
+//
+//            textField = field
+//            textField.placeholder = "Enter monthly total"
+//
+//            textField.keyboardType = .decimalPad
+//
+//        }
+//        alert.addAction(action)
+//        alert.addAction(cancelAction)
+//
+//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
+//
+//        self.present(alert, animated: true, completion: nil)
+//
+//
+//
     }
-    
-    
-    
 }
 
 

@@ -286,6 +286,23 @@ extension Double {
     }
 }
 
+extension Date {
+    func dateToString() -> String {
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "MMMM d, yyyy"
+        
+        let dateString = formatter.string(from: date)
+        
+//        if dateString == formatter.string(from: Date()) {
+//            dateLabel.text = "Today"
+//        } else {
+//            dateLabel.text = dateString
+//        }
+        return dateString
+    }
+}
+
 extension Double {
     func toString() -> String {
         let formatter = NumberFormatter()

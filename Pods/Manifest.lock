@@ -1,42 +1,42 @@
 PODS:
   - FSCalendar (2.8.1)
+  - GTProgressBar (0.3.3)
   - MKRingProgressView (2.2.3)
   - Realm (4.4.1):
     - Realm/Headers (= 4.4.1)
   - Realm/Headers (4.4.1)
   - RealmSwift (4.4.1):
     - Realm (= 4.4.1)
-  - SideMenu (6.4.9)
   - SwiftDate (6.1.0)
   - SwipeCellKit (2.7.1)
 
 DEPENDENCIES:
   - FSCalendar
+  - GTProgressBar
   - MKRingProgressView
   - RealmSwift
-  - SideMenu
   - SwiftDate
   - SwipeCellKit
 
 SPEC REPOS:
   trunk:
     - FSCalendar
+    - GTProgressBar
     - MKRingProgressView
     - Realm
     - RealmSwift
-    - SideMenu
     - SwiftDate
     - SwipeCellKit
 
 SPEC CHECKSUMS:
   FSCalendar: 5245140456fcbcac5824c203b98bd8068bdfee1a
+  GTProgressBar: a480283ecb0ada50de16c71e634892826928f640
   MKRingProgressView: 404b3157e7a533ab8668d29ec20042c35d12ca1d
   Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
   RealmSwift: 3eb8924ff7100df5928c7602f71d0fec51e7c9c5
-  SideMenu: 8ef57a3cfc024a2d3fc1c036c7fe98537baec9e0
   SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
   SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: 42968423a76290f66b9e93f789b7537b02fd4bfa
+PODFILE CHECKSUM: 949f629a17c7be606039fb602321a34d05464740
 
 COCOAPODS: 1.9.1

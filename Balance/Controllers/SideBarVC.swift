@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SideMenu
 
 private let reuseIdentifier = "SideBarCell"
 
@@ -91,7 +90,7 @@ class SideBarVC: UICollectionViewController {
         
             
         case 1:
-            let vc = storyboard?.instantiateViewController(withIdentifier: "SearchCVC") as! SearchCVC
+            let vc = storyboard?.instantiateViewController(withIdentifier: "TaskVC") as! TaskVC
             dismiss(animated: false, completion: nil)
 //            presentingViewController = (presentingViewController as? UITabBarController)?.selectedViewController as? UINavigationController
             show(vc, sender: self)

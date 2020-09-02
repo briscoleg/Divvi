@@ -26,7 +26,7 @@ class BudgetVC: UIViewController {
     
     var category: Category?
     
-    lazy var subCategories1: Results<SubCategory> = { self.realm.objects(SubCategory.self)}()
+//    lazy var subCategories1: Results<SubCategory> = { self.realm.objects(SubCategory.self)}()
     
     
     
@@ -45,6 +45,7 @@ class BudgetVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
 
     }
     

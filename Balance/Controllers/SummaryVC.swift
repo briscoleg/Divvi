@@ -9,7 +9,7 @@
 import UIKit
 import FSCalendar
 import RealmSwift
-import SideMenu
+import GTProgressBar
 
 class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, UINavigationControllerDelegate {
     
@@ -24,13 +24,13 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     @IBOutlet weak var todayButton: UIButton!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var prevButton: UIButton!
-    @IBOutlet weak var addButton: UIButton!
     
     
     //MARK: - Properties
     let realm = try! Realm()
     lazy var transaction: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
+    lazy var unclearedTransactionsToDate: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
     
     //    let addItemVC = AddVC()
     var selectedCalendarDate = Date()
@@ -39,7 +39,6 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     var startDate: Date?
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
-    var menu: SideMenuNavigationController?
     
     
     //MARK: - ViewDidLoad
@@ -53,10 +52,13 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         collectionView.dataSource = self
         collectionView.delegate = self
-       
+        
+        customizeTabBar()
+        showBadgeForUnclearedTransactions()
+                
+      
 //        calendar.scrollDirection = .vertical
         
-        addButton.makeCircular()
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
@@ -100,6 +102,24 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     }
     //MARK: - Methods
     
+    fileprivate func showBadgeForUnclearedTransactions() {
+        if unclearedTransactionsToDate.count > 0 {
+            tabBarController!.tabBar.items![3].badgeValue = "1"
+        } else {
+            tabBarController!.tabBar.items![3].badgeValue = nil
+        }
+    }
+    
+    func customizeTabBar() {
+        let appearance = tabBarController?.tabBar.standardAppearance
+        
+        appearance?.backgroundColor = .white
+        appearance?.shadowImage = nil
+        appearance?.shadowColor = nil
+        tabBarController?.tabBar.isTranslucent = true
+        tabBarController?.tabBar.standardAppearance = appearance!
+    }
+    
     func setupCollectionView() {
         
         let screenSize = UIScreen.main.bounds
@@ -108,11 +128,11 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let layout = UICollectionViewFlowLayout()
                 
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 40, bottom: 5, right: 40)
         
-        layout.itemSize = CGSize(width: 200, height: 35)
+        layout.itemSize = CGSize(width: 175, height: 35)
         
-        layout.minimumInteritemSpacing = 0
+        layout.minimumInteritemSpacing = 10
         
         layout.minimumLineSpacing = 0
         
@@ -133,32 +153,32 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
 //        calendar.setCurrentPage(previousMonth!, animated: true)
 //    }
     
-    func createAddButton() {
-        
-        let button = UIButton()
-        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        
-        let image = UIImage(systemName: "plus")!
-        
-        UIGraphicsBeginImageContextWithOptions(button.frame.size, false, image.scale)
-        let rect  = CGRect(x: 0, y: 0, width: button.frame.size.width, height: button.frame.size.height)
-        UIBezierPath(roundedRect: rect, cornerRadius: rect.width/2).addClip()
-        image.draw(in: rect)
-        
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        
-        let color = UIColor(rgb: Constants.blue)
-        button.backgroundColor = color
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        let barButton = UIBarButtonItem()
-        barButton.customView = button
-        self.navigationItem.rightBarButtonItem = barButton
-        
-        //            [addRightBarButtonWithImage(UIImage(named: "menu")!), UIBarButtonItem(customView: addButton)]
-        
-    }
+//    func createAddButton() {
+//
+//        let button = UIButton()
+//        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+//
+//        let image = UIImage(systemName: "plus")!
+//
+//        UIGraphicsBeginImageContextWithOptions(button.frame.size, false, image.scale)
+//        let rect  = CGRect(x: 0, y: 0, width: button.frame.size.width, height: button.frame.size.height)
+//        UIBezierPath(roundedRect: rect, cornerRadius: rect.width/2).addClip()
+//        image.draw(in: rect)
+//
+//        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//
+//
+//        let color = UIColor(rgb: Constants.blue)
+//        button.backgroundColor = color
+//        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+//        let barButton = UIBarButtonItem()
+//        barButton.customView = button
+//        self.navigationItem.rightBarButtonItem = barButton
+//
+//        //            [addRightBarButtonWithImage(UIImage(named: "menu")!), UIBarButtonItem(customView: addButton)]
+//
+//    }
     
     @objc func todayItemClicked(sender: AnyObject) {
         self.calendar.setCurrentPage(Date(), animated: false)
@@ -289,9 +309,6 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     func setupCategories() {
         
         if categories.count == 0 {
-            
-            //Show Badge
-            tabBarController!.tabBar.items![2].badgeValue = "1"
             
             //Income Category
             let paycheck = SubCategory()
@@ -556,8 +573,6 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         dateRangePredicate = predicateForDayFromDate(date: Date())
         
         collectionView.reloadData()
-    }
-    @IBAction func addButtonPressed(_ sender: Any) {
     }
     
     
