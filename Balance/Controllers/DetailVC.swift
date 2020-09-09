@@ -19,6 +19,7 @@ class DetailVC: UIViewController {
     @IBOutlet weak var repeatLabel: UILabel!
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
+    @IBOutlet weak var deleteRepeatButton: UIButton!
     
     let realm = try! Realm()
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
@@ -32,6 +33,8 @@ class DetailVC: UIViewController {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        
+        deleteRepeatButton.roundCorners()
                 
         editButton.roundCorners()
         displayTransactionInfo()
@@ -50,6 +53,10 @@ class DetailVC: UIViewController {
         descLabel.text = transaction?.transactionDescription
         }
         repeatLabel.text = "Repeats: \(transaction!.repeatInterval)"
+        
+        if transaction?.repeatInterval == "Never" {
+            deleteRepeatButton.isHidden = true
+        }
             
         
         formatNumber(transaction!.transactionAmount)

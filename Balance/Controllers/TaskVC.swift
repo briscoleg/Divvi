@@ -20,7 +20,7 @@ class TaskVC: UIViewController{
     //MARK: - Properties
     let realm = try! Realm()
     lazy var allTransactions: Results<Transaction> = { realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true) }()
-    lazy var unclearedTransactionsToDate: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date().advanced(by: 100)).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    lazy var unclearedTransactionsToDate: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date().advanced(by: 1000)).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
     //    lazy var categories: Results<Category> = { self.realm.objects(Category.self).sorted(byKeyPath: "transactionDate", ascending: true) }()
     //    let categoryVC = CategoryVC()
     var unclearedView = true
@@ -73,10 +73,10 @@ class TaskVC: UIViewController{
     fileprivate func updateInstructionsLabel() {
         if unclearedTransactionsToDate.count > 0 {
             instructionsLabel.text = "Swipe right to clear transactions.\nSwipe left to delete."
-            tabBarController!.tabBar.items![3].badgeValue = "1"
+            tabBarController!.tabBar.items![1].badgeValue = "1"
         } else {
             instructionsLabel.text = "All clear!"
-            tabBarController!.tabBar.items![3].badgeValue = nil
+            tabBarController!.tabBar.items![1].badgeValue = nil
         }
     }
     
@@ -133,16 +133,15 @@ extension TaskVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        var transactionToPresent = allTransactions[indexPath.item]
-//        if unclearedView {
-//            transactionToPresent = allTransactions[indexPath.item]
-//        } else {
-//            transactionToPresent = unclearedTransactionsToDate[indexPath.item]
-//        }
+        var transactionToPresent = Transaction()
+        if unclearedView {
+            transactionToPresent = unclearedTransactionsToDate[indexPath.item]
+        } else {
+            transactionToPresent = allTransactions[indexPath.item]
+        }
+
         let vc = storyboard?.instantiateViewController(withIdentifier: "DetailVC") as! DetailVC
-        
-//        let transactions = realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true)[indexPath.row]
-        
+                
         vc.transaction = transactionToPresent
         
         present(vc, animated: true, completion: nil)
@@ -188,7 +187,7 @@ extension TaskVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
                 self.updateInstructionsLabel()
                 
                 action.fulfill(with: .reset)
-                            
+                                            
                 collectionView.reloadData()
                 
                 NotificationCenter.default.post(name: NSNotification.Name("transactionCleared"), object: nil)
@@ -235,17 +234,16 @@ extension TaskVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if unclearedView {
+            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCell", for: indexPath) as! SearchCell
             
             cell.delegate = self
             cell.imageView.image = UIImage(named: unclearedTransactionsToDate[indexPath.item].transactionCategory!.categoryName)
             cell.imageView.tintColor = .white
-            
             cell.circleView.backgroundColor = UIColor(rgb: unclearedTransactionsToDate[indexPath.item].transactionCategory!.categoryColor)
             cell.descLabel.textColor = .black
             cell.dateLabel.textColor = .black
             cell.balanceLabel.textColor = .black
-            
             cell.descLabel.text = unclearedTransactionsToDate[indexPath.item].transactionDescription
             cell.amountLabel.attributedText = displayAmount(with: unclearedTransactionsToDate[indexPath.item].transactionAmount)
             

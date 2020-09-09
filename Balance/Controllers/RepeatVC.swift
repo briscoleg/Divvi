@@ -8,9 +8,7 @@
 
 import UIKit
 
-protocol RepeatDelegate {
-    func getRepeatInterval(interval: String)
-}
+
 
 class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
@@ -23,7 +21,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     //MARK: - Properties
     var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily", "Never"]
     var intervalPicked = "Monthly"
-    var repeatDelegate: RepeatDelegate!
+//    var repeatDelegate: RepeatDelegate!
     
     
     //MARK: - ViewDidLoad
@@ -47,7 +45,7 @@ class RepeatVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     //MARK: - IBActions
     @IBAction func savePressed(_ sender: UIButton) {
         
-        repeatDelegate.getRepeatInterval(interval: intervalPicked)
+//        repeatDelegate.getRepeatInterval(interval: intervalPicked)
         
         self.dismiss(animated: true, completion: nil)
         

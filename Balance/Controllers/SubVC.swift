@@ -194,11 +194,17 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
         
     }
     
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return categorySelected?.subCategories.count ?? 0
+    }
+    
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let transactionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubCell", for: indexPath) as! SubCell
         
-        transactionCell.contentView.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.5)
+        transactionCell.contentView.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.20)
         
         transactionCell.nameLabel.text = transactions[indexPath.item].transactionDescription
         
@@ -221,7 +227,7 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
             transactionCell.dateLabel.textColor = .black
             transactionCell.balanceLabel.textColor = .black
         }
-        transactionCell.backgroundColor = UIColor(white: 1, alpha: 0.5)
+//        transactionCell.backgroundColor = UIColor(white: 1, alpha: 0.05)
         transactionCell.layer.cornerRadius = 10
         
         return transactionCell
@@ -250,7 +256,9 @@ extension SubVC: UICollectionViewDelegate {
             
             headerView.totalPlannedLabel.text = "Planned: \(abs(totalPlanned).toCurrency())"
             
-            headerView.totalSpentLabel.text = "Spent: \(abs(totalSpent).toCurrency())"
+//            headerView.totalSpentLabel.text = "Spent: \(abs(totalSpent).toCurrency())"
+            
+            headerView.totalSpentLabel.text = categorySelected?.subCategories[indexPath.section].subCategoryName
             
             return headerView
         default:
@@ -264,7 +272,12 @@ extension SubVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         
-        
+        if let vc = storyboard?.instantiateViewController(identifier: "DetailVC") as? DetailVC {
+            
+            vc.transaction = transactions[indexPath.item]
+            
+            present(vc, animated: true, completion: nil)
+        }
 //        var textField = UITextField()
 //
 //        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName):", message: "", preferredStyle: .alert)

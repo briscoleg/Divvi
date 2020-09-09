@@ -1,4 +1,5 @@
 ${PODS_ROOT}/Target Support Files/Pods-Balance/Pods-Balance-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Charts/Charts.framework
 ${BUILT_PRODUCTS_DIR}/FSCalendar/FSCalendar.framework
 ${BUILT_PRODUCTS_DIR}/GTProgressBar/GTProgressBar.framework
 ${BUILT_PRODUCTS_DIR}/MKRingProgressView/MKRingProgressView.framework

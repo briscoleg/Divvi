@@ -77,7 +77,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController.isKind(of: AddTransactionVC.self) {
             if let vc =  storyboard?.instantiateViewController(identifier: "AddTransactionVC") {
-                vc.modalPresentationStyle = .fullScreen
+                vc.modalPresentationStyle = .formSheet
                 self.present(vc, animated: true, completion: nil)
                 return false
             }

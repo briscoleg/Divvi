@@ -39,7 +39,14 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     var startDate: Date?
     var endDate: Date?
     var dateRangePredicate = NSPredicate()
-    
+    fileprivate lazy var dateFormatter2: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+
+
+
+        return formatter
+    }()
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -104,9 +111,9 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     
     fileprivate func showBadgeForUnclearedTransactions() {
         if unclearedTransactionsToDate.count > 0 {
-            tabBarController!.tabBar.items![3].badgeValue = "1"
+            tabBarController!.tabBar.items![1].badgeValue = "1"
         } else {
-            tabBarController!.tabBar.items![3].badgeValue = nil
+            tabBarController!.tabBar.items![1].badgeValue = nil
         }
     }
     
@@ -122,17 +129,17 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     
     func setupCollectionView() {
         
-        let screenSize = UIScreen.main.bounds
-        let screenWidth = screenSize.width
-        let screenHeight = screenSize.height
+//        let screenSize = UIScreen.main.bounds
+//        let screenWidth = screenSize.width
+//        let screenHeight = screenSize.height
         
         let layout = UICollectionViewFlowLayout()
                 
-        layout.sectionInset = UIEdgeInsets(top: 5, left: 40, bottom: 5, right: 40)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
-        layout.itemSize = CGSize(width: 175, height: 35)
+        layout.itemSize = CGSize(width: 150, height: 35)
         
-        layout.minimumInteritemSpacing = 10
+        layout.minimumInteritemSpacing = 0
         
         layout.minimumLineSpacing = 0
         
@@ -301,7 +308,7 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let endDate = calendar.date(from: components)
         
-        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 && transactionAmount < 0", argumentArray: [startDate!, endDate!])
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 || transactionAmount < 0", argumentArray: [startDate!, endDate!])
     }
     
     //MARK: - Setup Categories
@@ -603,19 +610,50 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
+        let formatter = DateFormatter()
+        
+//        let dateString = formatter.string(from: date)
+        
         let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
         
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
+
+        let incomeAndExpenseTransactions = realm.objects(Transaction.self).filter(positiveAndNegativeTransactionPredicate(date: date))
         
         for _ in incomeTransaction {
+            
             return 1
+    
         }
+        
         for _ in expenseTransaction {
             return 1
         }
-        
         return 0
+
     }
+            
+//        for transaction in incomeTransaction {
+//
+//            if expenseTransaction.contains(transaction) {
+//                return 1
+//            } else {
+//                return 0
+//            }
+//        }
+//            for _ in incomeTransaction {
+//                return 1
+//            }
+//            for _ in expenseTransaction {
+//                return 1
+//            }
+//            for _ in incomeAndExpenseTransactions {
+//                return 2
+//            }
+//
+//
+//        return 0
+//    }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
         

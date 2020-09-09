@@ -13,49 +13,129 @@ import GTProgressBar
 class Budget2Cell: UICollectionViewCell {
     
     @IBOutlet weak var nameLabel: UILabel!
-       @IBOutlet weak var progressRingView: CircularGraph!
-       @IBOutlet weak var amountSpentLabel: UILabel!
-       @IBOutlet weak var amountBudgetedLabel: UILabel!
-       @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var progressRingView: CircularGraph!
+    @IBOutlet weak var amountSpentLabel: UILabel!
+    @IBOutlet weak var amountBudgetedLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var percentLabel: UILabel!
     @IBOutlet weak var rightArrowIconImageView: UIImageView!
     @IBOutlet weak var progressBar: GTProgressBar!
     
     let realm = try! Realm()
+    
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
+    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self)}()
+    lazy var plannedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())) }()
     
-    
-
+    var category: Category?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-//        let index = IndexPath.self
-//
-//        let plannedTotal: Double = abs(categories[IndexPath].categoryAmountBudgeted)
-//
-//        let plannedToSpentRatio = transactionCategoryTotal / plannedTotal
-//        progressView.progress = Float(plannedToSpentRatio)
         
-//        progressView.clipsToBounds = false
-//        progressView.layer.cornerRadius = 10
-//        progressView.progress = 0.5
-//        progressView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width/1.1, height: 100)
-        
-
     }
     
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-////        showProgress()
-//        progressBar.transform = progressBar.transform.scaledBy(x: UIScreen.main.bounds.width/1.1, y: 100)
-//    }
-    
-    
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
-    
-    func showProgress() {
+        nameLabel.textColor = .white
+        amountSpentLabel.textColor = .white
+        amountBudgetedLabel.textColor = .white
+        rightArrowIconImageView.tintColor = .white
+        imageView.tintColor = .white
+        percentLabel.textColor = .white
         
-//        progressView.progress = progressBarProgress
-//        progressView.setProgress(Float(progressBarProgress), animated: true)
+        progressBar.labelPosition = .right
+        progressBar.cornerType = .square
+        progressBar.cornerRadius = 5
+        progressBar.barBorderWidth = 0
+        progressBar.labelTextColor = .black
+        
+        
+        layer.shadowColor = UIColor.darkGray.cgColor
+        layer.cornerRadius = 7.5
+        
+        
+        
+    }
+    
+    func currentMonthPredicate(date: Date) -> NSPredicate {
+        
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.day = 01
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.day = 31
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
+    }
+    
+    func predicateForMonthFromDate(date: Date) -> NSPredicate {
+        
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.day = 01
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.day = Date().day
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
+    }
+    
+    func configureCells(with indexPath: IndexPath) {
+        
+        nameLabel.text = categories[indexPath.item].categoryName
+        imageView.image = UIImage(named: categories[indexPath.item].categoryName)
+        
+        progressBar.barFillColor = UIColor(rgb: categories[indexPath.item].categoryColor)
+        progressBar.barBackgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.75)
+        
+        let datePredicate = predicateForMonthFromDate(date: Date())
+        
+        let plannedTotal: Double = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).sum(ofProperty: "transactionAmount"))
+        
+        amountBudgetedLabel.text = "\(plannedTotal.toCurrency())\n Planned"
+        
+        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && isCleared == true", categories[indexPath.row])).filter(datePredicate).sum(ofProperty: "transactionAmount"))
+        
+        
+        if categories[indexPath.item].categoryName == "Income" {
+            amountSpentLabel.text = "\(spentTotal.toCurrency()) \nEarned"
+        } else {
+            amountSpentLabel.text = "\(spentTotal.toCurrency()) \nSpent"
+        }
+        
+        let plannedToSpentRatio = spentTotal / plannedTotal
+        
+        percentLabel.text = plannedToSpentRatio.toPercent()
+        
+        if plannedTotal == 0 {
+            progressBar.progress = 0
+        } else {
+            progressBar.animateTo(progress: CGFloat(plannedToSpentRatio))
+        }
         
     }
     

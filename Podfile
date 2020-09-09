@@ -13,4 +13,6 @@ pod 'SwiftDate'
 pod 'SwipeCellKit'
 pod 'MKRingProgressView'
 pod 'GTProgressBar'
+pod 'Charts'
+pod 'ChartsRealm'
 end

@@ -95,6 +95,9 @@ class AddTransactionVC: UIViewController {
         
         addAmountFieldAccessory()
         
+                navigationBar.setValue(true, forKey: "hidesShadow")
+
+        
 //                addDescriptionFieldAccessory()
         
         saveButton.roundCorners()
@@ -154,9 +157,9 @@ class AddTransactionVC: UIViewController {
         case "Every Two Weeks":
             numberOfTransactionsToAdd = 60
         case "Every Week":
-            numberOfTransactionsToAdd = 60
+            numberOfTransactionsToAdd = 30
         case "Every Day":
-            numberOfTransactionsToAdd = 60
+            numberOfTransactionsToAdd = 30
         case "Never":
             numberOfTransactionsToAdd = 1
         default:
@@ -424,11 +427,11 @@ class AddTransactionVC: UIViewController {
     
     @IBAction func repeatButtonPressed(_ sender: UIButton) {
         
-        let recurringVC = storyboard?.instantiateViewController(withIdentifier: "RecurringViewController") as! RepeatVC
+        let calendarVC = storyboard?.instantiateViewController(withIdentifier: "CalendarViewController") as! CalendarVC
         
-        recurringVC.repeatDelegate = self
+        calendarVC.dateDelegate = self
         
-        present(recurringVC, animated: true, completion: nil)
+        present(calendarVC, animated: true, completion: nil)
         
     }
     
@@ -517,13 +520,13 @@ extension AddTransactionVC: CategoryDelegate {
     }
 }
 
-extension AddTransactionVC: RepeatDelegate {
-    func getRepeatInterval(interval: String) {
-        repeatInterval = interval
-        repeatButton.setTitle(repeatInterval, for: .normal)
-        displayRepeatInterval(datePicked)
-    }
-}
+//extension AddTransactionVC: RepeatDelegate {
+//    func getRepeatInterval(interval: String) {
+//        repeatInterval = interval
+//        repeatButton.setTitle(repeatInterval, for: .normal)
+//        displayRepeatInterval(datePicked)
+//    }
+//}
 
 extension AddTransactionVC: DateDelegate {
     func getCalendarDate(from date: Date) {
@@ -531,6 +534,11 @@ extension AddTransactionVC: DateDelegate {
         displaySelectedDate(date)
         displayRepeatInterval(date)
         //        displaySelectedInterval(date)
+    }
+    func getRepeatInterval(interval: String) {
+        repeatInterval = interval
+        repeatButton.setTitle("Repeats: \(repeatInterval)", for: .normal)
+        displayRepeatInterval(datePicked)
     }
 }
 

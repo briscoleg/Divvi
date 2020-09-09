@@ -241,44 +241,44 @@ extension BudgetVC: UICollectionViewDataSource {
           }
           
           
-          let incomePlannedTotal = categories[0].categoryAmountBudgeted
-          
-          headerView.incomeAmountLabel.text = incomePlannedTotal.toCurrency()
-                      
-          let expensesPlannedTotal: Double = abs(categories.filter(NSPredicate(format: "categoryName != %@", "Income")).sum(ofProperty: "categoryAmountBudgeted"))
-          
-          headerView.expenseAmountLabel.text = expensesPlannedTotal.toCurrency()
-          
-          let incomeMinusExpenseAmount = incomePlannedTotal - expensesPlannedTotal
-          
-          let incomeToExpenseRatio =  expensesPlannedTotal / incomePlannedTotal
-          
-          headerView.netAmountLabel.text = incomeMinusExpenseAmount.toCurrency()
-
-          headerView.progressBar.progress = Float(incomeToExpenseRatio)
-          
-          headerView.progressBar.trackTintColor = UIColor(rgb: Constants.green)
-          
-          if incomeMinusExpenseAmount == 0 {
-            headerView.progressBar.progressTintColor = UIColor(rgb: Constants.blue)
-          } else {
-            headerView.progressBar.progressTintColor = UIColor(rgb: Constants.red)
-          }
-          
-          if incomeMinusExpenseAmount > 0 {
-            headerView.adviceLabel.text = "Great job! You're under budget! You can pay off debt or add to savings!"
-          } else if incomeMinusExpenseAmount < 0 {
-            headerView.adviceLabel.text = "Uh oh! Your planned expenses are more than this month's income! Add more income or cut your expenses!"
-          } else {
-            headerView.adviceLabel.text = "You're right on track! Awesome Job! 🙌"
-          }
-          
+//          let incomePlannedTotal = categories[0].categoryAmountBudgeted
+//
+//          headerView.incomeAmountLabel.text = incomePlannedTotal.toCurrency()
+//
+//          let expensesPlannedTotal: Double = abs(categories.filter(NSPredicate(format: "categoryName != %@", "Income")).sum(ofProperty: "categoryAmountBudgeted"))
+//
+//          headerView.expenseAmountLabel.text = expensesPlannedTotal.toCurrency()
+//
+//          let incomeMinusExpenseAmount = incomePlannedTotal - expensesPlannedTotal
+//
+//          let incomeToExpenseRatio =  expensesPlannedTotal / incomePlannedTotal
+//
+//          headerView.netAmountLabel.text = incomeMinusExpenseAmount.toCurrency()
+//
+//          headerView.progressBar.progress = Float(incomeToExpenseRatio)
+//
+//          headerView.progressBar.trackTintColor = UIColor(rgb: Constants.green)
+//
+//          if incomeMinusExpenseAmount == 0 {
+//            headerView.progressBar.progressTintColor = UIColor(rgb: Constants.blue)
+//          } else {
+//            headerView.progressBar.progressTintColor = UIColor(rgb: Constants.red)
+//          }
+//
+//          if incomeMinusExpenseAmount > 0 {
+//            headerView.adviceLabel.text = "Great job! You're under budget! You can pay off debt or add to savings!"
+//          } else if incomeMinusExpenseAmount < 0 {
+//            headerView.adviceLabel.text = "Uh oh! Your planned expenses are more than this month's income! Add more income or cut your expenses!"
+//          } else {
+//            headerView.adviceLabel.text = "You're right on track! Awesome Job! 🙌"
+//          }
+//
           return headerView
         default:
           // 4
           assert(false, "Invalid element type")
         }
-    
+
     }
         
 }

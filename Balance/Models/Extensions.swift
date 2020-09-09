@@ -315,3 +315,16 @@ extension Double {
         return NumberFormatter().string(from: NSNumber(value: self))!
     }
 }
+
+extension Double {
+    func toPercent() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+//        formatter.multiplier = 1
+        var percentString = formatter.string(from: NSNumber(value: self))
+        if self.isNaN {
+            percentString = formatter.string(from: 0)
+        }
+        return percentString!
+    }
+}
