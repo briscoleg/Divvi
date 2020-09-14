@@ -62,24 +62,20 @@ class Budget2VC: UIViewController {
     private func setCollectionViewLayout() {
         
         let layout = UICollectionViewFlowLayout()
-        
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
-        
+                
         layout.sectionInset = UIEdgeInsets(top: 10, left: 25, bottom: 10, right: 25)
-        
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width/1.1, height: 100)
-        
         layout.minimumInteritemSpacing = 0
-        
         layout.minimumLineSpacing = 12
-        
-        layout.headerReferenceSize = CGSize(width: 0, height: 325)
+        layout.headerReferenceSize = CGSize(width: 0, height: 425)
         
         collectionView.collectionViewLayout = layout
         
     }
     
     //MARK: - IBActions
+    
+    
     
 //    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
 //

@@ -94,7 +94,6 @@ class SummaryVC: UIViewController, FSCalendarDelegate, FSCalendarDataSource, FSC
         
         let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
         self.navigationItem.rightBarButtonItem = todayItem
-        //        DataManager.shared.summaryVC = self
                 
         getTotalAtDate(Date())
         
@@ -728,7 +727,7 @@ extension SummaryVC: UICollectionViewDataSource {
         currencyFormatter.numberStyle = .currency
         currencyFormatter.locale = Locale.current
         
-        let amount = currencyFormatter.string(from: NSNumber(value: transactions[indexPath.row].transactionAmount))
+        let amount = currencyFormatter.string(from: NSNumber(value: abs(transactions[indexPath.row].transactionAmount)))
         
         cell.amountLabel.text = amount
         

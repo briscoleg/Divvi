@@ -13,7 +13,6 @@ import GTProgressBar
 class Budget2Cell: UICollectionViewCell {
     
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var progressRingView: CircularGraph!
     @IBOutlet weak var amountSpentLabel: UILabel!
     @IBOutlet weak var amountBudgetedLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
@@ -25,9 +24,10 @@ class Budget2Cell: UICollectionViewCell {
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self)}()
-    lazy var plannedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())) }()
+    lazy var plannedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     
     var category: Category?
+    var selectedDate = Date()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -62,7 +62,7 @@ class Budget2Cell: UICollectionViewCell {
         
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         
-        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: MonthToAdjust.date)
         
         components.day = 01
         components.hour = 00
@@ -110,11 +110,11 @@ class Budget2Cell: UICollectionViewCell {
         imageView.image = UIImage(named: categories[indexPath.item].categoryName)
         
         progressBar.barFillColor = UIColor(rgb: categories[indexPath.item].categoryColor)
-        progressBar.barBackgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.75)
+        progressBar.barBackgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.55)
         
-        let datePredicate = predicateForMonthFromDate(date: Date())
+        let datePredicate = predicateForMonthFromDate(date: MonthToAdjust.date)
         
-        let plannedTotal: Double = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).sum(ofProperty: "transactionAmount"))
+        let plannedTotal: Double = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).filter(currentMonthPredicate(date: selectedDate)).sum(ofProperty: "transactionAmount"))
         
         amountBudgetedLabel.text = "\(plannedTotal.toCurrency())\n Planned"
         
@@ -137,6 +137,15 @@ class Budget2Cell: UICollectionViewCell {
             progressBar.animateTo(progress: CGFloat(plannedToSpentRatio))
         }
         
+    }
+    
+}
+
+extension Budget2Cell: DateSwitcherDelegate {
+    
+    func getDate(with date: Date) {
+        selectedDate = date
+        print(selectedDate)
     }
     
 }

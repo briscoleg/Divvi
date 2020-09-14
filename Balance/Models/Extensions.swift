@@ -328,3 +328,17 @@ extension Double {
         return percentString!
     }
 }
+
+extension UIViewController {
+    func convertStringToDouble(from string: String) -> Double {
+        
+        let formatter = NumberFormatter()
+        formatter.currencySymbol = "$"
+        formatter.numberStyle = .currency
+        let number = formatter.number(from: string)
+        let doubleValue = number!.doubleValue
+        
+        return doubleValue
+        
+    }
+}

@@ -533,7 +533,6 @@ extension AddTransactionVC: DateDelegate {
         datePicked = date
         displaySelectedDate(date)
         displayRepeatInterval(date)
-        //        displaySelectedInterval(date)
     }
     func getRepeatInterval(interval: String) {
         repeatInterval = interval
@@ -542,16 +541,4 @@ extension AddTransactionVC: DateDelegate {
     }
 }
 
-extension UIViewController {
-    func convertStringToDouble(from string: String) -> Double {
-        
-        let formatter = NumberFormatter()
-        formatter.currencySymbol = "$"
-        formatter.numberStyle = .currency
-        let number = formatter.number(from: string)
-        let doubleValue = number!.doubleValue
-        
-        return doubleValue
-        
-    }
-}
+

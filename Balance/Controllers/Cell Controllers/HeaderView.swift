@@ -9,6 +9,11 @@
 import UIKit
 import Charts
 import RealmSwift
+import GTProgressBar
+
+protocol DateSwitcherDelegate {
+    func getDate(with date: Date)
+}
 
 class HeaderView: UICollectionReusableView {
     
@@ -16,12 +21,17 @@ class HeaderView: UICollectionReusableView {
     @IBOutlet weak var monthYearLabel: UILabel!
     @IBOutlet weak var leftButton: UIButton!
     @IBOutlet weak var rightButton: UIButton!
+    @IBOutlet weak var expensesLabel: UILabel!
+    @IBOutlet weak var incomeLabel: UILabel!
+    @IBOutlet weak var cashFlowProgressBar: GTProgressBar!
     
     let realm = try! Realm()
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self)}()
     lazy var plannedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
+    
+    var dateSwitcherDelegate: DateSwitcherDelegate!
     
     var category: Category?
     
@@ -31,8 +41,7 @@ class HeaderView: UICollectionReusableView {
         formatter.dateFormat = "MMMM yyyy"
         return formatter
     }()
-    var graphCenterText = "Expenses"
-
+    var graphCenterText = ""
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -40,9 +49,42 @@ class HeaderView: UICollectionReusableView {
         pieChart.delegate = self
         updateMonthYearLabel()
         
+//        configureProgressBar()
+        
+        
+    }
+    
+ 
+        
+    private func configureProgressBar() {
+        
+//        let totalIncome = transactions.filter(NSPredicate(format: "transactionCategory == %@", "Income")).filter(selectedMonthPredicate()).sum(ofProperty: "transactionAmount")
+        
+
+        
+
     }
     
     func configureHeader() {
+        
+        let totalIncome: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[0])).filter(selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+                let totalExpenses: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory != %@", categories[0])).filter(selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+                print(totalIncome)
+                print(totalExpenses)
+                let incomeToExpenseRatio = totalExpenses / totalIncome
+                cashFlowProgressBar.progress = CGFloat(incomeToExpenseRatio)
+                if incomeToExpenseRatio > 1 {
+                    cashFlowProgressBar.barFillColor = UIColor(rgb: Constants.red)
+                } else if incomeToExpenseRatio == 1 {
+                    cashFlowProgressBar.barFillColor = UIColor(rgb: Constants.blue)
+                } else {
+                    cashFlowProgressBar.barFillColor = UIColor(rgb: Constants.green)
+                }
+        //        cashFlowProgressBar.barBackgroundColor = UIColor(rgb: Constants.blue)
+                cashFlowProgressBar.barBorderColor = .clear
+                
+                incomeLabel.text = "Income:\n\(totalIncome.toCurrency())"
+                expensesLabel.text = "Expenses:\n\(totalExpenses.toCurrency())"
         
         pieChart.delegate = self
         pieChart.legend.enabled = false
@@ -55,7 +97,7 @@ class HeaderView: UICollectionReusableView {
         
         
         for category in expenseCategories {
-            let totalCategoryValue = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(currentMonthPredicate(date: selectedDate)).sum(ofProperty: "transactionAmount"))
+            let totalCategoryValue = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
             if totalCategoryValue > 0 {
                 entries.append(PieChartDataEntry(value: Double(totalCategoryValue), label: nil))
             }
@@ -66,11 +108,12 @@ class HeaderView: UICollectionReusableView {
         expenseDataSet.colors.removeAll()
         expenseDataSet.sliceSpace = 2
         expenseDataSet.yValuePosition = .insideSlice
+        expenseDataSet.valueColors = [.clear]
         expenseDataSet.valueLineColor = .clear
         expenseDataSet.entryLabelColor = UIColor.black
         
         for category in expenseCategories {
-            let totalCategoryValue = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(currentMonthPredicate(date: selectedDate)).sum(ofProperty: "transactionAmount"))
+            let totalCategoryValue = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
             
             if totalCategoryValue > 0 {
                 expenseDataSet.colors.append(NSUIColor(rgb: category.categoryColor))
@@ -102,12 +145,12 @@ class HeaderView: UICollectionReusableView {
         let expenseCategoryName = categories[index + 1].categoryName
         
         print(index)
-
-        graphCenterText = "\(expenseCategoryName)\n\(amount.toCurrency())"
-
+        
+        graphCenterText = amount.toCurrency()
+        
         print(graphCenterText)
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "chartSliceSelected"), object: nil)
-
+        
         
         
     }
@@ -158,6 +201,29 @@ class HeaderView: UICollectionReusableView {
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
     }
     
+    func selectedMonthPredicate() -> NSPredicate {
+        
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: MonthToAdjust.date)
+        
+        components.day = 01
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.day = 31
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
+    }
+    
     //    func getPredicateForSelectedMonth(date: Date) -> NSPredicate {
     //
     //        let selectedYear = selectedDate.year
@@ -186,25 +252,41 @@ class HeaderView: UICollectionReusableView {
         
     }
     
-//    private func setGraphCenterText(index: Int, amount: Double) {
-//
-//        graphCenterText = "\(index)\n\(amount)"
-//        print(graphCenterText)
-//
-//    }
+    //    private func setGraphCenterText(index: Int, amount: Double) {
+    //
+    //        graphCenterText = "\(index)\n\(amount)"
+    //        print(graphCenterText)
+    //
+    //    }
     
+    //MARK: - IBActions
     @IBAction func leftButtonPressed(_ sender: UIButton) {
         selectedDate = Calendar.current.date(byAdding: .month, value: -1, to: selectedDate)!
+        MonthToAdjust.decreaseDateByAMonth()
         monthYearLabel.text = formatter.string(from: selectedDate)
+        configureProgressBar()
+//        dateSwitcherDelegate.getDate(with: selectedDate)
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
     }
     
     @IBAction func rightButtonPressed(_ sender: UIButton) {
         selectedDate = Calendar.current.date(byAdding: .month, value: 1, to: selectedDate)!
+
+        MonthToAdjust.increaseDateByAMonth()
         monthYearLabel.text = formatter.string(from: selectedDate)
+        configureProgressBar()
+
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
         
     }
+    
+    @IBAction func chartSwitcherPressed(_ sender: UIButton) {
+        
+        
+        
+    }
+    
     
 }
 
@@ -215,19 +297,17 @@ extension HeaderView: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         
         let selectedCategoryAmount = highlight.y
-       
+        
         let selectedCategoryIndex = highlight.dataSetIndex
         
-            if let dataSet = chartView.data?.dataSets[ highlight.dataSetIndex] {
-
-                let sliceIndex: Int = dataSet.entryIndex( entry: entry)
-                let sliceAmount: Double = highlight.y
-                
-                print(sliceIndex)
-                
-                setGraphCenterText(index: sliceIndex, amount: sliceAmount)
-                                
-            }
+        if let dataSet = chartView.data?.dataSets[ highlight.dataSetIndex] {
+            
+            let sliceIndex: Int = dataSet.entryIndex( entry: entry)
+            let sliceAmount: Double = highlight.y
+                        
+            setGraphCenterText(index: sliceIndex, amount: sliceAmount)
+            
+        }
         
         let animator = Animator()
         

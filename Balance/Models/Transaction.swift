@@ -18,6 +18,7 @@ class Transaction: Object {
     @objc dynamic var transactionCategory: Category? = nil
     @objc dynamic var repeatInterval = ""
     @objc dynamic var isCleared = false
+    @objc dynamic var subCategoryName = ""
     @objc dynamic var transactionID = UUID().uuidString
     
     convenience init(theDate: Date) {
