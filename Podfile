@@ -14,5 +14,5 @@ pod 'SwipeCellKit'
 pod 'MKRingProgressView'
 pod 'GTProgressBar'
 pod 'Charts'
-pod 'ChartsRealm'
+#pod 'InAppSettingsKit'
 end

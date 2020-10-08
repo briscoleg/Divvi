@@ -294,6 +294,7 @@ public class GTProgressBar: UIView {
     }
     
     private func updateProgressLabelText() {
+       
         progressLabel.text = "\(Int(round(_progress * 100)))%"
     }
     

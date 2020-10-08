@@ -47,39 +47,39 @@ class BudgetCell: UICollectionViewCell {
 
     //MARK: - Extensions
 }
-extension UICollectionViewCell {
-    func configureCell() {
-        layer.cornerRadius = 4.5
-        layer.borderWidth = 5.0
-        layer.borderColor = UIColor.clear.cgColor
-        backgroundColor = UIColor.white
-        
-//        layer.masksToBounds = true
+//extension UICollectionViewCell {
+//    func configureCell() {
+//        layer.cornerRadius = 4.5
+//        layer.borderWidth = 5.0
+//        layer.borderColor = UIColor.clear.cgColor
+//        backgroundColor = UIColor.white
+//        
+////        layer.masksToBounds = true
+////
+////        layer.shadowColor = UIColor.black.cgColor
+////        layer.shadowOffset = CGSize(width: -1, height: 1)
+////        layer.shadowRadius = 10.0
+////        layer.shadowOpacity = 0.1
+//        layer.masksToBounds = false
+//        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: contentView.layer.cornerRadius).cgPath
+//        
+//    }
+//}
+//    
+//    extension UICollectionViewCell {
 //
-//        layer.shadowColor = UIColor.black.cgColor
-//        layer.shadowOffset = CGSize(width: -1, height: 1)
-//        layer.shadowRadius = 10.0
-//        layer.shadowOpacity = 0.1
-        layer.masksToBounds = false
-        layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: contentView.layer.cornerRadius).cgPath
-        
-    }
-}
-    
-    extension UICollectionViewCell {
-
-    func dropShadow() {
-            self.layer.masksToBounds = false
-            self.layer.shadowColor = UIColor.black.cgColor
-            self.layer.shadowOpacity = 0.5
-            self.layer.shadowOffset = CGSize(width: -1, height: 1)
-            self.layer.shadowRadius = 1
-            self.layer.shadowPath = UIBezierPath(rect: self.bounds).cgPath
-            self.layer.shouldRasterize = true
-            self.layer.rasterizationScale = UIScreen.main.scale
-
-        }
-}
+//    func dropShadow() {
+//            self.layer.masksToBounds = false
+//            self.layer.shadowColor = UIColor.black.cgColor
+//            self.layer.shadowOpacity = 0.5
+//            self.layer.shadowOffset = CGSize(width: -1, height: 1)
+//            self.layer.shadowRadius = 1
+//            self.layer.shadowPath = UIBezierPath(rect: self.bounds).cgPath
+//            self.layer.shouldRasterize = true
+//            self.layer.rasterizationScale = UIScreen.main.scale
+//
+//        }
+//}
 
 //extension UIColor {
 //

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class CategoryCell: UICollectionViewCell {
 
@@ -20,6 +21,8 @@ class CategoryCell: UICollectionViewCell {
         
         circleView.makeCircular()
         
+        categoryImage.tintColor = .white
+        
     }
 
 //    func setColors(with color: UIColor) {
@@ -32,8 +35,18 @@ class CategoryCell: UICollectionViewCell {
 //    }
     
     func configureCategory (with category: Category) {
+        
         categoryName.text = category.categoryName
         categoryImage.image = UIImage(named: category.categoryName)
+        circleView.backgroundColor = UIColor(rgb: category.categoryColor)
+        
+    }
+    
+    func configureSubcategory(with subCategory: SubCategory, and categorySelected: Category) {
+        
+        categoryName.text = subCategory.subCategoryName
+        categoryImage.image = UIImage(named: categorySelected.categoryName)
+        circleView.backgroundColor = UIColor(rgb: categorySelected.categoryColor)
         
     }
     

@@ -8,21 +8,35 @@
 
 import Foundation
 
-class MonthToAdjust {
+import Foundation
+
+class SelectedMonth {
     
-    static var date = Date()
+    static var shared = SelectedMonth()
+
+    var date: Date
     
-    init(date: Date) {
-        MonthToAdjust.self.date = date
+    init(_ date: Date = Date()) {
+        self.date = date
     }
     
-    static func increaseDateByAMonth() {
-        MonthToAdjust.date = Calendar.current.date(byAdding: .month, value: 1, to: MonthToAdjust.date)!
-        print(MonthToAdjust.date)
+    func increaseDateByAMonth() {
+        date = Calendar.current.date(byAdding: .month, value: 1, to: self.date)!
     }
-    static func decreaseDateByAMonth() {
-        MonthToAdjust.date = Calendar.current.date(byAdding: .month, value: -1, to: MonthToAdjust.date)!
-        print(MonthToAdjust.date)
+    func decreaseDateByAMonth() {
+        date = Calendar.current.date(byAdding: .month, value: -1, to: self.date)!
     }
-    
+    func selectedMonthPredicate() -> NSPredicate {
+        
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+
+        let components = calendar.dateComponents([.year, .month], from: SelectedMonth.shared.date)
+        let startOfMonth = calendar.date(from: components)
+        var comps2 = DateComponents()
+        comps2.month = 1
+        comps2.day = -1
+        let endOfMonth = calendar.date(byAdding: comps2, to: startOfMonth!)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startOfMonth!, endOfMonth!])
+    }
 }

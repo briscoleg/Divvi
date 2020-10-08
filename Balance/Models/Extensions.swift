@@ -342,3 +342,23 @@ extension UIViewController {
         
     }
 }
+
+extension Double {
+    func toAttributedString(size: Int, offset: Int, weight: UIFont.Weight) -> NSAttributedString {
+        
+        let currencyFormatter = NumberFormatter()
+        currencyFormatter.numberStyle = .currency
+        currencyFormatter.locale = Locale.current
+        
+        let number = currencyFormatter.string(from: NSNumber(value: abs(self)))
+        
+        let mutableAttributedString = NSMutableAttributedString(string: number!)
+        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
+            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: CGFloat(size), weight: weight), .baselineOffset: offset],
+                                                  range: NSRange(range, in: mutableAttributedString.string))
+        }
+        
+        return mutableAttributedString
+        
+    }
+}

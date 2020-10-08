@@ -22,15 +22,14 @@ class SubVC: UIViewController {
     
     var categorySelected: Category?
     
-    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
-    
-    //    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())).filter(NSPredicate(format: "transactionCategory == %@", categorySelected as! CVarArg)).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    //    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     
     var viewTitle = ""
     
-    lazy var items: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())).filter(NSPredicate(format: "transactionCategory == %@", categorySelected as! CVarArg)) }()
+    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(SelectedMonth.shared.selectedMonthPredicate()).filter(NSPredicate(format: "transactionCategory == %@", categorySelected!)).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    
     var sectionNames: [String] {
-        return Set(items.value(forKey: "transactionDescription") as! [String]).sorted()
+        return Set(transactions.value(forKey: "subCategoryName") as! [String]).sorted()
     }
     
     var screenSize: CGRect!
@@ -45,9 +44,7 @@ class SubVC: UIViewController {
         collectionView.delegate = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionCleared"), object: nil)
         
         
@@ -58,7 +55,9 @@ class SubVC: UIViewController {
         screenWidth = screenSize.width
         screenHeight = screenSize.height
         
-        createCollectionViewLayout()
+        configureCollectionViewLayout()
+        
+        hideNavigationBarLine()
         
         //        let itemSpacing: CGFloat = 3
         //        let itemsInOneLine: CGFloat = 3
@@ -89,68 +88,26 @@ class SubVC: UIViewController {
         collectionView.reloadData()
     }
     
-    func createCollectionViewLayout() {
+    private func hideNavigationBarLine() {
+//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for:.default)
+//        navigationController?.navigationBar.shadowImage = UIImage()
+//        navigationController?.navigationBar.layoutIfNeeded()
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    func configureCollectionViewLayout() {
+        
         let layout = UICollectionViewFlowLayout()
         
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
-        layout.itemSize = CGSize(width: screenWidth/1.1, height: 100)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: 75)
         layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 10
+        layout.minimumLineSpacing = 5
         layout.headerReferenceSize = CGSize(width: 0, height: 50)
         
         collectionView.collectionViewLayout = layout
     }
     
-    func displayAmount(with amount: Double) -> NSAttributedString {
-        
-        let currencyFormatter = NumberFormatter()
-        currencyFormatter.numberStyle = .currency
-        currencyFormatter.locale = Locale.current
-        
-        let number = currencyFormatter.string(from: NSNumber(value: amount))
-        
-        let mutableAttributedString = NSMutableAttributedString(string: number!)
-        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
-            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 9), .baselineOffset: 6],
-                                                  range: NSRange(range, in: mutableAttributedString.string))
-        }
-        
-        return mutableAttributedString
-        
-    }
-    
-    func convertStringtoDouble(with amount: String) -> Double {
-        
-        let formatter = NumberFormatter()
-        
-        let formattedNumber = formatter.number(from: amount)
-        
-        return formattedNumber!.doubleValue
-        
-    }
-    
-    func currentMonthPredicate(date: Date) -> NSPredicate {
-        
-        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-        
-        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: MonthToAdjust.date)
-        
-        components.day = 01
-        components.hour = 00
-        components.minute = 00
-        components.second = 00
-        
-        let startDate = calendar.date(from: components)
-        
-        components.day = 31
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        
-        let endDate = calendar.date(from: components)
-        
-        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
-    }
     
     //MARK: - IBActions
     
@@ -158,7 +115,7 @@ class SubVC: UIViewController {
         
         if let vc =  storyboard?.instantiateViewController(identifier: "AddTransactionVC") as? AddTransactionVC {
             vc.modalPresentationStyle = .fullScreen
-            vc.categoryPicked = categorySelected
+            //            vc.subcategoryPicked = categorySelected
             self.present(vc, animated: true, completion: nil)
             
             
@@ -169,38 +126,37 @@ class SubVC: UIViewController {
 }
 
 //MARK: - CollectionView DataSource
-extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        guard orientation == .right else { return nil }
-        
-        let deleteAction = SwipeAction(style: .destructive, title: "") { action, indexPath in
-            
-            try! self.realm.write {
-                self.realm.delete(self.subCategories[indexPath.row])
-                
-            }
-            
-            collectionView.reloadData()
-            
-        }
-        
-        // customize the action appearance
-        deleteAction.image = UIImage(systemName: "trash")
-        
-        return [deleteAction]
-    }
+extension SubVC: UICollectionViewDataSource {
+    //
+    //    func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+    //        guard orientation == .right else { return nil }
+    //
+    //        let deleteAction = SwipeAction(style: .destructive, title: "") { action, indexPath in
+    //
+    //            try! self.realm.write {
+    //                self.realm.delete(self.subCategories[indexPath.item])
+    //
+    //            }
+    //
+    //            collectionView.reloadData()
+    //
+    //        }
+    //
+    //        deleteAction.image = UIImage(systemName: "trash")
+    //
+    //        return [deleteAction]
+    //    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        
-        return items.filter("transactionDescription == %@", sectionNames[section]).count
+        return transactions.filter("subCategoryName == %@", sectionNames[section]).count
         
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         
         return sectionNames.count
+        
     }
     
     
@@ -209,48 +165,42 @@ extension SubVC: UICollectionViewDataSource, SwipeCollectionViewCellDelegate {
         
         let transactionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubCell", for: indexPath) as! SubCell
         
-        transactionCell.contentView.backgroundColor = UIColor(rgb: categorySelected!.categoryColor).withAlphaComponent(0.20)
+        transactionCell.configureSubcategoryCell(with: categorySelected!)
         
-        let transactionDescription = items.filter("transactionDescription == %@", sectionNames[indexPath.section])[indexPath.item].transactionDescription
-        transactionCell.nameLabel.text = transactionDescription
+        let sectionSubcategory = sectionNames[indexPath.section]
         
-        let transactionDate = items.filter("transactionDescription == %@", sectionNames[indexPath.section])[indexPath.item].transactionDate
+        let filteredTransactions = transactions.filter("subCategoryName == %@", sectionSubcategory)[indexPath.item]
+        
+        let transactionName = filteredTransactions.subCategoryName
+        transactionCell.nameLabel.text = transactionName
+        
+        let transactionDate = filteredTransactions.transactionDate
         transactionCell.dateLabel.text = transactionDate.dateToString()
         
-        let transactionAmount = items.filter("transactionDescription == %@", sectionNames[indexPath.section])[indexPath.item].transactionAmount
-        transactionCell.amountLabel.text = transactionAmount.toCurrency()
-        //
-        let balanceAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", items[indexPath.item].transactionDate).sum(ofProperty: "transactionAmount")
-        transactionCell.balanceLabel.text = balanceAtDate.toCurrency()
+        let transactionAmount = filteredTransactions.transactionAmount
+        transactionCell.amountLabel.attributedText = transactionAmount.toAttributedString(size: 9, offset: 6, weight: .regular)
         
         
-        //        if transactions[indexPath.item].transactionDescription == subCategories[indexPath.section].subCategoryName {
+        let balanceAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", transactionDate).sum(ofProperty: "transactionAmount")
+        transactionCell.balanceLabel.attributedText = balanceAtDate.toAttributedString(size: 9, offset: 6, weight: .regular)
         
+        if transactions.filter("subCategoryName == %@", sectionSubcategory)[indexPath.item].isCleared == false {
+            transactionCell.nameLabel.textColor = .lightGray
+            transactionCell.amountLabel.textColor = .lightGray
+            transactionCell.dateLabel.textColor = .lightGray
+            transactionCell.balanceLabel.textColor = .lightGray
+        } else {
+            transactionCell.nameLabel.textColor = .black
+            if filteredTransactions.transactionAmount > 0 {
+                transactionCell.amountLabel.textColor = UIColor(rgb: Constants.green)
+            } else {
+                transactionCell.amountLabel.textColor = UIColor(rgb: Constants.red)
+            }
+            transactionCell.dateLabel.textColor = .black
+            transactionCell.balanceLabel.textColor = .black
+        }
         
-        //
-                            if items.filter("transactionDescription == %@", sectionNames[indexPath.section])[indexPath.item].isCleared == false {
-                                transactionCell.nameLabel.textColor = .lightGray
-                                transactionCell.amountLabel.textColor = .lightGray
-                                transactionCell.dateLabel.textColor = .lightGray
-                                transactionCell.balanceLabel.textColor = .lightGray
-                            } else {
-                                transactionCell.nameLabel.textColor = .black
-                                transactionCell.amountLabel.textColor = .black
-                                transactionCell.dateLabel.textColor = .black
-                                transactionCell.balanceLabel.textColor = .black
-                            }
-        //            //        transactionCell.backgroundColor = UIColor(white: 1, alpha: 0.05)
-        //                    transactionCell.layer.cornerRadius = 10
-        
-        //        }
-        
-        //        transactionCell.nameLabel.text = transactions[indexPath.section].transactionDescription
-        //
-        //              transactionCell.dateLabel.text = transactions[indexPath.section].transactionDate.dateToString()
-        //
-        //              transactionCell.amountLabel.text = transactions[indexPath.section].transactionAmount.toCurrency()
         return transactionCell
-        
         
     }
 }
@@ -269,19 +219,20 @@ extension SubVC: UICollectionViewDelegate {
                     ofKind: kind,
                     withReuseIdentifier: "SubHeaderView",
                     for: indexPath) as? SubHeaderView
-                else {
-                    fatalError("Invalid view type")
+            else {
+                fatalError("Invalid view type")
             }
-            let totalPlanned: Double = items.filter("transactionDescription == %@", sectionNames[indexPath.section]).sum(ofProperty: "transactionAmount")
-            let totalSpent: Double = items.filter(NSPredicate(format: "isCleared == 1")).sum(ofProperty: "transactionAmount")
+            let totalPlanned: Double = transactions.filter("subCategoryName == %@", sectionNames[indexPath.section]).sum(ofProperty: "transactionAmount")
+            let totalSpent: Double = transactions.filter(NSPredicate(format: "isCleared == 1")).sum(ofProperty: "transactionAmount")
             
-            headerView.totalPlannedLabel.text = "Planned: \(abs(totalPlanned).toCurrency())"
+            headerView.totalPlannedLabel.text = "Total: \(abs(totalPlanned).toCurrency())"
             
             //            headerView.totalSpentLabel.text = "Spent: \(abs(totalSpent).toCurrency())"
             
             headerView.totalSpentLabel.text = sectionNames[indexPath.section]
             
             return headerView
+            
         default:
             // 4
             assert(false, "Invalid element type")
@@ -295,10 +246,11 @@ extension SubVC: UICollectionViewDelegate {
         
         if let vc = storyboard?.instantiateViewController(identifier: "DetailVC") as? DetailVC {
             
-            vc.transaction = items.filter("transactionDescription == %@", sectionNames[indexPath.section])[indexPath.item]
+            vc.transaction = transactions.filter("subCategoryName == %@", sectionNames[indexPath.section])[indexPath.item]
             
             present(vc, animated: true, completion: nil)
         }
+        
         //        var textField = UITextField()
         //
         //        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName):", message: "", preferredStyle: .alert)

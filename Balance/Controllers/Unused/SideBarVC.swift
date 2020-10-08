@@ -99,10 +99,10 @@ class SideBarVC: UICollectionViewController {
             
 
         case 2:
-            let vc = storyboard?.instantiateViewController(withIdentifier: "BudgetVC") as! BudgetVC
+//            let vc = storyboard?.instantiateViewController(withIdentifier: "BudgetVC") as! BudgetVC
             dismiss(animated: false, completion: nil)
 
-            show(vc, sender: self)
+//            show(vc, sender: self)
 
         default:
             print("Error presenting view controller")

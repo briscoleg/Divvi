@@ -16,6 +16,7 @@ class Transaction: Object {
     @objc dynamic var transactionAmount = 0.0
     @objc dynamic var transactionDate = Date()
     @objc dynamic var transactionCategory: Category? = nil
+    @objc dynamic var transactionSubCategory: SubCategory? = nil
     @objc dynamic var repeatInterval = ""
     @objc dynamic var isCleared = false
     @objc dynamic var subCategoryName = ""

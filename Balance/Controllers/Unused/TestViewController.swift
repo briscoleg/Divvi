@@ -22,7 +22,7 @@ class TestViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     
-    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())).filter(NSPredicate(format: "transactionCategory == %@", categorySelected as! CVarArg)) }()
+    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())).filter(NSPredicate(format: "transactionCategory == %@", categorySelected!)) }()
     
     var viewTitle = ""
     
@@ -114,7 +114,7 @@ class TestViewController: UIViewController, UICollectionViewDataSource, UICollec
 
     fileprivate func registerCells() {
         collectionView.register(SubCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.register(SearchCell.self, forCellWithReuseIdentifier: celltwoCellId)
+        collectionView.register(TaskCell.self, forCellWithReuseIdentifier: celltwoCellId)
     }
     
     
@@ -160,12 +160,12 @@ class TestViewController: UIViewController, UICollectionViewDataSource, UICollec
             return planningCell
         } else {
             // Cell 2
-            let transactionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCell", for: indexPath) as! SearchCell
+            let transactionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCell", for: indexPath) as! TaskCell
                                                 
                         transactionCell.imageView.image = UIImage(named: transactions[indexPath.item].transactionCategory!.categoryName)
                         transactionCell.imageView.tintColor = .white
                         transactionCell.circleView.backgroundColor = UIColor(rgb: transactions[indexPath.item].transactionCategory!.categoryColor)
-                        transactionCell.descLabel.text = transactions[indexPath.item].transactionDescription
+                        transactionCell.subcategoryLabel.text = transactions[indexPath.item].transactionDescription
                         transactionCell.amountLabel.attributedText = displayAmount(with: transactions[indexPath.item].transactionAmount)
                         
                         let formatter = DateFormatter()
@@ -191,7 +191,7 @@ class TestViewController: UIViewController, UICollectionViewDataSource, UICollec
                         
             //            transactionCell.delegate = self
                         if transactions[indexPath.item].isCleared == false {
-                            transactionCell.descLabel.textColor = .lightGray
+                            transactionCell.subcategoryLabel.textColor = .lightGray
                             transactionCell.amountLabel.textColor = .lightGray
                         }
                         

@@ -13,9 +13,14 @@ protocol DateDelegate {
     func getCalendarDate(from date: Date)
     func getRepeatInterval(interval: String)
 }
-//protocol RepeatDelegate {
-//    func getRepeatInterval(interval: String)
-//}
+
+enum RepeatInterval: String, CaseIterable {
+    case yearly = "Yearly"
+    case monthly = "Monthly"
+    case twoWeeks = "Every Two Weeks"
+    case weekly = "Weekly"
+    case daily = "Daily"
+}
 
 class CalendarVC: UIViewController {
     
@@ -26,16 +31,14 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var picker: UIPickerView!
     @IBOutlet weak var repeatSwitch: UISwitch!
     
-    var pickerData = ["Yearly", "Monthly", "Every Two Weeks", "Weekly", "Daily", ]
     var intervalPicked = "Never"
-//    var repeatDelegate: RepeatDelegate!
     var dateDelegate: DateDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         calendar.delegate = self
-        calendar.dataSource = self
+
         picker.delegate = self
         picker.dataSource = self
         
@@ -44,18 +47,16 @@ class CalendarVC: UIViewController {
         
         chooseButton.roundCorners()
         
-        repeatLabel.text = "Repeat Transaction?"
+        repeatLabel.text = "Repeats:"
         
         picker.selectRow(1, inComponent: 0, animated: true)
 
     }
     
-    func displaySelectedDate(_ date: Date) {
+    private func displaySelectedDate(_ date: Date) {
         
         let formatter = DateFormatter()
-        
         formatter.dateFormat = "MMMM d, yyyy"
-        
         let dateString = formatter.string(from: date)
         
         if dateString == formatter.string(from: Date()) {
@@ -66,10 +67,10 @@ class CalendarVC: UIViewController {
         
     }
     
+    //MARK: - IBActions
     @IBAction func chooseButtonPressed(_ sender: UIButton) {
         
         dateDelegate.getRepeatInterval(interval: intervalPicked)
-        
         dismiss(animated: true, completion: nil)
         
     }
@@ -77,22 +78,19 @@ class CalendarVC: UIViewController {
     @IBAction func repeatSwitchChanged(_ sender: UISwitch) {
         
         switch repeatSwitch.isOn {
+        case true:
+            picker.isHidden = false
+            picker.selectRow(1, inComponent: 0, animated: true)
+            repeatLabel.text = "Repeats: \(RepeatInterval.allCases[picker.selectedRow(inComponent: 0)].rawValue)"
         case false:
             picker.isHidden = true
             intervalPicked = "Never"
-        case true:
-            picker.isHidden = false
-            intervalPicked = "Monthly"
-            repeatLabel.text = "Repeats: Monthly"
-
+            repeatLabel.text = "Repeats: Never"
         }
-        
     }
-    
-    
-    
 }
 
+//MARK: - Calendar Delegate
 extension CalendarVC: FSCalendarDelegate {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
@@ -101,35 +99,25 @@ extension CalendarVC: FSCalendarDelegate {
         displaySelectedDate(date)
         
     }
-    
 }
 
-extension CalendarVC: FSCalendarDataSource {
-    
-    
-    
-}
-
-extension CalendarVC: UIPickerViewDataSource {
+//MARK: - Picker Delegate & DataSource
+extension CalendarVC: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
+        return RepeatInterval.allCases.count
     }
     
-    
-}
-
-extension CalendarVC: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        repeatLabel.text = "Repeats: \(pickerData[row])"
-        intervalPicked = pickerData[row]
+        repeatLabel.text = "Repeats: \(RepeatInterval.allCases[row].rawValue)"
+        intervalPicked = RepeatInterval.allCases[row].rawValue
         print(intervalPicked)
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerData[row]
+        return RepeatInterval.allCases[row].rawValue
     }
 }

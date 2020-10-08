@@ -21,6 +21,7 @@ class AddTransactionVC: UIViewController {
     @IBOutlet weak var repeatButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var navigationBar: UINavigationBar!
+    @IBOutlet weak var categoryImage: UIImageView!
     
     //MARK: - Properties
     let amountFieldAccessory: UIView = {
@@ -73,19 +74,24 @@ class AddTransactionVC: UIViewController {
     
     var amount = 0.0
     var categoryPicked: Category?
+    var subcategoryPicked: SubCategory?
     var datePicked = Date()
     var repeatInterval = "Never"
     var isExpense = true
+    var newTransaction = true
     var numberOfTransactionsToAdd = 1
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        repeatButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        
         if categoryPicked != nil {
             getCategory(from: categoryPicked!)
         }
         amountTextField.delegate = self
+        descriptionTextField.delegate = self
         
         
         setEditFields()
@@ -95,10 +101,10 @@ class AddTransactionVC: UIViewController {
         
         addAmountFieldAccessory()
         
-                navigationBar.setValue(true, forKey: "hidesShadow")
-
+        navigationBar.setValue(true, forKey: "hidesShadow")
         
-//                addDescriptionFieldAccessory()
+        
+        //                addDescriptionFieldAccessory()
         
         saveButton.roundCorners()
         
@@ -114,26 +120,38 @@ class AddTransactionVC: UIViewController {
     
     //MARK: - Methods
     
-    func setEditFields() {
+    private func setEditFields() {
         
-        if transaction == nil {
-            return
-        } else {
-            amountTextField.text = String(format: "%.2f", transaction!.transactionAmount)
-            categoryPicked = transaction?.transactionCategory
-            categoryButton.setTitle(categoryPicked!.categoryName, for: .normal)
+        guard transaction != nil  else { return }
+        
+        if let transaction = transaction {
+            
+            amountTextField.text = String(format: "%.2f", transaction.transactionAmount)
+            categoryPicked = transaction.transactionCategory
+            subcategoryPicked = transaction.transactionSubCategory
+            categoryImage.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
+            
+            displaySelectedDate(transaction.transactionDate)
+            displayRepeatInterval(transaction.transactionDate)
+            
+            repeatButton.setTitle("Repeats: \(repeatInterval)", for: .normal)
+            
+            categoryButton.setTitle(subcategoryPicked?.subCategoryName, for: .normal)
             categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
             categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
             
-            descriptionTextField.text = transaction?.transactionDescription
+            
+            
+            descriptionTextField.text = transaction.transactionDescription
             
             navigationBar.topItem?.title = "Edit Transaction"
         }
-    }
         
-        @objc func hideKeyboard() {
-            descriptionTextField.resignFirstResponder()
-        }
+    }
+    
+    @objc func hideKeyboard() {
+        descriptionTextField.resignFirstResponder()
+    }
     
     func convertAmountToCurrency() {
         
@@ -149,17 +167,17 @@ class AddTransactionVC: UIViewController {
     func setNumberOfTransactions() {
         
         switch repeatInterval {
-            
+        
         case "Yearly":
             numberOfTransactionsToAdd = 5
         case "Monthly":
             numberOfTransactionsToAdd = 60
         case "Every Two Weeks":
-            numberOfTransactionsToAdd = 60
-        case "Every Week":
-            numberOfTransactionsToAdd = 30
-        case "Every Day":
-            numberOfTransactionsToAdd = 30
+            numberOfTransactionsToAdd = 120
+        case "Weekly":
+            numberOfTransactionsToAdd = 240
+        case "Daily":
+            numberOfTransactionsToAdd = 3000
         case "Never":
             numberOfTransactionsToAdd = 1
         default:
@@ -169,13 +187,14 @@ class AddTransactionVC: UIViewController {
     @objc func objcSaveTransaction() {
         saveTransaction()
     }
-    fileprivate func saveEdit() {
-      
+    private func saveEdit() {
+        
         try! realm.write {
             transaction!.transactionAmount = amountTextField.text!.toDouble()
             transaction!.transactionDescription = descriptionTextField.text!
             transaction!.transactionDate = datePicked
             transaction!.transactionCategory = categoryPicked
+            transaction!.transactionSubCategory = subcategoryPicked
             transaction!.repeatInterval = repeatInterval
             
         }
@@ -184,57 +203,58 @@ class AddTransactionVC: UIViewController {
     func saveTransaction() {
         
         guard amountTextField.text != "" else { amountTextField.placeholder = "Enter an Amount"; return }
-        guard categoryPicked != nil else { categoryButton.setTitle("Select a Category", for: .normal); return }
-                    
-        if navigationBar.topItem?.title == "Edit Transaction" {
+        guard subcategoryPicked != nil else { categoryButton.setTitle("Select a Category", for: .normal); return }
+        
+        if !newTransaction {
             
+            setNumberOfTransactions()
             saveEdit()
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionEdited"), object: nil)
             
         } else {
             
             setNumberOfTransactions()
             
-            for _ in 1...numberOfTransactionsToAdd {
-                
-                let newTransaction = Transaction()
-                
-                var timeAdded = 1.months
-                
-//                convertAmountToCurrency()
-                
-                newTransaction.transactionAmount = amountTextField.text!.toDouble()
-                newTransaction.transactionDescription = descriptionTextField.text
-                newTransaction.transactionDate = datePicked
-                newTransaction.transactionCategory = categoryPicked
-                newTransaction.repeatInterval = repeatInterval
-                
-                switch repeatInterval {
-                case "Yearly":
-                    timeAdded = 1.years
-                case "Monthly":
-                    timeAdded = 1.months
-                case "Every Two Weeks":
-                    timeAdded = 2.weeks
-                case "Weekly":
-                    timeAdded = 1.weeks
-                case "Daily":
-                    timeAdded = 1.days
-                default:
-                    break
-                }
-                try! realm.write {
-                    realm.add(newTransaction)
-                }
-                
-                datePicked = datePicked + timeAdded
+                for _ in 1...self.numberOfTransactionsToAdd {
+                    
+                    let newTransaction = Transaction()
+                    
+                    var timeAdded = 1.months
+                    //                var timeAdded = Calendar.Component.month
+                    newTransaction.transactionAmount = self.amountTextField.text!.toDouble()
+                    newTransaction.transactionDescription = self.descriptionTextField.text
+                    newTransaction.transactionDate = self.datePicked
+                    newTransaction.transactionCategory = self.categoryPicked
+                    newTransaction.repeatInterval = self.repeatInterval
+                    newTransaction.transactionSubCategory = self.subcategoryPicked
+                    newTransaction.subCategoryName = self.subcategoryPicked!.subCategoryName
+                    
+                    switch self.repeatInterval {
+                    case "Yearly":
+                        timeAdded = 1.years
+                    case "Monthly":
+                        timeAdded = 1.months
+                    case "Every Two Weeks":
+                        timeAdded = 2.weeks
+                    case "Weekly":
+                        timeAdded = 1.weeks
+                    case "Daily":
+                        timeAdded = 1.days
+                    default:
+                        break
+                    }
+                    
+                    try! self.realm.write {
+                        self.realm.add(newTransaction)
+                    }
+                    
+                    self.datePicked = self.datePicked + timeAdded
+
             }
-            
+
         }
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         
-        self.dismiss(animated: true, completion: nil)
         
     }
     
@@ -303,22 +323,22 @@ class AddTransactionVC: UIViewController {
         amountFieldAccessory.addSubview(keyboardDismissButton)
         amountFieldAccessory.addSubview(plusMinusButton)
         amountFieldAccessory.addSubview(nextAccessoryButton)
-                
+        
         
         NSLayoutConstraint.activate([
             
             keyboardDismissButton.leadingAnchor.constraint(equalTo:
-                amountFieldAccessory.leadingAnchor, constant: 30),
+                                                            amountFieldAccessory.leadingAnchor, constant: 30),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
-                amountFieldAccessory.centerYAnchor),
+                                                            amountFieldAccessory.centerYAnchor),
             
             //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
             //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
             
             plusMinusButton.centerXAnchor.constraint(equalTo:
-                amountFieldAccessory.centerXAnchor),
+                                                        amountFieldAccessory.centerXAnchor),
             plusMinusButton.centerYAnchor.constraint(equalTo:
-                amountFieldAccessory.centerYAnchor),
+                                                        amountFieldAccessory.centerYAnchor),
             
             nextAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
             nextAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
@@ -344,17 +364,17 @@ class AddTransactionVC: UIViewController {
         NSLayoutConstraint.deactivate([
             
             keyboardDismissButton.leadingAnchor.constraint(equalTo:
-                amountFieldAccessory.leadingAnchor, constant: 30),
+                                                            amountFieldAccessory.leadingAnchor, constant: 30),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
-                amountFieldAccessory.centerYAnchor),
+                                                            amountFieldAccessory.centerYAnchor),
             
             //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
             //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
             
             plusMinusButton.centerXAnchor.constraint(equalTo:
-                amountFieldAccessory.centerXAnchor),
+                                                        amountFieldAccessory.centerXAnchor),
             plusMinusButton.centerYAnchor.constraint(equalTo:
-                amountFieldAccessory.centerYAnchor),
+                                                        amountFieldAccessory.centerYAnchor),
             
             nextAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
             nextAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
@@ -363,17 +383,17 @@ class AddTransactionVC: UIViewController {
         NSLayoutConstraint.activate([
             
             keyboardDismissButton.leadingAnchor.constraint(equalTo:
-                descriptionFieldAccessory.leadingAnchor, constant: 30),
+                                                            descriptionFieldAccessory.leadingAnchor, constant: 30),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
-                descriptionFieldAccessory.centerYAnchor),
+                                                            descriptionFieldAccessory.centerYAnchor),
             
             //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
             //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
             
             plusMinusButton.centerXAnchor.constraint(equalTo:
-                descriptionFieldAccessory.centerXAnchor),
+                                                        descriptionFieldAccessory.centerXAnchor),
             plusMinusButton.centerYAnchor.constraint(equalTo:
-                descriptionFieldAccessory.centerYAnchor),
+                                                        descriptionFieldAccessory.centerYAnchor),
             
             nextAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
             nextAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
@@ -437,15 +457,15 @@ class AddTransactionVC: UIViewController {
     
     @IBAction func doneButtonPressed(_ sender: UIButton) {
         
-        //Add required amount and category perameters
-        saveTransaction()
-        
+        self.saveTransaction()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+
+        self.dismiss(animated: true, completion: nil)
     }
-    
     
     @IBAction func dismissPressed(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
-      
+        
     }
     
     
@@ -470,33 +490,40 @@ extension AddTransactionVC: UITextFieldDelegate {
     //    }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let dotString = "."
-//        let dollarSign = "$"
-        let minusSign = "-$"
         
-        
-        if let text = textField.text{
-            
-            
-            
-            print(text)
-            
-            if !text.contains("-") && isExpense {
-                textField.text = "-\(text)"
-            }
-            if !isExpense {
-                textField.text = "\(text)"
-            }
-            
-            let backSpace = string.isEmpty
-            
-            if backSpace && text == minusSign {
-                textField.text = ""
-            }
-            if !backSpace {
-                if text.contains(dotString) {
-                    if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
+        if textField == descriptionTextField {
+            // get the current text, or use an empty string if that failed
+            guard let textFieldText = textField.text,
+                    let rangeOfTextToReplace = Range(range, in: textFieldText) else {
                         return false
+                }
+                let substringToReplace = textFieldText[rangeOfTextToReplace]
+                let count = textFieldText.count - substringToReplace.count + string.count
+                return count <= 30
+        }
+        
+        if textField == amountTextField {
+            
+            if let text = textField.text{
+                let dotString = "."
+                let minusSign = "-$"
+                if !text.contains("-") && isExpense {
+                    textField.text = "-\(text)"
+                }
+                if !isExpense {
+                    textField.text = "\(text)"
+                }
+                
+                let backSpace = string.isEmpty
+                
+                if backSpace && text == minusSign {
+                    textField.text = ""
+                }
+                if !backSpace {
+                    if text.contains(dotString) {
+                        if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
+                            return false
+                        }
                     }
                 }
             }
@@ -504,29 +531,28 @@ extension AddTransactionVC: UITextFieldDelegate {
         return true
     }
 }
+
 extension AddTransactionVC: CategoryDelegate {
-    func getCategory(from category: Category) {
-        categoryPicked = category
-        //        categoryPicked?.categoryName = category.categoryName
-        categoryButton.setTitle(categoryPicked!.categoryName, for: .normal)
+    func getSubcategory(from subcategory: SubCategory) {
+        subcategoryPicked = subcategory
+        categoryButton.setTitle(subcategory.subCategoryName, for: .normal)
+        descriptionTextField.becomeFirstResponder()
+        categoryImage.image = UIImage(named: categoryPicked!.categoryName)
+        categoryImage.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
         categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
         categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
-        descriptionTextField.becomeFirstResponder()
+        
         if categoryPicked?.categoryName == "Income" {
             amountTextField.dropMinus()
             isExpense = false
             amountTextField.textColor = UIColor(rgb: Constants.green)
         }
     }
+    
+    func getCategory(from category: Category) {
+        categoryPicked = category
+    }
 }
-
-//extension AddTransactionVC: RepeatDelegate {
-//    func getRepeatInterval(interval: String) {
-//        repeatInterval = interval
-//        repeatButton.setTitle(repeatInterval, for: .normal)
-//        displayRepeatInterval(datePicked)
-//    }
-//}
 
 extension AddTransactionVC: DateDelegate {
     func getCalendarDate(from date: Date) {

@@ -10,7 +10,7 @@ import UIKit
 import RealmSwift
 import Charts
 
-class Budget2VC: UIViewController {
+class PlanVC: UIViewController {
     
     //MARK: - IBOutlets
     
@@ -21,15 +21,13 @@ class Budget2VC: UIViewController {
     let realm = try! Realm()
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
-//    lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self)}()
-//    lazy var plannedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(currentMonthPredicate(date: Date())) }()
-
-//    var category: Category?
     
     //MARK: - ViewDidLoad/ViewWillAppear
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: true)
+        self.tabBarController?.tabBar.isHidden = false
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -40,6 +38,8 @@ class Budget2VC: UIViewController {
         
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+
  
         setCollectionViewLayout()
         
@@ -63,11 +63,11 @@ class Budget2VC: UIViewController {
         
         let layout = UICollectionViewFlowLayout()
                 
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 25, bottom: 10, right: 25)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 25, bottom: 25, right: 25)
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width/1.1, height: 100)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 12
-        layout.headerReferenceSize = CGSize(width: 0, height: 425)
+        layout.headerReferenceSize = CGSize(width: 0, height: 150)
         
         collectionView.collectionViewLayout = layout
         
@@ -126,14 +126,14 @@ class Budget2VC: UIViewController {
 }
 
 //MARK: - CollectionView Delegate
-extension Budget2VC: UICollectionViewDelegate {
+extension PlanVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if let vc = storyboard?.instantiateViewController(identifier: "SubVC") as? SubVC {
             
             vc.categorySelected = categories[indexPath.item]
-            vc.subCategories = categories[indexPath.item].subCategories
+//            vc.subCategories = categories[indexPath.item].subCategories
             vc.viewTitle = categories[indexPath.item].categoryName
             show(vc, sender: self)
             
@@ -143,7 +143,7 @@ extension Budget2VC: UICollectionViewDelegate {
 }
 
 //MARK: - CollectionView DataSource
-extension Budget2VC: UICollectionViewDataSource {
+extension PlanVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -153,9 +153,9 @@ extension Budget2VC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Budget2Cell", for: indexPath) as! Budget2Cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Budget2Cell.identifier, for: indexPath) as! Budget2Cell
         
-        cell.configureCells(with: indexPath)
+        cell.configure(with: indexPath)
 
         return cell
     }
@@ -166,14 +166,14 @@ extension Budget2VC: UICollectionViewDataSource {
 
         case UICollectionView.elementKindSectionHeader:
 
-            guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as? HeaderView else { fatalError("Invalid view type") }
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as? BudgetHeader else { fatalError("Invalid view type") }
             
-            headerView.configureHeader()
+//            headerView.configureHeader()
             
             return headerView
             
         default:
-            // 4
+
             assert(false, "Invalid element type")
         }
         
