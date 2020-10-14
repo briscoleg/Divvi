@@ -153,7 +153,7 @@ extension PlanVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Budget2Cell.identifier, for: indexPath) as! Budget2Cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Budget3Cell.identifier, for: indexPath) as! Budget3Cell
         
         cell.configure(with: indexPath)
 

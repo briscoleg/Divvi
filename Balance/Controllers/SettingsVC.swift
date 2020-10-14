@@ -6,16 +6,18 @@
 //  Copyright © 2020 Bo. All rights reserved.
 //
 //
-//import UIKit
-//
-//class SettingsVC: UITableViewController {
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//
-//
-//    }
-//    
-//    
-//
-//}
+import UIKit
+
+class SettingsVC: UITableViewController {
+    
+    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+
+    }
+    
+    
+
+}

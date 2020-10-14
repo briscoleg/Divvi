@@ -1,25 +1,29 @@
 //
-//  Budget2Cell.swift
+//  Budget3Cell.swift
 //  Balance
 //
-//  Created by Bo on 8/31/20.
+//  Created by Bo on 10/12/20.
 //  Copyright © 2020 Bo. All rights reserved.
 //
 
+import Foundation
+
+
 import UIKit
 import RealmSwift
-import GTProgressBar
 
-class Budget2Cell: UICollectionViewCell {
+class Budget3Cell: UICollectionViewCell {
     
     //MARK: - IBOutlets
+    
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var amountSpentLabel: UILabel!
     @IBOutlet weak var amountBudgetedLabel: UILabel!
+    @IBOutlet weak var amountSpentLabel: UILabel!
+    @IBOutlet weak var rightArrowIconImageView: UIImageView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var percentLabel: UILabel!
-    @IBOutlet weak var rightArrowIconImageView: UIImageView!
-    @IBOutlet weak var progressBar: GTProgressBar!
+    @IBOutlet weak var progressBar: UIProgressView!
+    
     
     //MARK: - Properties
     let realm = try! Realm()
@@ -49,12 +53,13 @@ class Budget2Cell: UICollectionViewCell {
         imageView.tintColor = .white
         percentLabel.textColor = .white
         
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
+
         
         //        progressBar.labelPosition = .right
 //        progressBar.cornerType = .rounded
-        progressBar.cornerRadius = 20
-//        progressBar.layer.masksToBounds = true
-        progressBar.clipsToBounds = true
+//        progressBar.layer.cornerRadius = 20
+//        contentView.layer.cornerRadius = 20
 //        progressBar.barBorderWidth = 0
 //        progressBar.labelTextColor = .black
         
@@ -66,62 +71,27 @@ class Budget2Cell: UICollectionViewCell {
         
     }
     
+//    @objc func refresh() {
+//        subviews.forEach { subview in
+//            subview.layer.masksToBounds = false
+//            subview.clipsToBounds = false
+//            subview.layer.cornerRadius = 20
+//            }
+//    }
+    
+    
+    
     //MARK: - Methods
-//    func currentMonthPredicate(date: Date) -> NSPredicate {
-//
-//        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-//
-//        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: SelectedMonth.shared.date)
-//
-//        components.day = 01
-//        components.hour = 00
-//        components.minute = 00
-//        components.second = 00
-//
-//        let startDate = calendar.date(from: components)
-//
-//        components.day = 31
-//        components.hour = 23
-//        components.minute = 59
-//        components.second = 59
-//
-//        let endDate = calendar.date(from: components)
-//
-//        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
-//    }
-//
-//    func predicateForMonthFromDate(date: Date) -> NSPredicate {
-//
-//        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-//
-//        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-//
-//        components.day = 01
-//        components.hour = 00
-//        components.minute = 00
-//        components.second = 00
-//
-//        let startDate = calendar.date(from: components)
-//
-//        components.day = Date().day
-//        components.hour = 23
-//        components.minute = 59
-//        components.second = 59
-//
-//        let endDate = calendar.date(from: components)
-//
-//        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
-//    }
     
     func configure(with indexPath: IndexPath) {
         
         nameLabel.text = categories[indexPath.item].categoryName
+        
         imageView.image = UIImage(named: categories[indexPath.item].categoryName)
         
-        progressBar.barFillColor = UIColor(rgb: categories[indexPath.item].categoryColor)
-        progressBar.barBackgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.55)
+        progressBar.progressTintColor = UIColor(rgb: categories[indexPath.item].categoryColor)
         
-//        let datePredicate = predicateForMonthFromDate(date: SelectedMonth.shared.date)
+        progressBar.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.55)
         
         let plannedTotal: Double = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
         
@@ -143,19 +113,9 @@ class Budget2Cell: UICollectionViewCell {
         if plannedTotal == 0 {
             progressBar.progress = 0
         } else {
-            progressBar.animateTo(progress: CGFloat(plannedToSpentRatio))
+            progressBar.setProgress(Float(plannedToSpentRatio), animated: true)
         }
         
     }
     
 }
-
-//MARK: - Extensions
-//extension Budget2Cell: DateSwitcherDelegate {
-//
-//    func getDate(with date: Date) {
-//        selectedDate = date
-//        print(selectedDate)
-//    }
-//
-//}

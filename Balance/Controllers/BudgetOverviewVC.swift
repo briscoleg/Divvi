@@ -44,8 +44,7 @@ class BudgetOverviewVC: UIViewController {
         
         monthYearLabel.text = formatter.string(from: SelectedMonth.shared.date)
         lineChartView?.animate(yAxisDuration: 1)
-
-
+        
                 
     }
     
@@ -131,6 +130,11 @@ class BudgetOverviewVC: UIViewController {
         lineChartView.rightAxis.enabled = false
         
         lineChartView.data = data
+        
+        
+    }
+    
+    private func updateBarChart() {
         
         
     }
