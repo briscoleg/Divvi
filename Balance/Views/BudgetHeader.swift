@@ -20,9 +20,7 @@ class BudgetHeader: UICollectionReusableView {
     @IBOutlet weak var monthYearLabel: UILabel!
     @IBOutlet weak var leftButton: UIButton!
     @IBOutlet weak var rightButton: UIButton!
-    @IBOutlet weak var expensesLabel: UILabel!
-    @IBOutlet weak var incomeLabel: UILabel!
-//    @IBOutlet weak var lineChart: LineChartView!
+    @IBOutlet weak var lineChartButton: UIButton!
 
     
     let realm = try! Realm()
@@ -46,6 +44,9 @@ class BudgetHeader: UICollectionReusableView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        lineChartButton.tintColor = UIColor(rgb: Constants.blue)
+
         
 //        pieChart.delegate = self
 //        updateMonthYearLabel()
@@ -77,65 +78,6 @@ class BudgetHeader: UICollectionReusableView {
     }
     
 //    func configureHeader() {
-//
-//        let totalIncome: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
-//        let totalExpenses: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory != %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
-//
-//
-//        let incomeToExpenseRatio = totalExpenses / totalIncome
-//
-//
-//
-//        incomeLabel.text = "Income:\n\(totalIncome.toCurrency())"
-//        expensesLabel.text = "Expenses:\n\(totalExpenses.toCurrency())"
-//
-//        pieChart.delegate = self
-//        pieChart.legend.enabled = false
-//        pieChart.centerText = graphCenterText
-//        pieChart.holeRadiusPercent = 0.5
-//
-//        let expenseCategories = categories.dropFirst()
-//
-//        var entries = [PieChartDataEntry]()
-//
-//        for category in expenseCategories {
-//            let totalCategoryValue = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
-//            if totalCategoryValue > 0 {
-//                entries.append(PieChartDataEntry(value: Double(totalCategoryValue), label: nil))
-//            }
-//        }
-//
-//        let expenseDataSet = PieChartDataSet(entries: entries, label: "Planned Expenses")
-//
-//        expenseDataSet.colors.removeAll()
-//        expenseDataSet.sliceSpace = 2
-//        expenseDataSet.yValuePosition = .insideSlice
-//        expenseDataSet.valueColors = [.clear]
-//        expenseDataSet.valueLineColor = .clear
-//        expenseDataSet.entryLabelColor = UIColor.black
-//
-//        for category in expenseCategories {
-//            let totalCategoryValue = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
-//
-//            if totalCategoryValue > 0 {
-//                expenseDataSet.colors.append(NSUIColor(rgb: category.categoryColor))
-//
-//            }
-//
-//        }
-//
-//        let data = PieChartData(dataSet: expenseDataSet)
-//
-//        let format = NumberFormatter()
-//        format.numberStyle = .currency
-//        format.multiplier = 1
-//
-//        let formatter = DefaultValueFormatter(formatter: format)
-//        data.setValueFormatter(formatter)
-//
-//        pieChart.data = data
-//
-//
 //
 //    }
     

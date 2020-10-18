@@ -10,20 +10,25 @@ import UIKit
 import RealmSwift
 import Charts
 
-class BudgetOverviewVC: UIViewController {
+class ChartsVC: UIViewController, ChartViewDelegate {
 
     //MARK: - IBOutlets
     @IBOutlet weak var monthYearLabel: UILabel!
     @IBOutlet weak var prevMonthButton: UIButton!
     @IBOutlet weak var nextMonthButton: UIButton!
     
+    @IBOutlet weak var pieChartView: PieChartView!
     @IBOutlet weak var lineChartView: LineChartView!
     
+    @IBOutlet weak var lineChartButton: UIButton!
+    @IBOutlet weak var pieChartButton: UIButton!
     
     
     //MARK: - Properties
     
     let realm = try! Realm()
+    
+    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     
@@ -41,6 +46,8 @@ class BudgetOverviewVC: UIViewController {
        
         configureLineChart()
         configureLandscapeView()
+        
+        pieChartView.isHidden = true
         
         monthYearLabel.text = formatter.string(from: SelectedMonth.shared.date)
         lineChartView?.animate(yAxisDuration: 1)
@@ -72,7 +79,72 @@ class BudgetOverviewVC: UIViewController {
         
     }
     
+    private func configurePieChart() {
+        
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Expenses"
+        
+        let totalIncome: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+        let totalExpenses: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory != %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+
+
+        let incomeToExpenseRatio = totalExpenses / totalIncome
+
+
+
+//        incomeLabel.text = "Income:\n\(totalIncome.toCurrency())"
+//        expensesLabel.text = "Expenses:\n\(totalExpenses.toCurrency())"
+
+        pieChartView.delegate = self
+        pieChartView.legend.enabled = false
+//        pieChartView.centerText = graphCenterText
+        pieChartView.holeRadiusPercent = 0.5
+
+        let expenseCategories = categories.dropFirst()
+
+        var entries = [PieChartDataEntry]()
+
+        for category in expenseCategories {
+            let totalCategoryValue = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+            if totalCategoryValue > 0 {
+                entries.append(PieChartDataEntry(value: Double(totalCategoryValue), label: nil))
+            }
+        }
+
+        let expenseDataSet = PieChartDataSet(entries: entries, label: "Planned Expenses")
+
+        expenseDataSet.colors.removeAll()
+        expenseDataSet.sliceSpace = 2
+        expenseDataSet.yValuePosition = .insideSlice
+        expenseDataSet.valueColors = [.clear]
+        expenseDataSet.valueLineColor = .clear
+        expenseDataSet.entryLabelColor = UIColor.black
+
+        for category in expenseCategories {
+            let totalCategoryValue = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+
+            if totalCategoryValue > 0 {
+                expenseDataSet.colors.append(NSUIColor(rgb: category.categoryColor))
+
+            }
+
+        }
+
+        let data = PieChartData(dataSet: expenseDataSet)
+
+        let format = NumberFormatter()
+        format.numberStyle = .currency
+        format.multiplier = 1
+
+        let formatter = DefaultValueFormatter(formatter: format)
+        data.setValueFormatter(formatter)
+
+        pieChartView.data = data
+        
+    }
+    
     private func configureLineChart() {
+        
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balance"
         
         
         let objects = transactions.filter(SelectedMonth.shared.selectedMonthPredicate()).sorted(byKeyPath: "transactionDate", ascending: true)
@@ -108,7 +180,7 @@ class BudgetOverviewVC: UIViewController {
         lineChartView.xAxis.labelRotationAngle = -45
         lineChartView.extraRightOffset = 20
         
-        let dataSet = LineChartDataSet(entries: entries, label: "")
+        let dataSet = LineChartDataSet(entries: entries)
         let data = LineChartData(dataSet: dataSet)
         
         let format = NumberFormatter()
@@ -134,10 +206,6 @@ class BudgetOverviewVC: UIViewController {
         
     }
     
-    private func updateBarChart() {
-        
-        
-    }
     
 //    func updatePlannedBudget() {
 //
@@ -234,7 +302,8 @@ class BudgetOverviewVC: UIViewController {
         
         SelectedMonth.shared.decreaseDateByAMonth()
         configureLineChart()
-        monthYearLabel.text = formatter.string(from: SelectedMonth.shared.date)
+        configurePieChart()
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
     }
     
@@ -242,9 +311,30 @@ class BudgetOverviewVC: UIViewController {
         
         SelectedMonth.shared.increaseDateByAMonth()
         configureLineChart()
-        monthYearLabel.text = formatter.string(from: SelectedMonth.shared.date)
+        configurePieChart()
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
     }
+    
+    @IBAction func pieChartButtonPressed(_ sender: UIButton) {
+        
+        pieChartView.isHidden = false
+        lineChartView.isHidden = true
+        
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Expenses"
+        
+    }
+    
+    
+    @IBAction func lineChartButtonPressed(_ sender: UIButton) {
+        
+        lineChartView.isHidden = false
+        pieChartView.isHidden = true
+        
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balance"
+        
+    }
+    
     
     
 }

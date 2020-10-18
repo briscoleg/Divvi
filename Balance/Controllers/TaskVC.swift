@@ -21,8 +21,7 @@ class TaskVC: UIViewController{
     let realm = try! Realm()
     lazy var allTransactions: Results<Transaction> = { realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: false).sorted(byKeyPath: "isCleared", ascending: false) }()
     lazy var unclearedTransactionsToDate: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date().advanced(by: 1000)).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
-    
-    
+   
     var taskView = true
     
     //MARK: - ViewDidLoad
@@ -67,12 +66,17 @@ class TaskVC: UIViewController{
     }
     
     private func updateInstructionsLabel() {
-        if unclearedTransactionsToDate.count > 0 {
-            instructionsLabel.text = "Swipe right to clear transactions\nthat have posted to your account.\nSwipe left to delete."
-            tabBarController!.tabBar.items![1].badgeValue = "1"
+        
+        if taskView {
+            if unclearedTransactionsToDate.count > 0 {
+                instructionsLabel.text = "Swipe right to clear transactions\nthat have posted to your account.\nSwipe left to delete."
+                tabBarController!.tabBar.items![1].badgeValue = "1"
+            } else {
+                instructionsLabel.text = "All clear!"
+                tabBarController!.tabBar.items![1].badgeValue = nil
+            }
         } else {
-            instructionsLabel.text = "All clear!"
-            tabBarController!.tabBar.items![1].badgeValue = nil
+            instructionsLabel.text = ""
         }
     }
     
@@ -222,8 +226,15 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
         } else if orientation == .right {
             
             let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (action, indexPath) in
-                try! self.realm.write {
-                    self.realm.delete(self.allTransactions[indexPath.item])
+                
+                if self.taskView {
+                    try! self.realm.write {
+                        self.realm.delete(self.unclearedTransactionsToDate[indexPath.item])
+                    }
+                } else {
+                    try! self.realm.write {
+                        self.realm.delete(self.allTransactions[indexPath.item])
+                    }
                 }
                 action.fulfill(with: .delete)
                 collectionView.reloadData()
@@ -239,6 +250,5 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
         }
         
     }
-    
     
 }

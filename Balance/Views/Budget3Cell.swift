@@ -24,24 +24,18 @@ class Budget3Cell: UICollectionViewCell {
     @IBOutlet weak var percentLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     
-    
     //MARK: - Properties
     let realm = try! Realm()
     
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self)}()
-    lazy var plannedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     
     var category: Category?
 //    var selectedDate = Date()
     
     static let identifier = "PlanningCell"
     
-    //MARK: - ViewDidLoad
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
+    //MARK: - LayoutSubviews
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -53,6 +47,12 @@ class Budget3Cell: UICollectionViewCell {
         imageView.tintColor = .white
         percentLabel.textColor = .white
         
+
+        layer.cornerRadius = 20
+        progressBar.progressViewStyle = .bar
+//        progressBar.setProgress(<#T##progress: Float##Float#>, animated: true)
+//        progressBar.layer.cornerRadius = 20
+                
 //        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
 
         
@@ -71,12 +71,14 @@ class Budget3Cell: UICollectionViewCell {
         
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        
+    }
+    
 //    @objc func refresh() {
-//        subviews.forEach { subview in
-//            subview.layer.masksToBounds = false
-//            subview.clipsToBounds = false
-//            subview.layer.cornerRadius = 20
-//            }
+//
 //    }
     
     
@@ -91,9 +93,11 @@ class Budget3Cell: UICollectionViewCell {
         
         progressBar.progressTintColor = UIColor(rgb: categories[indexPath.item].categoryColor)
         
-        progressBar.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.55)
+//        progressBar.backgroundColor = UIColor(rgb: categories[indexPath.item].categoryColor).withAlphaComponent(0.55)
         
-        let plannedTotal: Double = abs(plannedTransactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+        progressBar.backgroundColor = .systemGray3
+
+        let plannedTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
         
         amountBudgetedLabel.text = "\(plannedTotal.toCurrency())\n Planned"
         

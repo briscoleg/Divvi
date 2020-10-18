@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import Charts
 
 class PlanVC: UIViewController {
     
@@ -39,8 +38,6 @@ class PlanVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-
- 
         setCollectionViewLayout()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
@@ -60,17 +57,18 @@ class PlanVC: UIViewController {
     }
 
     private func setCollectionViewLayout() {
-        
+
         let layout = UICollectionViewFlowLayout()
-                
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 25, bottom: 25, right: 25)
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/1.1, height: 100)
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 12
-        layout.headerReferenceSize = CGSize(width: 0, height: 150)
-        
+
+//        layout.sectionInset = UIEdgeInsets(top: 0, left: 25, bottom: 25, right: 25)
+//        layout.itemSize = CGSize(width: UIScreen.main.bounds.width/1.1, height: 100)
+//        layout.minimumInteritemSpacing = 0
+//        layout.minimumLineSpacing = 12
+//        layout.headerReferenceSize = CGSize(width: 0, height: 125)
+
+
         collectionView.collectionViewLayout = layout
-        
+
     }
     
     //MARK: - IBActions
@@ -174,10 +172,32 @@ extension PlanVC: UICollectionViewDataSource {
             
         default:
 
-            assert(false, "Invalid element type")
+             assert(false, "Invalid element type")
         }
         
     }
     
 }
 
+extension PlanVC: UICollectionViewDelegateFlowLayout {
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width/1.1, height: 100)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 25, bottom: 25, right: 25)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 12
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: 0, height: 125)
+    }
+
+}
