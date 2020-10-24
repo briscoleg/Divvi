@@ -192,9 +192,9 @@ extension SubVC: UICollectionViewDataSource {
         } else {
             transactionCell.nameLabel.textColor = .black
             if filteredTransactions.transactionAmount > 0 {
-                transactionCell.amountLabel.textColor = UIColor(rgb: Constants.green)
+                transactionCell.amountLabel.textColor = UIColor(rgb: SystemColors.green)
             } else {
-                transactionCell.amountLabel.textColor = UIColor(rgb: Constants.red)
+                transactionCell.amountLabel.textColor = UIColor(rgb: SystemColors.red)
             }
             transactionCell.dateLabel.textColor = .black
             transactionCell.balanceLabel.textColor = .black

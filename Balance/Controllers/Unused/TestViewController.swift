@@ -180,10 +180,10 @@ class TestViewController: UIViewController, UICollectionViewDataSource, UICollec
                         
                         if transactions[indexPath.row].transactionAmount > 0 {
                             
-                            transactionCell.amountLabel.textColor = UIColor(rgb: Constants.green)
+                            transactionCell.amountLabel.textColor = UIColor(rgb: SystemColors.green)
                             
                         } else {
-                            transactionCell.amountLabel.textColor = UIColor(rgb: Constants.red)
+                            transactionCell.amountLabel.textColor = UIColor(rgb: SystemColors.red)
                             
                         }
                         

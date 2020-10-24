@@ -19,20 +19,14 @@ class SummaryCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         circleView.makeCircular()
+        imageView.tintColor = .white
 
     }
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        
-//    }
     
-    func configure(with indexPath: IndexPath) {
+    func configure(with image: UIImage, and amount: Double) {
         
-        
+        imageView.image = image
+        amountLabel.attributedText = amount.toAttributedString(size: 9, offset: 4, weight: .regular)
         
     }
-    
-    
-    
-    
 }

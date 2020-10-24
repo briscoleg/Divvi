@@ -220,7 +220,7 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
             }
             
             clearAction.image = UIImage(systemName: "checkmark")
-            clearAction.backgroundColor = UIColor(rgb: Constants.blue)
+            clearAction.backgroundColor = UIColor(rgb: SystemColors.blue)
             
             return [clearAction]
         } else if orientation == .right {
@@ -242,7 +242,7 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
             }
             
             deleteAction.image = UIImage(systemName: "trash")
-            deleteAction.backgroundColor = UIColor(rgb: Constants.red)
+            deleteAction.backgroundColor = UIColor(rgb: SystemColors.red)
             
             return [deleteAction]
         } else {

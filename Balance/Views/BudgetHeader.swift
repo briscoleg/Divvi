@@ -45,7 +45,7 @@ class BudgetHeader: UICollectionReusableView {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        lineChartButton.tintColor = UIColor(rgb: Constants.blue)
+        lineChartButton.tintColor = UIColor(rgb: SystemColors.blue)
 
         
 //        pieChart.delegate = self

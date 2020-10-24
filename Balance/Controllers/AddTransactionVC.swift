@@ -109,9 +109,9 @@ class AddTransactionVC: UIViewController {
         saveButton.roundCorners()
         
         if categoryPicked?.categoryName == "Income" {
-            amountTextField.textColor = UIColor(rgb: Constants.green)
+            amountTextField.textColor = UIColor(rgb: SystemColors.green)
         } else {
-            amountTextField.textColor = UIColor(rgb: Constants.red)
+            amountTextField.textColor = UIColor(rgb: SystemColors.red)
         }
         
         addInputAccessoryForTextFields(textFields: [descriptionTextField], dismissable: true, previousNextable: false)
@@ -297,11 +297,11 @@ class AddTransactionVC: UIViewController {
         
         if isExpense {
             amountTextField.dropMinus()
-            amountTextField.textColor = UIColor(rgb: Constants.green)
+            amountTextField.textColor = UIColor(rgb: SystemColors.green)
             isExpense = false
         } else {
             amountTextField.addMinus()
-            amountTextField.textColor = UIColor(rgb: Constants.red)
+            amountTextField.textColor = UIColor(rgb: SystemColors.red)
             isExpense = true
         }
         
@@ -545,7 +545,7 @@ extension AddTransactionVC: CategoryDelegate {
         if categoryPicked?.categoryName == "Income" {
             amountTextField.dropMinus()
             isExpense = false
-            amountTextField.textColor = UIColor(rgb: Constants.green)
+            amountTextField.textColor = UIColor(rgb: SystemColors.green)
         }
     }
     

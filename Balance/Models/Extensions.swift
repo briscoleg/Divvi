@@ -350,7 +350,7 @@ extension Double {
         currencyFormatter.numberStyle = .currency
         currencyFormatter.locale = Locale.current
         
-        let number = currencyFormatter.string(from: NSNumber(value: abs(self)))
+        let number = currencyFormatter.string(from: NSNumber(value: self))
         
         let mutableAttributedString = NSMutableAttributedString(string: number!)
         if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {

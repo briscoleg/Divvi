@@ -6,9 +6,6 @@
 //  Copyright © 2020 Bo. All rights reserved.
 //
 
-import Foundation
-
-
 import UIKit
 import RealmSwift
 

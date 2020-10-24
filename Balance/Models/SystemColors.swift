@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Constants {
+struct SystemColors {
     
     static let green = 0x20bf6b
     static let red = 0xeb3b5a

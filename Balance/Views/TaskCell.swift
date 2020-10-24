@@ -54,11 +54,11 @@ class TaskCell: SwipeCollectionViewCell {
         
         if transaction[indexPath.item].transactionAmount > 0 {
             
-            amountLabel.textColor = UIColor(rgb: Constants.green)
+            amountLabel.textColor = UIColor(rgb: SystemColors.green)
             
         } else {
             
-            amountLabel.textColor = UIColor(rgb: Constants.red)
+            amountLabel.textColor = UIColor(rgb: SystemColors.red)
             
         }
     }

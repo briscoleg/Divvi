@@ -72,9 +72,9 @@ class DetailVC: UIViewController {
     func formatNumber (_ number: Double) {
         
         if number > 0 {
-            amountLabel.textColor = UIColor(rgb: Constants.green)
+            amountLabel.textColor = UIColor(rgb: SystemColors.green)
         } else if number < 0 {
-            amountLabel.textColor = UIColor(rgb: Constants.red)
+            amountLabel.textColor = UIColor(rgb: SystemColors.red)
         }
         
         let formatter = NumberFormatter()
@@ -197,9 +197,9 @@ class DetailVC: UIViewController {
 extension UILabel {
     func colorCode(number: Double) -> UIColor{
         if number > 0 {
-            textColor = UIColor(rgb: Constants.green)
+            textColor = UIColor(rgb: SystemColors.green)
         } else if number < 0 {
-            textColor = UIColor(rgb: Constants.red)
+            textColor = UIColor(rgb: SystemColors.red)
         }
         return textColor
     }

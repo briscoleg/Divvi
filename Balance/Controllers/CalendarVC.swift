@@ -38,7 +38,6 @@ class CalendarVC: UIViewController {
         super.viewDidLoad()
         
         calendar.delegate = self
-
         picker.delegate = self
         picker.dataSource = self
         

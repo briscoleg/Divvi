@@ -10,10 +10,15 @@ import UIKit
 import RealmSwift
 
 class CategoryCell: UICollectionViewCell {
+    
+    static let cellIdentifier = "CategoryCell"
 
     @IBOutlet weak var categoryImage: UIImageView!
     @IBOutlet weak var categoryName: UILabel!
     @IBOutlet weak var circleView: UIView!
+    @IBOutlet weak var deleteButton: UIButton!
+    
+    var deleteThisCell: (() -> Void)?
     
     
     override func awakeFromNib() {
@@ -39,6 +44,7 @@ class CategoryCell: UICollectionViewCell {
         categoryName.text = category.categoryName
         categoryImage.image = UIImage(named: category.categoryName)
         circleView.backgroundColor = UIColor(rgb: category.categoryColor)
+        deleteButton.isHidden = true
         
     }
     
@@ -50,5 +56,10 @@ class CategoryCell: UICollectionViewCell {
         
     }
     
+    @IBAction func deleteButtonPressed(_ sender: UIButton) {
+        
+        deleteThisCell?()
+        
+    }
 }
 

@@ -1,8 +1,8 @@
 //
-//  CategoryCVC.swift
+//  CategoryVC2.swift
 //  Balance
 //
-//  Created by Bo on 7/14/20.
+//  Created by Bo LeGrand on 10/23/20.
 //  Copyright © 2020 Bo. All rights reserved.
 //
 
@@ -14,31 +14,43 @@ protocol CategoryDelegate {
     func getSubcategory(from subcategory: SubCategory)
 }
 
-class CategoryVC: UICollectionViewController {
+class CategoryVC: UIViewController {
+
+    //MARK: - IBOutlets
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var editButton: UIButton!
     
+    //MARK: - Properties
     var categoryDelegate: CategoryDelegate!
+    
+    let realm = try! Realm()
+    
+    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
+    lazy var subCategories: Results<SubCategory> = { self.realm.objects(SubCategory.self) }()
+    
+    var categoryView = true
+    var editMode = false
+    var categorySelected: Category?
     
     var screenSize: CGRect!
     var screenWidth: CGFloat!
     var screenHeight: CGFloat!
     
-    let realm = try! Realm()
-    lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
-    lazy var subCategories: Results<SubCategory> = { self.realm.objects(SubCategory.self) }()
-    
-    var categoryView = true
-    var categorySelected: Category?
-    
-    
-    
+    //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
         configureLayout()
-        
+        hideOrShowBackButton()
+
     }
     
-    func configureLayout() {
+    //MARK: - Methods
+    private func configureLayout() {
         
         screenSize = UIScreen.main.bounds
         screenWidth = screenSize.width
@@ -52,18 +64,127 @@ class CategoryVC: UICollectionViewController {
         layout.minimumLineSpacing = 0
         
         collectionView.collectionViewLayout = layout
-    }
     
 }
-
-extension CategoryVC {
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    private func showDeleteButtons(_ subCategoryCell: CategoryCell) {
+        if editMode {
+            subCategoryCell.deleteButton.isHidden = false
+            editButton.setTitle("Done", for: .normal)
+
+        } else {
+            subCategoryCell.deleteButton.isHidden = true
+            editButton.setTitle("Edit", for: .normal)
+
+        }
+    }
+    
+    private func hideOrShowBackButton() {
+        
+        if categoryView {
+            backButton.isHidden = true
+            editButton.isHidden = true
+        } else {
+            backButton.isHidden = false
+            editButton.isHidden = false
+        }
+        
+    }
+    
+//    private func setEditButtonText() {
+//        if editMode {
+//        } else {
+//        }
+//    }
+    
+    //MARK: - IBActions
+    
+    @IBAction func backButtonPressed(_ sender: UIButton) {
+        
+        categoryView = true
+        hideOrShowBackButton()
+        editMode = false
+        collectionView.reloadData()
+        
+    }
+    
+    @IBAction func editButtonPressed(_ sender: UIButton) {
+        
+        editMode = !editMode
+        collectionView.reloadData()
+        
+    }
+}
+
+//MARK: - CollectionView Delegate & DataSource
+extension CategoryVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        if categoryView {
+            return categories.count
+
+        } else {
+            return categorySelected!.subCategories.count + 1
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        var cell = UICollectionViewCell()
+        
+        if categoryView {
+            
+            if let categoryCell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.cellIdentifier, for: indexPath) as? CategoryCell {
+                
+                categoryCell.configureCategory(with: categories[indexPath.item])
+                
+                cell = categoryCell
+                
+            }
+        } else {
+            if let subCategoryCell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.cellIdentifier, for: indexPath) as? CategoryCell {
+                
+                if indexPath.item == 0 {
+                    subCategoryCell.categoryImage.image = UIImage(systemName: "plus")
+                    subCategoryCell.categoryName.text = "Add"
+                    subCategoryCell.circleView.backgroundColor = UIColor(rgb: SystemColors.grey)
+                    subCategoryCell.deleteButton.isHidden = true
+                } else {
+                    subCategoryCell.configureSubcategory(with: categorySelected!.subCategories[indexPath.item - 1], and: categorySelected!)
+                    showDeleteButtons(subCategoryCell)
+                    
+                    subCategoryCell.deleteThisCell = { [self] in
+                        
+                        let categoryToDelete = categorySelected!.subCategories[indexPath.item - 1]
+                        do {
+                            try realm.write {
+                                realm.delete(categoryToDelete)
+                            }
+                        } catch {
+                            print("Error deleting subCategory \(error)")
+                        }
+                        collectionView.reloadData()
+
+                    }
+                }
+                
+                cell = subCategoryCell
+                
+            }
+        }
+        
+        return cell
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if categoryView {
             categorySelected = categories[indexPath.item]
             categoryDelegate.getCategory(from: categories[indexPath.item])
             categoryView = false
+            hideOrShowBackButton()
             collectionView.reloadData()
 
         } else {
@@ -84,7 +205,6 @@ extension CategoryVC {
                         self.categorySelected!.subCategories.append(newCategory)
                         
                     }
-                    
                     collectionView.reloadData()
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
                     
@@ -111,51 +231,7 @@ extension CategoryVC {
             }
         }
     }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        if categoryView {
-            return categories.count
-
-        } else {
-            return categorySelected!.subCategories.count + 1
-        }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        var cell = UICollectionViewCell()
-        
-        if categoryView {
             
-            if let categoryCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as? CategoryCell {
-                
-                categoryCell.configureCategory(with: categories[indexPath.item])
-                
-                cell = categoryCell
-                
-            }
-        } else {
-            if let subCategoryCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as? CategoryCell {
-                
-                if indexPath.item == 0 {
-                    subCategoryCell.categoryImage.image = UIImage(systemName: "plus")
-                    subCategoryCell.categoryName.text = "Add"
-                    subCategoryCell.circleView.backgroundColor = UIColor(rgb: Constants.grey)
-                } else {
-                    subCategoryCell.configureSubcategory(with: categorySelected!.subCategories[indexPath.item - 1], and: categorySelected!)
-                }
-                
-                
-                
-                cell = subCategoryCell
-                
-            }
-        }
-        
-        return cell
-        
-    }
 }
 
 extension CategoryVC: UITextFieldDelegate {

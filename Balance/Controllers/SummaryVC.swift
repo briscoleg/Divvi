@@ -18,62 +18,63 @@ class SummaryVC: UIViewController {
     @IBOutlet weak var amountLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var todayButton: UIButton!
+    @IBOutlet weak var nextMonthButton: UIButton!
+    @IBOutlet weak var prevMonthButton: UIButton!
     
     //MARK: - Properties
     let realm = try! Realm()
     lazy var transaction: Results<Transaction> = { self.realm.objects(Transaction.self) }()
+//    lazy var filteredTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(dateRangePredicate)}()
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     lazy var unclearedTransactionsToDate: Results<Transaction> = { transaction.filter("transactionDate <= %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
-
+    
     var dateRangePredicate = NSPredicate()
-
-    let detailVCId = "DetailVC"
+    
+    private let detailVCId = "DetailVC"
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureDelegates()
-        
         setupCategoriesOnFirstLoad()
-        
         customizeTabBarAppearance()
-        
         showBadgeForUnclearedTransactions()
-        
         configureObservers()
-        
         configureCollectionViewLayout()
         
-        todayButton.backgroundColor = UIColor(rgb: Constants.blue)
+        todayButton.backgroundColor = UIColor(rgb: SystemColors.blue)
+        prevMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
+        nextMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
         todayButton.roundCorners()
-
+        prevMonthButton.roundCorners()
+        nextMonthButton.roundCorners()
         
         //        calendar.scrollDirection = .vertical
         //        print(Realm.Configuration.defaultConfiguration.fileURL!)
-
         
-//        navigationController?.setNavigationBarHidden(true, animated: false)
-
         
-                
+        //        navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        
+        
         calendar.select(calendar.today)
-//        calendar.setCurrentPage(Date(), animated: true)
+        //        calendar.setCurrentPage(Date(), animated: true)
         
         
-
         
-
+        
+        
         
         //Hide Nav Bar Line
         //        navigationBar.setValue(true, forKey: "hidesShadow")
         
-//        let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
-//        self.navigationItem.rightBarButtonItem = todayItem
+        //        let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
+        //        self.navigationItem.rightBarButtonItem = todayItem
         
         getBalanceAtDate(Date())
         
-
+        
         
         dateRangePredicate = predicateForDayFromDate(date: Date())
         
@@ -121,7 +122,7 @@ class SummaryVC: UIViewController {
     }
     
     private func configureCollectionViewLayout() {
-
+        
         let layout = UICollectionViewFlowLayout()
         
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -141,15 +142,18 @@ class SummaryVC: UIViewController {
         
     }
     
-    //For Prev/Next Buttons on FSCalendar
-    //    private func stepCalendarView(index: Int) {
-    //        let previousMonth = Calendar.current.date(byAdding: self.calendar.scope.hashValue, value: index, to: calendar.currentPage)
-    //        calendar.setCurrentPage(previousMonth!, animated: true)
-    //    }
+    //    For Prev/Next Buttons on FSCalendar
+    private func goToPrevMonth(index: Int) {
+        let previousMonth = Calendar.current.date(byAdding: .month, value: -index, to: calendar.currentPage)
+        calendar.setCurrentPage(previousMonth!, animated: true)
+    }
     
-//    @objc func todayItemClicked(sender: AnyObject) {
-//        self.calendar.setCurrentPage(Date(), animated: false)
-//    }
+    private func goToNextMonth(index: Int) {
+        let nextMonth = Calendar.current.date(byAdding: .month, value: index, to: calendar.currentPage)
+        calendar.setCurrentPage(nextMonth!, animated: true)
+    }
+    
+    
     
     private func getBalanceAtDate(_ date: Date) {
         
@@ -159,35 +163,35 @@ class SummaryVC: UIViewController {
         
     }
     
-//    func displayAmount(with amount: Double) -> NSAttributedString {
-//
-//        let currencyFormatter = NumberFormatter()
-//        currencyFormatter.numberStyle = .currency
-//        currencyFormatter.locale = Locale.current
-//
-//        let number = currencyFormatter.string(from: NSNumber(value: abs(amount)))
-//
-//        let mutableAttributedString = NSMutableAttributedString(string: number!)
-//        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
-//            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 9, weight: .light), .baselineOffset: 5],
-//                                                  range: NSRange(range, in: mutableAttributedString.string))
-//        }
-//
-//        return mutableAttributedString
-//
-//    }
+    //    func displayAmount(with amount: Double) -> NSAttributedString {
+    //
+    //        let currencyFormatter = NumberFormatter()
+    //        currencyFormatter.numberStyle = .currency
+    //        currencyFormatter.locale = Locale.current
+    //
+    //        let number = currencyFormatter.string(from: NSNumber(value: abs(amount)))
+    //
+    //        let mutableAttributedString = NSMutableAttributedString(string: number!)
+    //        if let range = mutableAttributedString.string.range(of: #"(?<=.)(\d{2})$"#, options: .regularExpression) {
+    //            mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 9, weight: .light), .baselineOffset: 5],
+    //                                                  range: NSRange(range, in: mutableAttributedString.string))
+    //        }
+    //
+    //        return mutableAttributedString
+    //
+    //    }
     
-//    func formatDoubleToCurrencyString(from number: Double) -> String {
-//
-//        let formatter = NumberFormatter()
-//        formatter.currencySymbol = "$"
-//        formatter.numberStyle = .currency
-//
-//        let formattedNumber = formatter.string(from: NSNumber(value: number))
-//
-//        return formattedNumber!
-//
-//    }
+    //    func formatDoubleToCurrencyString(from number: Double) -> String {
+    //
+    //        let formatter = NumberFormatter()
+    //        formatter.currencySymbol = "$"
+    //        formatter.numberStyle = .currency
+    //
+    //        let formattedNumber = formatter.string(from: NSNumber(value: number))
+    //
+    //        return formattedNumber!
+    //
+    //    }
     
     private func displaySelectedDate(_ date: Date) {
         
@@ -262,24 +266,30 @@ class SummaryVC: UIViewController {
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
     }
     
-//    private func positiveAndNegativeTransactionPredicate(date: Date) -> NSPredicate {
-//        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-//        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-//
-//        components.hour = 00
-//        components.minute = 00
-//        components.second = 00
-//
-//        let startDate = calendar.date(from: components)
-//
-//        components.hour = 23
-//        components.minute = 59
-//        components.second = 59
-//
-//        let endDate = calendar.date(from: components)
-//
-//        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 || transactionAmount < 0", argumentArray: [startDate!, endDate!])
-//    }
+    private func stepCalendarView(index: Int) {
+        let previousMonth = Calendar.current.date(byAdding: .month, value: index, to: calendar.currentPage)
+        calendar.setCurrentPage(previousMonth!, animated: true)
+    }
+    
+    
+    //    private func positiveAndNegativeTransactionPredicate(date: Date) -> NSPredicate {
+    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+    //
+    //        components.hour = 00
+    //        components.minute = 00
+    //        components.second = 00
+    //
+    //        let startDate = calendar.date(from: components)
+    //
+    //        components.hour = 23
+    //        components.minute = 59
+    //        components.second = 59
+    //
+    //        let endDate = calendar.date(from: components)
+    //
+    //        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 || transactionAmount < 0", argumentArray: [startDate!, endDate!])
+    //    }
     
     //MARK: - Setup Categories
     
@@ -545,18 +555,31 @@ class SummaryVC: UIViewController {
         
         displaySelectedDate(Date())
         
-        getBalanceAtDate(Date() + 61199)
+        getBalanceAtDate(Date())
         
         dateRangePredicate = predicateForDayFromDate(date: Date())
         
         collectionView.reloadData()
         
     }
+    
+    @IBAction func nextMonthButtonPressed(_ sender: UIButton) {
+        
+//        calendar.setCurrentPage(datebyadd, animated: true)
+        
+    }
+    
+    @IBAction func prevMonthButtonPressed(_ sender: UIButton) {
+        
+        stepCalendarView(index: -1)
+        calendar.reloadData()
+    
+}
 }
 
 //MARK: - Calendar Delegate, DataSource, & Appearance
 extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
-    
+        
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
         getBalanceAtDate(date + 61199)
@@ -570,7 +593,7 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-                
+        
         let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
         
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
@@ -593,22 +616,20 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
         
         for _ in incomeTransaction {
-            return [UIColor(rgb: Constants.green)]
+            return [UIColor(rgb: SystemColors.green)]
         }
         for _ in expenseTransaction {
-            return [UIColor(rgb: Constants.red)]
+            return [UIColor(rgb: SystemColors.red)]
         }
         
         return nil
     }
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
+                
+        calendar.appearance.todayColor = UIColor(rgb: SystemColors.yellow)
         
-//        cell.appearance.eventDefaultColor = UIColor(rgb: Constants.green)
-        
-        calendar.appearance.todayColor = UIColor(rgb: Constants.yellow)
-        
-        calendar.appearance.selectionColor = UIColor(rgb: Constants.blue)
+        calendar.appearance.selectionColor = UIColor(rgb: SystemColors.blue)
         
     }
     
@@ -632,7 +653,7 @@ extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
- 
+        
         return transaction.filter(dateRangePredicate).count
     }
     
@@ -640,27 +661,25 @@ extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCell.cellId, for: indexPath) as! SummaryCell
         
-        cell.configure(with: indexPath)
+        let filteredTransactions = realm.objects(Transaction.self).filter(dateRangePredicate)
         
-        let transactions = realm.objects(Transaction.self).filter(dateRangePredicate)
+        let amount = filteredTransactions[indexPath.row].transactionAmount
+
+        if let image = UIImage(named: filteredTransactions[indexPath.item].transactionCategory!.categoryName) {
+            cell.configure(with: image, and: amount)
+
+        }
+    
+        cell.circleView.backgroundColor = UIColor(rgb: filteredTransactions[indexPath.item].transactionCategory!.categoryColor)
         
-        cell.imageView.image = UIImage(named: transactions[indexPath.item].transactionCategory!.categoryName)
-        cell.imageView.tintColor = .white
-        cell.circleView.backgroundColor = UIColor(rgb: transactions[indexPath.item].transactionCategory!.categoryColor)
-        
-        let currencyFormatter = NumberFormatter()
-        currencyFormatter.numberStyle = .currency
-        currencyFormatter.locale = Locale.current
-        
-        let amount = transactions[indexPath.row].transactionAmount
-        
+                
         cell.amountLabel.attributedText = amount.toAttributedString(size: 9, offset: 4, weight: .regular)
         
-        if transactions[indexPath.row].transactionAmount > 0 {
+        if filteredTransactions[indexPath.row].transactionAmount > 0 {
             
-            cell.amountLabel.textColor = UIColor(rgb: Constants.green)
+            cell.amountLabel.textColor = UIColor(rgb: SystemColors.green)
         } else {
-            cell.amountLabel.textColor = UIColor(rgb: Constants.red)
+            cell.amountLabel.textColor = UIColor(rgb: SystemColors.red)
         }
         
         return cell
