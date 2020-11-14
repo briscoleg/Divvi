@@ -13,6 +13,9 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 //    var summaryVC: SummaryVC!
 //    var budgetVC: Budget2VC!
     var addTransactionVC: AddTransactionVC!
+    var startingBalanceVC: StartingBalanceVC!
+    
+    let userDefaults = UserDefaults()
 //    var taskVC: TaskVC!
 //    var menuVC: MenuVC!
     
@@ -24,6 +27,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 //        summaryVC = SummaryVC()
 //        budgetVC = Budget2VC()
         addTransactionVC = AddTransactionVC()
+        startingBalanceVC = StartingBalanceVC()
 //        taskVC = TaskVC()
 //        menuVC = MenuVC()
         configureTabBar()
@@ -41,14 +45,29 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     }
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if viewController.isKind(of: AddTransactionVC.self) {
-            if let vc =  storyboard?.instantiateViewController(identifier: "AddTransactionVC") {
-                vc.modalPresentationStyle = .formSheet
-                self.present(vc, animated: true, completion: nil)
-                return false
+        
+        switch userDefaults.bool(forKey: "startingBalanceSet") {
+        case false:
+            if viewController.isKind(of: AddTransactionVC.self) {
+                if let vc = storyboard?.instantiateViewController(identifier: StartingBalanceVC.identifier) {
+                    vc.modalPresentationStyle = .formSheet
+                    present(vc, animated: true, completion: nil)
+                    print("StartingBalanceVC")
+
+                    return false
+                }
+            }
+        case true:
+            if viewController.isKind(of: AddTransactionVC.self) {
+                if let vc =  storyboard?.instantiateViewController(identifier: AddTransactionVC.identifier) {
+                    vc.modalPresentationStyle = .formSheet
+                    self.present(vc, animated: true, completion: nil)
+                    print("AddTransactionVC")
+                    return false
+                    
+                }
             }
         }
         return true
     }
-    
 }

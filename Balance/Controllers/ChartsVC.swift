@@ -10,6 +10,11 @@ import UIKit
 import RealmSwift
 import Charts
 
+enum ChartView {
+    case lineChart
+    case pieChart
+}
+
 class ChartsVC: UIViewController, ChartViewDelegate {
 
     //MARK: - IBOutlets
@@ -27,75 +32,84 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     //MARK: - Properties
     
     let realm = try! Realm()
-    
     lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
-    
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
-    
     let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         return formatter
     }()
     
-    
+    var chartView: ChartView = .lineChart
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
        
         configureLineChart()
+//        configurePieChart()
         configureLandscapeView()
         
         pieChartView.isHidden = true
+        nextMonthButton.tintColor = .label
+        prevMonthButton.tintColor = .label
         
-        monthYearLabel.text = formatter.string(from: SelectedMonth.shared.date)
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
+
         lineChartView?.animate(yAxisDuration: 1)
         
                 
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        super.viewWillDisappear(false)
         
-        if (self.isMovingFromParent) {
-          UIDevice.current.setValue(Int(UIInterfaceOrientation.portrait.rawValue), forKey: "orientation")
-        }
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
 
     }
     
-    @objc func isLandscape() -> Void {}
-
-    
     //MARK: - Methods
+    
+    @objc private func isLandscape() -> Void {}
     
     private func configureLandscapeView() {
         
         self.tabBarController?.tabBar.isHidden = true
         
-        let value = UIInterfaceOrientation.landscapeLeft.rawValue
-        UIDevice.current.setValue(value, forKey: "orientation")
-
+//        let value = UIInterfaceOrientation.landscapeLeft.rawValue
+        UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
         
+    }
+    
+    private func configureCharts() {
+        
+        switch chartView {
+        
+        case ChartView.lineChart:
+            configureLineChart()
+            
+        case ChartView.pieChart:
+            configurePieChart()
+            
+        }
     }
     
     private func configurePieChart() {
         
         monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Expenses"
         
-        let totalIncome: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
-        let totalExpenses: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory != %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+//        let totalIncome: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+//        let totalExpenses: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory != %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
 
-
-        let incomeToExpenseRatio = totalExpenses / totalIncome
+//        let incomeToExpenseRatio = totalExpenses / totalIncome
 
 
 
 //        incomeLabel.text = "Income:\n\(totalIncome.toCurrency())"
 //        expensesLabel.text = "Expenses:\n\(totalExpenses.toCurrency())"
 
-        pieChartView.delegate = self
-        pieChartView.legend.enabled = false
+//        pieChartView.delegate = self
+        pieChartView.legend.enabled = true
 //        pieChartView.centerText = graphCenterText
         pieChartView.holeRadiusPercent = 0.5
 
@@ -106,18 +120,22 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         for category in expenseCategories {
             let totalCategoryValue = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
             if totalCategoryValue > 0 {
-                entries.append(PieChartDataEntry(value: Double(totalCategoryValue), label: nil))
+                entries.append(PieChartDataEntry(value: Double(totalCategoryValue), label: category.categoryName))
             }
         }
 
-        let expenseDataSet = PieChartDataSet(entries: entries, label: "Planned Expenses")
+        let expenseDataSet = PieChartDataSet(entries: entries)
 
         expenseDataSet.colors.removeAll()
         expenseDataSet.sliceSpace = 2
-        expenseDataSet.yValuePosition = .insideSlice
-        expenseDataSet.valueColors = [.clear]
-        expenseDataSet.valueLineColor = .clear
-        expenseDataSet.entryLabelColor = UIColor.black
+        expenseDataSet.yValuePosition = .outsideSlice
+        expenseDataSet.xValuePosition = .outsideSlice
+        expenseDataSet.valueLinePart1Length = 0.5
+        expenseDataSet.valueLineVariableLength = true
+        expenseDataSet.valueColors = [.label]
+        expenseDataSet.valueLineColor = .label
+        expenseDataSet.entryLabelColor = .label
+        expenseDataSet.label = .none
 
         for category in expenseCategories {
             let totalCategoryValue = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", category)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
@@ -144,17 +162,21 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     
     private func configureLineChart() {
         
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balance"
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
         
+//        lineChartView.delegate = self
         
         let objects = transactions.filter(SelectedMonth.shared.selectedMonthPredicate()).sorted(byKeyPath: "transactionDate", ascending: true)
         
+        
+        
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom
-        xAxis.labelCount = 11
+        xAxis.labelCount = 30
         xAxis.drawLabelsEnabled = true
         
         var referenceTimeInterval: TimeInterval = 0
+        
         if let minTimeInterval = (objects.map { $0.transactionDate.timeIntervalSince1970 }).min() {
             referenceTimeInterval = minTimeInterval
         }
@@ -165,6 +187,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         let xValuesNumberFormatter = ChartXAxisFormatter(referenceTimeInterval: referenceTimeInterval, dateFormatter: formatter)
         
         var entries = [ChartDataEntry]()
+        
         for object in objects {
             let timeInterval = object.transactionDate.timeIntervalSince1970
             let xValue = (timeInterval - referenceTimeInterval) / (3600 * 24)
@@ -176,12 +199,9 @@ class ChartsVC: UIViewController, ChartViewDelegate {
             entries.append(entry)
         }
         
-        lineChartView.xAxis.valueFormatter = xValuesNumberFormatter
-        lineChartView.xAxis.labelRotationAngle = -45
-        lineChartView.extraRightOffset = 20
+        let lineChartDataSet = LineChartDataSet(entries: entries)
         
-        let dataSet = LineChartDataSet(entries: entries)
-        let data = LineChartData(dataSet: dataSet)
+        let data = LineChartData(dataSet: lineChartDataSet)
         
         let format = NumberFormatter()
         format.numberStyle = .currency
@@ -189,17 +209,22 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         let currency = DefaultValueFormatter(formatter: format)
         data.setValueFormatter(currency)
                 
-        dataSet.circleHoleRadius = 0
-        dataSet.circleRadius = 3
-        dataSet.mode = .horizontalBezier
+        lineChartDataSet.circleHoleRadius = 0
+        lineChartDataSet.circleRadius = 3
+        lineChartDataSet.mode = .horizontalBezier
+        lineChartDataSet.label = .none
         
         let valFormatter = NumberFormatter()
         valFormatter.numberStyle = .currency
         valFormatter.maximumFractionDigits = 0
         valFormatter.currencySymbol = "$"
 
+        lineChartView.xAxis.valueFormatter = xValuesNumberFormatter
+        lineChartView.xAxis.labelRotationAngle = -45
+        lineChartView.extraRightOffset = 20
         lineChartView.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: valFormatter)
         lineChartView.rightAxis.enabled = false
+        lineChartView.legend.enabled = false
         
         lineChartView.data = data
         
@@ -301,8 +326,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     @IBAction func prevMonthPressed(_ sender: UIButton) {
         
         SelectedMonth.shared.decreaseDateByAMonth()
-        configureLineChart()
-        configurePieChart()
+        configureCharts()
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
     }
@@ -310,8 +334,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     @IBAction func nextMonthPressed(_ sender: UIButton) {
         
         SelectedMonth.shared.increaseDateByAMonth()
-        configureLineChart()
-        configurePieChart()
+        configureCharts()
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
     }
@@ -321,8 +344,10 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         pieChartView.isHidden = false
         lineChartView.isHidden = true
         
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Expenses"
+        chartView = ChartView.pieChart
         
+        configureCharts()
+                
     }
     
     
@@ -331,8 +356,9 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         lineChartView.isHidden = false
         pieChartView.isHidden = true
         
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balance"
+        chartView = ChartView.lineChart
         
+        configureCharts()
     }
     
     

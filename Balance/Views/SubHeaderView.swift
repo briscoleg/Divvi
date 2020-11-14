@@ -10,10 +10,9 @@ import UIKit
 
 class SubHeaderView: UICollectionReusableView {
     
+    static let identifier = "SubHeaderView"
+    
     @IBOutlet weak var totalPlannedLabel: UILabel!
     @IBOutlet weak var totalSpentLabel: UILabel!
-    
-   
-    
     
 }

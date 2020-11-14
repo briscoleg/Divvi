@@ -12,7 +12,7 @@ import Foundation
 
 class SelectedMonth {
     
-    static var shared = SelectedMonth()
+    static let shared = SelectedMonth()
 
     var date: Date
     
@@ -31,12 +31,17 @@ class SelectedMonth {
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
 
         let components = calendar.dateComponents([.year, .month], from: SelectedMonth.shared.date)
+        
         let startOfMonth = calendar.date(from: components)
+        
         var comps2 = DateComponents()
+        
         comps2.month = 1
         comps2.day = -1
+        
         let endOfMonth = calendar.date(byAdding: comps2, to: startOfMonth!)
         
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startOfMonth!, endOfMonth!])
+        
     }
 }

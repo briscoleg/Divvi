@@ -18,17 +18,16 @@ class SubCell: UICollectionViewCell {
     @IBOutlet weak var circleView: UIView!
     @IBOutlet weak var subcategoryImage: UIImageView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
         circleView.makeCircular()
         subcategoryImage.tintColor = .white
-        
     }
     
-    func configureSubcategoryCell(with category: Category) {
-        subcategoryImage.image = UIImage(named: category.categoryName)
-        circleView.backgroundColor = UIColor(rgb: category.categoryColor)
+    func configureSubcategoryCell(_ image: UIImage, _ color: UIColor) {
+        subcategoryImage.image = image
+        circleView.backgroundColor = color
     }
     
 }

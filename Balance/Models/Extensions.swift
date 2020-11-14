@@ -18,22 +18,6 @@ extension UIButton {
     }
 }
 
-//extension UIButton {
-//    func makeButtonCircular(button: UIButton) {
-//        
-//        let button = UIButton()
-//        
-//        button.layer.shadowColor = UIColor.black.cgColor
-//        button.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-//        button.layer.masksToBounds = false
-//        button.layer.shadowRadius = 2.0
-//        button.layer.shadowOpacity = 0.5
-//        button.layer.cornerRadius = button.frame.width / 2
-//        button.layer.borderColor = UIColor.black.cgColor
-//        button.layer.borderWidth = 1.0
-//    }
-//}
-
 extension UIView {
     func makeCircular() {
         
@@ -44,15 +28,15 @@ extension UIView {
         layer.shadowOpacity = 0.1
         layer.cornerRadius = frame.width / 2
         layer.borderColor = UIColor.black.cgColor
-//        layer.borderWidth = 1.0
+        
     }
 }
 
-extension UIApplication {
-    func hideKeyboard() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
+//extension UIApplication {
+//    func hideKeyboard() {
+//        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//    }
+//}
 
 extension UITextField {
     func addMinus() {
@@ -89,45 +73,6 @@ extension Numeric {
         return Formatter.withSeparator.string(for: self) ?? ""
     }
 }
-
-//extension Add2VC: UITextFieldDelegate {
-//
-//    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-//
-//        let dotString = "."
-//        let dollarSign = "$"
-//        let minusSign = "-$"
-//
-//
-//        if let text = textField.text{
-//
-//
-//
-//            print(text)
-//
-//            if !text.contains(dollarSign) && isExpense {
-//                textField.text = "-\(dollarSign)\(text)"
-//            }
-//            if !text.contains(dollarSign) && !isExpense {
-//                textField.text = "\(dollarSign)\(text)"
-//            }
-//
-//            let backSpace = string.isEmpty
-//
-//            if backSpace && text == minusSign {
-//                textField.text = ""
-//            }
-//            if !backSpace {
-//                if text.contains(dotString) {
-//                    if text.components(separatedBy: dotString)[1].count == 2 || string == "."  {
-//                        return false
-//                    }
-//                }
-//            }
-//        }
-//        return true
-//    }
-//}
 
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
@@ -272,19 +217,10 @@ extension Double {
         let formattedNumber = formatter.string(from: NSNumber(value: self))
 
         return formattedNumber!
-//
-//        let formatter = NumberFormatter()
-//        formatter.currencySymbol = "$"
-//        formatter.numberStyle = .currency
-//        let number = formatter.number(from: self)
-//        let doubleValue = number?.doubleValue
-//
-//        return doubleValue!
-//
-        
-        
     }
 }
+
+
 
 extension Date {
     func dateToString() -> String {
@@ -293,12 +229,7 @@ extension Date {
         formatter.dateFormat = "MMMM d, yyyy"
         
         let dateString = formatter.string(from: date)
-        
-//        if dateString == formatter.string(from: Date()) {
-//            dateLabel.text = "Today"
-//        } else {
-//            dateLabel.text = dateString
-//        }
+
         return dateString
     }
 }
@@ -360,5 +291,79 @@ extension Double {
         
         return mutableAttributedString
         
+    }
+}
+
+extension NSPredicate {
+    
+    static func transactionDescriptionEqualTo(_ description: String?) -> NSPredicate {
+        if let description = description {
+            return .init(format: "transactionDescription == %@", description)
+        }
+        return .init(format: "transactionDescription == nil")
+    }
+
+    static func transactionCategoryEqualTo(_ category: Category?) -> NSPredicate {
+        if let category = category {
+            return .init(format: "transactionCategory == %@", category)
+        }
+        return .init(format: "transactionCategory == nil")
+    }
+
+    static func transactionDateIsAfter(_ date: Date) -> NSPredicate {
+        return .init(format: "transactionDate >= %@", date as NSDate)
+    }
+
+    static func futureRepeats(of transaction: Transaction) -> NSPredicate {
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [
+            .transactionDescriptionEqualTo(transaction.transactionDescription),
+            .transactionCategoryEqualTo(transaction.transactionCategory),
+            .transactionDateIsAfter(transaction.transactionDate),
+        ])
+    }
+}
+
+extension Date {
+    enum Style {
+        case short
+        case medium
+        case long
+    }
+    func toString(style: Style) -> String {
+        
+        let formatter = DateFormatter()
+        
+        var formattedString: String
+        
+        switch style {
+        case Style.short:
+            formatter.dateStyle = .short
+            formattedString = formatter.string(from: self)
+        case Style.medium:
+            formatter.dateStyle = .medium
+            formattedString = formatter.string(from: self)
+        case Style.long:
+            formatter.dateStyle = .long
+            formattedString = formatter.string(from: self)
+            
+        }
+        
+        return formattedString
+        
+    }
+}
+
+//Hide Keyboard with Gesture Recognizer
+extension UIViewController {
+    //Call this function from any view controller to enable.
+    func setupHideKeyboardOnTap() {
+        view.addGestureRecognizer(endEditingRecognizer())
+        navigationController?.navigationBar.addGestureRecognizer(endEditingRecognizer())
+    }
+
+    private func endEditingRecognizer() -> UIGestureRecognizer {
+        let tap = UITapGestureRecognizer(target: view, action: #selector(view.endEditing(_:)))
+        tap.cancelsTouchesInView = false
+        return tap
     }
 }

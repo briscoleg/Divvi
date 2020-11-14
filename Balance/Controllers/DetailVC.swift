@@ -13,6 +13,7 @@ import RealmSwift
 
 class DetailVC: UIViewController {
     
+    //MARK: - IBOutlets
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var subCategoryLabel: UILabel!
     @IBOutlet weak var amountLabel: UILabel!
@@ -22,25 +23,29 @@ class DetailVC: UIViewController {
     @IBOutlet weak var deleteRepeatButton: UIButton!
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    //MARK: - Properties
+    static let identifier = "DetailVC"
+    
     let realm = try! Realm()
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     
     var transaction: Transaction?
     
-    
-    //    var transaction: Results<Transaction>!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionEdited"), object: nil)
         
         deleteRepeatButton.roundCorners()
         
         editButton.roundCorners()
         displayTransactionInfo()
         
+        configureObservers()
+        
+    }
+    
+    private func configureObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionEdited"), object: nil)
     }
     
     @objc func refresh() {
@@ -49,45 +54,46 @@ class DetailVC: UIViewController {
     
     private func displayTransactionInfo() {
         
-        subCategoryLabel.text = transaction?.transactionSubCategory?.subCategoryName
-        
-        if transaction?.transactionDescription == nil {
-            descriptionLabel.isHidden = true
-        } else {
-            descriptionLabel.text = transaction?.transactionDescription
+        if let transaction = transaction {
+            
+            displayTransactionAmount(transaction.transactionAmount)
+            displayTransactionDate(transaction.transactionDate)
+            subCategoryLabel.text = transaction.transactionName
+            repeatLabel.text = "Repeats: \(transaction.repeatInterval)"
+            
+            if transaction.transactionDescription == nil {
+                descriptionLabel.isHidden = true
+            } else {
+                descriptionLabel.text = transaction.transactionDescription
+            }
+            
+            if transaction.repeatInterval == "Never" {
+                deleteRepeatButton.isHidden = true
+            }
+
         }
-        
-        repeatLabel.text = "Repeats: \(transaction!.repeatInterval)"
-        
-        if transaction?.repeatInterval == "Never" {
-            deleteRepeatButton.isHidden = true
-        }
-        
-        
-        formatNumber(transaction!.transactionAmount)
-        formatDate(transaction!.transactionDate)
         
     }
     
-    func formatNumber (_ number: Double) {
-        
+    private func displayTransactionAmount (_ number: Double) {
+
         if number > 0 {
-            amountLabel.textColor = UIColor(rgb: SystemColors.green)
+            amountLabel.textColor = UIColor(rgb: SystemColors.shared.green)
         } else if number < 0 {
-            amountLabel.textColor = UIColor(rgb: SystemColors.red)
+            amountLabel.textColor = UIColor(rgb: SystemColors.shared.red)
         }
-        
+
         let formatter = NumberFormatter()
         formatter.currencySymbol = "$"
         formatter.numberStyle = .currency
-        
+
         let formattedNumber = formatter.string(from: NSNumber(value: abs(number)))
-        
+
         amountLabel.text = formattedNumber
-        
+
     }
     
-    func formatDate (_ date: Date) {
+    private func displayTransactionDate (_ date: Date) {
         
         let formatter = DateFormatter()
         
@@ -115,11 +121,11 @@ class DetailVC: UIViewController {
         
         vc.newTransaction = false
         
-        vc.amount = transaction!.transactionAmount
+//        vc.amount = transaction!.transactionAmount
         
-        vc.datePicked = transaction!.transactionDate
+//        vc.datePicked = transaction!.transactionDate
         
-        vc.repeatInterval = transaction!.repeatInterval
+//        vc.repeatInterval = transaction!.repeatInterval
         
         //        vc.amountTextField.text = String(transaction!.transactionAmount)
         
@@ -162,17 +168,23 @@ class DetailVC: UIViewController {
     
     @IBAction func repeatDeletePressed(_ sender: UIButton) {
         
-        let alert = UIAlertController(title: "Delete All Future \(transaction!.transactionSubCategory!.subCategoryName) Transactions?", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Delete All Future \(transaction!.transactionName) Transactions?", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Delete", style: .destructive) { (action) in
             
-            let futureRecurringTransactions = self.transactions.filter(NSPredicate(format: "transactionDescription == %@ && transactionDate >= %@ && transactionCategory == %@", self.transaction!.transactionDescription!, self.transaction!.transactionDate as CVarArg, self.transaction!.transactionCategory!))
-            
-            for transaction in futureRecurringTransactions {
-                try! self.realm.write {
-                    self.realm.delete(transaction)
+//            let futureRecurringTransactions = self.transactions.filter(NSPredicate(format: "transactionDescription == %@ && transactionDate >= %@ && transactionCategory == %@", self.transaction!.transactionDescription!, self.transaction!.transactionDate as NSDate, self.transaction!.transactionCategory!))
+            if let transactionsToDelete = self.transaction {
+                do {
+                    try self.realm.write {
+                        self.realm.delete(self.transactions.filter(.futureRepeats(of: transactionsToDelete)))
+                    }
+                } catch {
+                    print("Error deleting future transactions: \(error)")
                 }
             }
+            
+            
+                
             
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
             self.dismiss(animated: true, completion: nil)
@@ -197,9 +209,9 @@ class DetailVC: UIViewController {
 extension UILabel {
     func colorCode(number: Double) -> UIColor{
         if number > 0 {
-            textColor = UIColor(rgb: SystemColors.green)
+            textColor = UIColor(rgb: SystemColors.shared.green)
         } else if number < 0 {
-            textColor = UIColor(rgb: SystemColors.red)
+            textColor = UIColor(rgb: SystemColors.shared.red)
         }
         return textColor
     }

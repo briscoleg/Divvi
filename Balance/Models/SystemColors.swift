@@ -10,15 +10,17 @@ import Foundation
 
 struct SystemColors {
     
-    static let green = 0x20bf6b
-    static let red = 0xeb3b5a
-    static let blue = 0x45aaf2
-    static let yellow = 0xfed330
-    static let purple = 0xa55eea
-    static let grey = 0x778ca3
-    static let silver = 0xbdc3c7
-    static let black = 0x000000
-    static let orange = 0xfa8231
-    static let pink = 0xfc5c65
-    static let lightlightgrey = 0xd8d8d8
+    static let shared = SystemColors()
+    
+    let green = 0x20bf6b
+    let red = 0xeb3b5a
+    let blue = 0x45aaf2
+    let yellow = 0xfed330
+    let purple = 0xa55eea
+    let grey = 0x778ca3
+    let silver = 0xbdc3c7
+    let black = 0x000000
+    let orange = 0xfa8231
+    let pink = 0xfc5c65
+    let lightlightgrey = 0xd8d8d8
 }

@@ -22,6 +22,7 @@ class BudgetHeader: UICollectionReusableView {
     @IBOutlet weak var rightButton: UIButton!
     @IBOutlet weak var lineChartButton: UIButton!
 
+    static let identifier = "HeaderView"
     
     let realm = try! Realm()
     
@@ -41,31 +42,23 @@ class BudgetHeader: UICollectionReusableView {
     }()
     var graphCenterText = ""
     
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        lineChartButton.tintColor = UIColor(rgb: SystemColors.blue)
-
-        
-//        pieChart.delegate = self
-//        updateMonthYearLabel()
-        
-//        configureLineChart()
-        
-//                configureHeader()
-        //
-        //        configureHeader()
-        
-        //        configureProgressBar()
-        
-        
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        configureLayout()
+        
         updateMonthYearLabel()
+
+
+    }
+    
+    private func configureLayout() {
+        leftButton.tintColor = .label
+        rightButton.tintColor = .label
+        lineChartButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
+        
+        lineChartButton.makeCircular()
+
 
     }
     

@@ -20,9 +20,12 @@ enum RepeatInterval: String, CaseIterable {
     case twoWeeks = "Every Two Weeks"
     case weekly = "Weekly"
     case daily = "Daily"
+    case never = "Never"
 }
 
 class CalendarVC: UIViewController {
+    
+    static let identifier = "CalendarVC"
     
     @IBOutlet weak var calendar: FSCalendar!
     @IBOutlet weak var chooseButton: UIButton!
@@ -31,7 +34,7 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var picker: UIPickerView!
     @IBOutlet weak var repeatSwitch: UISwitch!
     
-    var intervalPicked = "Never"
+    var intervalPicked = RepeatInterval.never.rawValue
     var dateDelegate: DateDelegate!
     
     override func viewDidLoad() {
@@ -80,11 +83,12 @@ class CalendarVC: UIViewController {
         case true:
             picker.isHidden = false
             picker.selectRow(1, inComponent: 0, animated: true)
+            intervalPicked = RepeatInterval.monthly.rawValue
             repeatLabel.text = "Repeats: \(RepeatInterval.allCases[picker.selectedRow(inComponent: 0)].rawValue)"
         case false:
             picker.isHidden = true
-            intervalPicked = "Never"
-            repeatLabel.text = "Repeats: Never"
+            intervalPicked = RepeatInterval.never.rawValue
+            repeatLabel.text = "Repeats: \(RepeatInterval.never.rawValue)"
         }
     }
 }

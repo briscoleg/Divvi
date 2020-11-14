@@ -8,58 +8,38 @@
 
 import UIKit
 import SwipeCellKit
-import RealmSwift
 
 class TaskCell: SwipeCollectionViewCell {
     
+    //MARK: - IBOutlets
     @IBOutlet weak var amountLabel: UILabel!
-    @IBOutlet weak var subcategoryLabel: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var circleView: UIView!
     @IBOutlet weak var balanceLabel: UILabel!
     
-    static let reuseIdentifier = "taskCell"
+    //MARK: - Properties
+    static let reuseIdentifier = "TaskCell"
     
+    //MARK: - Init
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        configureLayout()
-    }
-    
-    private func configureLayout() {
-        
         imageView.tintColor = .white
         circleView.makeCircular()
-
-
     }
     
-    internal func configureCollectionViewCells(_ indexPath: IndexPath, _ transaction: Results<Transaction>) {
+    //MARK: - Methods
+    
+    func configureCells(image: UIImage, color: UIColor, name: String, amount: NSAttributedString, date: String, balance: NSAttributedString) {
         
-        imageView.image = UIImage(named: transaction[indexPath.item].transactionCategory!.categoryName)
-        circleView.backgroundColor = UIColor(rgb: transaction[indexPath.item].transactionCategory!.categoryColor)
-        subcategoryLabel.text = transaction[indexPath.item].transactionSubCategory?.subCategoryName
-        amountLabel.attributedText = transaction[indexPath.item].transactionAmount.toAttributedString(size: 9, offset: 6, weight: .regular)
-        
-        
-        
-        let formatter = DateFormatter()
-        
-        formatter.dateFormat = "MMMM dd, yyyy"
-        
-        let dateString = formatter.string(from: transaction[indexPath.item].transactionDate)
-        
-        dateLabel.text = dateString
-        
-        if transaction[indexPath.item].transactionAmount > 0 {
-            
-            amountLabel.textColor = UIColor(rgb: SystemColors.green)
-            
-        } else {
-            
-            amountLabel.textColor = UIColor(rgb: SystemColors.red)
-            
-        }
+        imageView.image = image
+        circleView.backgroundColor = color
+        nameLabel.text = name
+        amountLabel.attributedText = amount
+        dateLabel.text = date
+        balanceLabel.attributedText = balance
+
     }
 }

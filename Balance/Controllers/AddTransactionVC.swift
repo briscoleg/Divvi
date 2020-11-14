@@ -13,6 +13,9 @@ import SwiftDate
 
 class AddTransactionVC: UIViewController {
     
+    //VC Identifier
+    static let identifier = "AddTransactionVC"
+    
     //MARK: - IBOutlets
     @IBOutlet weak var amountTextField: UITextField!
     @IBOutlet weak var categoryButton: UIButton!
@@ -24,127 +27,158 @@ class AddTransactionVC: UIViewController {
     @IBOutlet weak var categoryImage: UIImageView!
     
     //MARK: - Properties
-    let amountFieldAccessory: UIView = {
-        let accessoryView = UIView(frame: .zero)
-        accessoryView.backgroundColor = UIColor(red: 204, green: 207, blue: 214)
-        accessoryView.alpha = 0.8
-        return accessoryView
-    }()
-    
-    let descriptionFieldAccessory: UIView = {
-        let accessoryView = UIView(frame: .zero)
-        accessoryView.backgroundColor = UIColor(red: 204, green: 207, blue: 214)
-        accessoryView.alpha = 0.8
-        return accessoryView
-    }()
-    
-    let keyboardDismissButton: UIButton = {
-        
-        let keyboardDismissButton = UIButton(type: .custom)
-        keyboardDismissButton.setImage(UIImage(systemName: "keyboard.chevron.compact.down"), for: .normal)
-        keyboardDismissButton.addTarget(self, action: #selector(keyboardDismissButtonTapped), for: .touchUpInside)
-        keyboardDismissButton.showsTouchWhenHighlighted = true
-        return keyboardDismissButton
-        
-    }()
-    
-    let plusMinusButton: UIButton = {
-        let plusMinusButton = UIButton(type: .custom)
-        plusMinusButton.setTitle("+/-", for: .normal)
-        plusMinusButton.setTitleColor(UIColor.link, for: .normal)
-        plusMinusButton.addTarget(self, action: #selector(plusMinusButtonTapped), for: .touchUpInside)
-        plusMinusButton.showsTouchWhenHighlighted = true
-        return plusMinusButton
-    }()
-    
-    let nextAccessoryButton: UIButton! = {
-        let nextAccessoryButton = UIButton(type: .custom)
-        nextAccessoryButton.setTitleColor(.link, for: .normal)
-        nextAccessoryButton.setTitle("Category", for: .normal)
-        nextAccessoryButton.setTitleColor(.white, for: .disabled)
-        nextAccessoryButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
-        nextAccessoryButton.showsTouchWhenHighlighted = true
-        nextAccessoryButton.isEnabled = true
-        return nextAccessoryButton
-    }()
     
     let realm = try! Realm()
-    
     var transaction: Transaction?
-    
-    var amount = 0.0
     var categoryPicked: Category?
-    var subcategoryPicked: SubCategory?
+//    var subcategoryPicked: SubCategory?
+    
+    //Default transaction values
+    var amount = 0.0
     var datePicked = Date()
     var repeatInterval = "Never"
     var isExpense = true
     var newTransaction = true
     var numberOfTransactionsToAdd = 1
+    var transactionName = ""
+    
+    // Keyboard Accessory Views
+    let amountFieldAccessory: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .systemGray4
+        view.alpha = 0.8
+        return view
+    }()
+    
+    let descriptionFieldAccessory: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .systemGray4
+        view.alpha = 0.8
+        return view
+    }()
+    
+    let keyboardDismissButton: UIButton = {
+        
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "keyboard.chevron.compact.down"), for: .normal)
+        button.addTarget(self, action: #selector(keyboardDismissButtonTapped), for: .touchUpInside)
+        button.showsTouchWhenHighlighted = true
+        return button
+        
+    }()
+    
+    let plusMinusButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("+/-", for: .normal)
+        button.setTitleColor(UIColor.link, for: .normal)
+        button.addTarget(self, action: #selector(plusMinusButtonTapped), for: .touchUpInside)
+        button.showsTouchWhenHighlighted = true
+        return button
+    }()
+    
+    let accessorySaveButton: UIButton = {
+        
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        button.addTarget(self, action: #selector(accessorySaveButtonTapped), for: .touchUpInside)
+//        button.tintColor = UIColor(rgb: SystemColors.shared.blue)
+        button.showsTouchWhenHighlighted = true
+        return button
+        
+    }()
+    
+    let categoryAccessoryButton: UIButton! = {
+        let button = UIButton(type: .custom)
+        button.setTitleColor(.link, for: .normal)
+        button.setTitle("Category", for: .normal)
+        button.setTitleColor(.white, for: .disabled)
+        button.addTarget(self, action: #selector(categoryButtonTapped), for: .touchUpInside)
+        button.showsTouchWhenHighlighted = true
+        button.isEnabled = true
+        return button
+    }()
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        repeatButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        
-        if categoryPicked != nil {
-            getCategory(from: categoryPicked!)
-        }
+//        repeatButton.titleLabel?.adjustsFontSizeToFitWidth = true
+//        if categoryPicked != nil {
+//            getCategory(from: categoryPicked!)
+//        }
+                
         amountTextField.delegate = self
         descriptionTextField.delegate = self
         
-        
-        setEditFields()
-        
-        
         amountTextField.becomeFirstResponder()
+
+        customizeAppearance()
+        setEditFields()
+        setAmountTextfieldColor()
+        setTitle()
+        setCategoryNameAndColor()
         
-        addAmountFieldAccessory()
-        
-        navigationBar.setValue(true, forKey: "hidesShadow")
-        
-        
-        //                addDescriptionFieldAccessory()
-        
-        saveButton.roundCorners()
-        
-        if categoryPicked?.categoryName == "Income" {
-            amountTextField.textColor = UIColor(rgb: SystemColors.green)
-        } else {
-            amountTextField.textColor = UIColor(rgb: SystemColors.red)
-        }
-        
-        addInputAccessoryForTextFields(textFields: [descriptionTextField], dismissable: true, previousNextable: false)
+        //Add keyboard accessories
+//        addAmountFieldAccessory()
+//        addDescriptionFieldAccessory()
+//        addInputAccessoryForTextFields(textFields: [descriptionTextField], dismissable: true, previousNextable: false)
         
     }
     
     //MARK: - Methods
     
+    private func customizeAppearance() {
+        
+        saveButton.roundCorners()
+        navigationBar.setValue(true, forKey: "hidesShadow")
+
+    }
+    
+    private func setCategoryNameAndColor() {
+        
+        if let categoryPicked = categoryPicked {
+            categoryImage.image = UIImage(named: categoryPicked.categoryName)
+            categoryImage.tintColor = UIColor(rgb: categoryPicked.categoryColor)
+            categoryButton.setTitleColor(UIColor(rgb: categoryPicked.categoryColor), for: .normal)
+            categoryButton.tintColor = UIColor(rgb: categoryPicked.categoryColor)
+        }
+        
+    }
+    
+    private func setAmountTextfieldColor() {
+        
+        if categoryPicked?.categoryName == "Income" {
+            amountTextField.textColor = UIColor(rgb: SystemColors.shared.green)
+        } else {
+            amountTextField.textColor = UIColor(rgb: SystemColors.shared.red)
+        }
+    }
+    
+    private func setTitle() {
+        if newTransaction {
+            navigationBar.topItem?.title = "New Transaction"
+        } else {
+            navigationBar.topItem?.title = "Edit Transaction"
+        }
+    }
+    
     private func setEditFields() {
-        
-        guard transaction != nil  else { return }
-        
+                
         if let transaction = transaction {
+                        
+            transactionName = transaction.transactionName
+            datePicked = transaction.transactionDate
+            repeatInterval = transaction.repeatInterval
             
             amountTextField.text = String(format: "%.2f", transaction.transactionAmount)
             categoryPicked = transaction.transactionCategory
-            subcategoryPicked = transaction.transactionSubCategory
-            categoryImage.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
-            
             displaySelectedDate(transaction.transactionDate)
-            displayRepeatInterval(transaction.transactionDate)
-            
-            repeatButton.setTitle("Repeats: \(repeatInterval)", for: .normal)
-            
-            categoryButton.setTitle(subcategoryPicked?.subCategoryName, for: .normal)
-            categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
-            categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
-            
-            
-            
+            displayRepeatInterval(with: transaction.transactionDate)
+            categoryButton.setTitle(transaction.transactionName, for: .normal)
             descriptionTextField.text = transaction.transactionDescription
-            
-            navigationBar.topItem?.title = "Edit Transaction"
+            repeatButton.setTitle("Repeats: \(transaction.repeatInterval)", for: .normal)
+            dateButton.setTitle(transaction.transactionDate.toString(style: .long), for: .normal)
+
         }
         
     }
@@ -153,112 +187,115 @@ class AddTransactionVC: UIViewController {
         descriptionTextField.resignFirstResponder()
     }
     
-    func convertAmountToCurrency() {
-        
-        let formatter = NumberFormatter()
-        formatter.currencySymbol = "$"
-        formatter.numberStyle = .currency
-        let number = formatter.number(from: amountTextField.text!)
-        let doubleValue = number?.doubleValue
-        amount = doubleValue!
-        
-    }
-    
-    func setNumberOfTransactions() {
+    private func setNumberOfTransactions() {
         
         switch repeatInterval {
         
-        case "Yearly":
+        case RepeatInterval.yearly.rawValue:
             numberOfTransactionsToAdd = 5
-        case "Monthly":
+        case RepeatInterval.monthly.rawValue:
             numberOfTransactionsToAdd = 60
-        case "Every Two Weeks":
+        case RepeatInterval.twoWeeks.rawValue:
             numberOfTransactionsToAdd = 120
-        case "Weekly":
+        case RepeatInterval.weekly.rawValue:
             numberOfTransactionsToAdd = 240
-        case "Daily":
-            numberOfTransactionsToAdd = 3000
-        case "Never":
+        case RepeatInterval.daily.rawValue:
+            numberOfTransactionsToAdd = 480
+        case RepeatInterval.never.rawValue:
             numberOfTransactionsToAdd = 1
         default:
             break
         }
     }
     @objc func objcSaveTransaction() {
+        
         saveTransaction()
+
     }
     private func saveEdit() {
         
-        try! realm.write {
-            transaction!.transactionAmount = amountTextField.text!.toDouble()
-            transaction!.transactionDescription = descriptionTextField.text!
-            transaction!.transactionDate = datePicked
-            transaction!.transactionCategory = categoryPicked
-            transaction!.transactionSubCategory = subcategoryPicked
-            transaction!.repeatInterval = repeatInterval
-            
+        do {
+            try realm.write {
+                
+                transaction!.transactionAmount = amountTextField.text!.toDouble()
+                transaction!.transactionDescription = descriptionTextField.text
+                transaction!.transactionDate = datePicked
+                transaction!.transactionCategory = categoryPicked
+                transaction!.repeatInterval = repeatInterval
+                transaction!.transactionName = transactionName
+                transaction!.isCleared = false
+                
+            }
+        } catch {
+            print("Error saving edit: \(error)")
         }
+        
     }
     
-    func saveTransaction() {
+    private func saveTransaction() {
         
-        guard amountTextField.text != "" else { amountTextField.placeholder = "Enter an Amount"; return }
-        guard subcategoryPicked != nil else { categoryButton.setTitle("Select a Category", for: .normal); return }
+        guard amountTextField.text != "" else { amountTextField.placeholder = "Enter an amount"; return }
+        guard categoryPicked != nil else { categoryButton.setTitle("Select a Category", for: .normal); return }
         
         if !newTransaction {
             
             setNumberOfTransactions()
             saveEdit()
-            
+            print("Edit Saved")
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionEdited"), object: nil)
             
         } else {
             
             setNumberOfTransactions()
             
-                for _ in 1...self.numberOfTransactionsToAdd {
-                    
-                    let newTransaction = Transaction()
-                    
-                    var timeAdded = 1.months
-                    //                var timeAdded = Calendar.Component.month
-                    newTransaction.transactionAmount = self.amountTextField.text!.toDouble()
-                    newTransaction.transactionDescription = self.descriptionTextField.text
-                    newTransaction.transactionDate = self.datePicked
-                    newTransaction.transactionCategory = self.categoryPicked
-                    newTransaction.repeatInterval = self.repeatInterval
-                    newTransaction.transactionSubCategory = self.subcategoryPicked
-                    newTransaction.subCategoryName = self.subcategoryPicked!.subCategoryName
-                    
-                    switch self.repeatInterval {
-                    case "Yearly":
-                        timeAdded = 1.years
-                    case "Monthly":
-                        timeAdded = 1.months
-                    case "Every Two Weeks":
-                        timeAdded = 2.weeks
-                    case "Weekly":
-                        timeAdded = 1.weeks
-                    case "Daily":
-                        timeAdded = 1.days
-                    default:
-                        break
+            for _ in 1...numberOfTransactionsToAdd {
+                
+                let newTransaction = Transaction()
+                
+                var timeAdded = 1.months
+                
+                newTransaction.transactionAmount = amountTextField.text!.toDouble()
+                newTransaction.transactionDescription = descriptionTextField.text
+                newTransaction.transactionDate = datePicked
+                newTransaction.transactionCategory = categoryPicked
+                newTransaction.repeatInterval = repeatInterval
+                newTransaction.transactionName = transactionName
+                
+                switch repeatInterval {
+                case "Yearly":
+                    timeAdded = 1.years
+                case "Monthly":
+                    timeAdded = 1.months
+                case "Every Two Weeks":
+                    timeAdded = 2.weeks
+                case "Weekly":
+                    timeAdded = 1.weeks
+                case "Daily":
+                    timeAdded = 1.days
+                default:
+                    break
+                }
+                
+                do {
+                    try realm.write {
+                        realm.add(newTransaction)
                     }
-                    
-                    try! self.realm.write {
-                        self.realm.add(newTransaction)
-                    }
-                    
-                    self.datePicked = self.datePicked + timeAdded
-
+                } catch {
+                    print("Error saving transaction: \(error)")
+                }
+                
+                datePicked = datePicked + timeAdded
+                
             }
-
+            
         }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        dismiss(animated: true, completion: nil)
         
         
     }
     
-    func displayRepeatInterval(_ date: Date) {
+    private func displayRepeatInterval(with date: Date) {
         
         let formatter = DateFormatter()
         
@@ -266,18 +303,18 @@ class AddTransactionVC: UIViewController {
         
         let dateString = formatter.string(from: date)
         
-        if repeatInterval != "Never" && datePicked.day == Date().day {
+        if repeatInterval != RepeatInterval.never.rawValue && datePicked.day == Date().day {
             dateButton.setTitle("Starts Today", for: .normal)
-        } else if repeatInterval != "Never" {
+        } else if repeatInterval != RepeatInterval.never.rawValue {
             dateButton.setTitle("Starts \(dateString)", for: .normal)
-        } else if repeatInterval == "Never" && datePicked.day == Date().day {
+        } else if repeatInterval == RepeatInterval.never.rawValue && datePicked.day == Date().day {
             dateButton.setTitle("Today", for: .normal)
         } else {
             dateButton.setTitle(dateString, for: .normal)
         }
     }
     
-    func displaySelectedDate(_ date: Date) {
+    private func displaySelectedDate(_ date: Date) {
         
         let formatter = DateFormatter()
         
@@ -297,11 +334,11 @@ class AddTransactionVC: UIViewController {
         
         if isExpense {
             amountTextField.dropMinus()
-            amountTextField.textColor = UIColor(rgb: SystemColors.green)
+            amountTextField.textColor = UIColor(rgb: SystemColors.shared.green)
             isExpense = false
         } else {
             amountTextField.addMinus()
-            amountTextField.textColor = UIColor(rgb: SystemColors.red)
+            amountTextField.textColor = UIColor(rgb: SystemColors.shared.red)
             isExpense = true
         }
         
@@ -309,21 +346,20 @@ class AddTransactionVC: UIViewController {
     
     
     
-    func addAmountFieldAccessory() {
+    private func addAmountFieldAccessory() {
         
         amountFieldAccessory.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
         amountFieldAccessory.translatesAutoresizingMaskIntoConstraints = false
         
         keyboardDismissButton.translatesAutoresizingMaskIntoConstraints = false
-        nextAccessoryButton.translatesAutoresizingMaskIntoConstraints = false
+        categoryAccessoryButton.translatesAutoresizingMaskIntoConstraints = false
         plusMinusButton.translatesAutoresizingMaskIntoConstraints = false
         
         amountTextField.inputAccessoryView = amountFieldAccessory
         
         amountFieldAccessory.addSubview(keyboardDismissButton)
         amountFieldAccessory.addSubview(plusMinusButton)
-        amountFieldAccessory.addSubview(nextAccessoryButton)
-        
+        amountFieldAccessory.addSubview(categoryAccessoryButton)
         
         NSLayoutConstraint.activate([
             
@@ -331,136 +367,140 @@ class AddTransactionVC: UIViewController {
                                                             amountFieldAccessory.leadingAnchor, constant: 30),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
                                                             amountFieldAccessory.centerYAnchor),
-            
-            //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
-            //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
-            
             plusMinusButton.centerXAnchor.constraint(equalTo:
                                                         amountFieldAccessory.centerXAnchor),
             plusMinusButton.centerYAnchor.constraint(equalTo:
                                                         amountFieldAccessory.centerYAnchor),
             
-            nextAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
-            nextAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
+            categoryAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
+            categoryAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
             
         ])
     }
     
-    func addDescriptionFieldAccessory() {
+//    private func addDescriptionFieldAccessory() {
+//
+//        amountFieldAccessory.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
+//        amountFieldAccessory.translatesAutoresizingMaskIntoConstraints = false
+//
+//        keyboardDismissButton.translatesAutoresizingMaskIntoConstraints = false
+//        categoryAccessoryButton.translatesAutoresizingMaskIntoConstraints = false
+//        plusMinusButton.translatesAutoresizingMaskIntoConstraints = false
+//
+//        descriptionTextField.inputAccessoryView = descriptionFieldAccessory
+//
+//        amountFieldAccessory.addSubview(keyboardDismissButton)
+//        amountFieldAccessory.addSubview(plusMinusButton)
+//        amountFieldAccessory.addSubview(categoryAccessoryButton)
+//
+//
+//        NSLayoutConstraint.activate([
+//
+//            keyboardDismissButton.leadingAnchor.constraint(equalTo:
+//                                                            descriptionFieldAccessory.leadingAnchor, constant: 30),
+//            keyboardDismissButton.centerYAnchor.constraint(equalTo:
+//                                                            descriptionFieldAccessory.centerYAnchor),
+//            plusMinusButton.centerXAnchor.constraint(equalTo:
+//                                                        descriptionFieldAccessory.centerXAnchor),
+//            plusMinusButton.centerYAnchor.constraint(equalTo:
+//                                                        descriptionFieldAccessory.centerYAnchor),
+//
+//            categoryAccessoryButton.trailingAnchor.constraint(equalTo: descriptionFieldAccessory.trailingAnchor, constant: -30),
+//            categoryAccessoryButton.centerYAnchor.constraint(equalTo: descriptionFieldAccessory.centerYAnchor),
+//
+//        ])
+//    }
+    
+    private func addDescriptionFieldAccessory() {
+
+        descriptionFieldAccessory.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
         
-        descriptionFieldAccessory.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
         descriptionFieldAccessory.translatesAutoresizingMaskIntoConstraints = false
-        
+
         keyboardDismissButton.translatesAutoresizingMaskIntoConstraints = false
-        nextAccessoryButton.translatesAutoresizingMaskIntoConstraints = false
-        plusMinusButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        descriptionTextField.inputAccessoryView = amountFieldAccessory
-        
+//        categoryAccessoryButton.translatesAutoresizingMaskIntoConstraints = false
+        accessorySaveButton.translatesAutoresizingMaskIntoConstraints = false
+
+        descriptionTextField.inputAccessoryView = descriptionFieldAccessory
+
         descriptionFieldAccessory.addSubview(keyboardDismissButton)
-        descriptionFieldAccessory.addSubview(plusMinusButton)
-        descriptionFieldAccessory.addSubview(nextAccessoryButton)
+//        descriptionFieldAccessory.addSubview(plusMinusButton)
+        descriptionFieldAccessory.addSubview(accessorySaveButton)
+
         
-        NSLayoutConstraint.deactivate([
-            
-            keyboardDismissButton.leadingAnchor.constraint(equalTo:
-                                                            amountFieldAccessory.leadingAnchor, constant: 30),
-            keyboardDismissButton.centerYAnchor.constraint(equalTo:
-                                                            amountFieldAccessory.centerYAnchor),
-            
-            //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
-            //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
-            
-            plusMinusButton.centerXAnchor.constraint(equalTo:
-                                                        amountFieldAccessory.centerXAnchor),
-            plusMinusButton.centerYAnchor.constraint(equalTo:
-                                                        amountFieldAccessory.centerYAnchor),
-            
-            nextAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
-            nextAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
-            
-        ])
         NSLayoutConstraint.activate([
-            
+
             keyboardDismissButton.leadingAnchor.constraint(equalTo:
                                                             descriptionFieldAccessory.leadingAnchor, constant: 30),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
                                                             descriptionFieldAccessory.centerYAnchor),
-            
-            //            keyboardDismissButton.centerXAnchor.constraint(equalTo: accessory.leadingAnchor, constant: 40),
-            //            keyboardDismissButton.centerYAnchor.constraint(equalTo: accessory.centerYAnchor),
-            
-            plusMinusButton.centerXAnchor.constraint(equalTo:
-                                                        descriptionFieldAccessory.centerXAnchor),
-            plusMinusButton.centerYAnchor.constraint(equalTo:
-                                                        descriptionFieldAccessory.centerYAnchor),
-            
-            nextAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
-            nextAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
-            
+
+//            plusMinusButton.centerXAnchor.constraint(equalTo:
+//                                                        descriptionFieldAccessory.centerXAnchor),
+//            plusMinusButton.centerYAnchor.constraint(equalTo:
+//                                                        descriptionFieldAccessory.centerYAnchor),
+
+            accessorySaveButton.trailingAnchor.constraint(equalTo: descriptionFieldAccessory.trailingAnchor, constant: -30),
+            accessorySaveButton.centerYAnchor.constraint(equalTo: descriptionFieldAccessory.centerYAnchor),
+
         ])
     }
     
     //MARK: - IBActions
     
-    @objc func nextButtonTapped() {
+    @objc func categoryButtonTapped() {
         
-        let categoryVC = storyboard?.instantiateViewController(withIdentifier: "CategoryVC") as! CategoryVC
-        
-        categoryVC.categoryDelegate = self
-        
-        amountTextField.resignFirstResponder()
-        
-        present(categoryVC, animated: true, completion: nil)
+        if let categoryVC = storyboard?.instantiateViewController(withIdentifier: CategoryVC.identifier) as? CategoryVC {
+            
+            categoryVC.categoryDelegate = self
+            amountTextField.resignFirstResponder()
+            present(categoryVC, animated: true, completion: nil)
+        }
+    }
+    
+    @objc private func keyboardDismissButtonTapped() {
+
+            amountTextField.resignFirstResponder()
+            descriptionTextField.resignFirstResponder()
         
     }
     
-    @objc func keyboardDismissButtonTapped() {
-        
-        amountTextField.resignFirstResponder()
-        
+    @objc private func accessorySaveButtonTapped() {
+        saveTransaction()
     }
     
     @IBAction func categoryButtonPressed(_ sender: UIButton) {
         
-        let categoryVC = storyboard?.instantiateViewController(withIdentifier: "CategoryVC") as! CategoryVC
-        
-        categoryVC.categoryDelegate = self
-        
-        amountTextField.resignFirstResponder()
-        
-        present(categoryVC, animated: true, completion: nil)
-        
-        
-        
+        if let categoryVC = storyboard?.instantiateViewController(withIdentifier: CategoryVC.identifier) as? CategoryVC {
+            
+            categoryVC.categoryDelegate = self
+            amountTextField.resignFirstResponder()
+            present(categoryVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func dateButtonPressed(_ sender: UIButton) {
         
-        let calendarVC = storyboard?.instantiateViewController(withIdentifier: "CalendarViewController") as! CalendarVC
-        
-        calendarVC.dateDelegate = self
-        
-        present(calendarVC, animated: true, completion: nil)
-        
+        if let calendarVC = storyboard?.instantiateViewController(withIdentifier: CalendarVC.identifier) as? CalendarVC {
+            
+            calendarVC.dateDelegate = self
+            present(calendarVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func repeatButtonPressed(_ sender: UIButton) {
         
-        let calendarVC = storyboard?.instantiateViewController(withIdentifier: "CalendarViewController") as! CalendarVC
-        
-        calendarVC.dateDelegate = self
-        
-        present(calendarVC, animated: true, completion: nil)
-        
+        if let calendarVC = storyboard?.instantiateViewController(withIdentifier: CalendarVC.identifier) as? CalendarVC {
+            
+            calendarVC.dateDelegate = self
+            present(calendarVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func doneButtonPressed(_ sender: UIButton) {
         
-        self.saveTransaction()
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        saveTransaction()
 
-        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func dismissPressed(_ sender: UIBarButtonItem) {
@@ -475,31 +515,25 @@ class AddTransactionVC: UIViewController {
 //MARK: - Extensions
 extension AddTransactionVC: UITextFieldDelegate {
     
-    //    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-    //        if amountTextField.isEditing {
-    //            addAmountFieldAccessory()
-    //        }
-    //        if descriptionTextField.isEditing {
-    //            addDescriptionFieldAccessory()
-    //        }
-    //        return true
-    //    }
-    
-    //    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-    //        textField.resignFirstResponder()
-    //    }
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == amountTextField {
+            addAmountFieldAccessory()
+        } else if textField == descriptionTextField {
+            addDescriptionFieldAccessory()
+        }
+    }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         if textField == descriptionTextField {
-            // get the current text, or use an empty string if that failed
+            
             guard let textFieldText = textField.text,
-                    let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-                        return false
-                }
-                let substringToReplace = textFieldText[rangeOfTextToReplace]
-                let count = textFieldText.count - substringToReplace.count + string.count
-                return count <= 30
+                  let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+                return false
+            }
+            let substringToReplace = textFieldText[rangeOfTextToReplace]
+            let count = textFieldText.count - substringToReplace.count + string.count
+            return count <= 30
         }
         
         if textField == amountTextField {
@@ -534,18 +568,18 @@ extension AddTransactionVC: UITextFieldDelegate {
 
 extension AddTransactionVC: CategoryDelegate {
     func getSubcategory(from subcategory: SubCategory) {
-        subcategoryPicked = subcategory
+        
+        transactionName = subcategory.subCategoryName
         categoryButton.setTitle(subcategory.subCategoryName, for: .normal)
         descriptionTextField.becomeFirstResponder()
-        categoryImage.image = UIImage(named: categoryPicked!.categoryName)
-        categoryImage.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
-        categoryButton.setTitleColor(UIColor(rgb: categoryPicked!.categoryColor), for: .normal)
-        categoryButton.tintColor = UIColor(rgb: categoryPicked!.categoryColor)
+        
+        setCategoryNameAndColor()
+
         
         if categoryPicked?.categoryName == "Income" {
             amountTextField.dropMinus()
             isExpense = false
-            amountTextField.textColor = UIColor(rgb: SystemColors.green)
+            amountTextField.textColor = UIColor(rgb: SystemColors.shared.green)
         }
     }
     
@@ -558,12 +592,12 @@ extension AddTransactionVC: DateDelegate {
     func getCalendarDate(from date: Date) {
         datePicked = date
         displaySelectedDate(date)
-        displayRepeatInterval(date)
+        displayRepeatInterval(with: date)
     }
     func getRepeatInterval(interval: String) {
         repeatInterval = interval
         repeatButton.setTitle("Repeats: \(repeatInterval)", for: .normal)
-        displayRepeatInterval(datePicked)
+        displayRepeatInterval(with: datePicked)
     }
 }
 
