@@ -1462,7 +1462,7 @@ July 22, 2020</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KX-qs-rDZ">
-                                                    <rect key="frame" x="321" y="142" width="40" height="40"/>
+                                                    <rect key="frame" x="356" y="142" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="P3T-Zj-qBg"/>
                                                         <constraint firstAttribute="height" constant="40" id="Uc7-Mc-2e6"/>
@@ -1474,7 +1474,7 @@ July 22, 2020</string>
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qM0-Lg-Bh5">
-                                                    <rect key="frame" x="53" y="142" width="40" height="40"/>
+                                                    <rect key="frame" x="18" y="142" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="CFH-o0-BeN"/>
                                                         <constraint firstAttribute="height" constant="40" id="eC1-dU-wWe"/>
@@ -1508,12 +1508,12 @@ July 22, 2020</string>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="QXt-Pd-W8X" firstAttribute="centerX" secondItem="L3a-pb-KHr" secondAttribute="centerX" id="0Bw-Oh-DUc"/>
-                                                <constraint firstItem="qM0-Lg-Bh5" firstAttribute="leading" secondItem="L3a-pb-KHr" secondAttribute="leadingMargin" constant="45" id="3wD-q5-4BF"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="xBH-IC-yIs" secondAttribute="trailing" constant="15" id="6VI-hZ-SYN"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="0KX-qs-rDZ" secondAttribute="bottom" constant="10" id="IYQ-de-UTj"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="0KX-qs-rDZ" secondAttribute="trailing" constant="45" id="hH3-Kk-PTT"/>
+                                                <constraint firstItem="qM0-Lg-Bh5" firstAttribute="leading" secondItem="L3a-pb-KHr" secondAttribute="leadingMargin" constant="10" id="Ybd-4F-97D"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="QXt-Pd-W8X" secondAttribute="bottom" constant="10" id="jDq-73-pQL"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="qM0-Lg-Bh5" secondAttribute="bottom" constant="10" id="mQJ-8T-wzG"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="0KX-qs-rDZ" secondAttribute="trailing" constant="10" id="v6v-1j-X9T"/>
                                                 <constraint firstItem="xBH-IC-yIs" firstAttribute="top" secondItem="L3a-pb-KHr" secondAttribute="topMargin" constant="25" id="z2i-dP-kby"/>
                                             </constraints>
                                             <connections>
@@ -1566,7 +1566,7 @@ July 22, 2020</string>
         <image name="ellipsis.circle.fill" catalog="system" width="128" height="121"/>
         <image name="menu" width="25" height="25"/>
         <image name="planning" width="25" height="25"/>
-        <image name="plus" width="48" height="48"/>
+        <image name="plus" width="50" height="50"/>
         <image name="repeat" catalog="system" width="128" height="99"/>
         <image name="shippingbox.fill" catalog="system" width="128" height="124"/>
         <image name="trash" catalog="system" width="121" height="128"/>
