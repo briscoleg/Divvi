@@ -5,11 +5,12 @@
       "scale" : "1x"
     },
     {
+      "filename" : "icons8-idea-1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "energy-green.png",
+      "filename" : "icons8-idea.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

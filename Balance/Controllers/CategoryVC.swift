@@ -140,7 +140,7 @@ extension CategoryVC: UICollectionViewDelegate, UICollectionViewDataSource {
                     
                     subCategoryCell.categoryImage.image = UIImage(systemName: "plus")
                     subCategoryCell.categoryName.text = "Add"
-                    subCategoryCell.circleView.backgroundColor = UIColor(rgb: SystemColors.shared.grey)
+                    subCategoryCell.circleView.backgroundColor = .lightGray
                     subCategoryCell.deleteButton.isHidden = true
                     
                 } else {

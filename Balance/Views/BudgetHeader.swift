@@ -53,8 +53,13 @@ class BudgetHeader: UICollectionReusableView {
     }
     
     private func configureLayout() {
-        leftButton.tintColor = .label
-        rightButton.tintColor = .label
+        
+        leftButton.makeCircular()
+        rightButton.makeCircular()
+        leftButton.tintColor = .white
+        leftButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
+        rightButton.tintColor = .white
+        rightButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
         lineChartButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
         
         lineChartButton.makeCircular()

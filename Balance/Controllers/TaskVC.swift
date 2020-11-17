@@ -25,9 +25,10 @@ class TaskVC: UIViewController {
     
     //MARK: - Properties
     let realm = try! Realm()
+    lazy var allTransactions: Results<Transaction> = {realm.objects(Transaction.self)}()
     lazy var postedTransactions: Results<Transaction> = { realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: false).filter("isCleared == %@", true) }()
     lazy var unpostedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date().advanced(by: 10000)).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
-    lazy var futureTransactions: Results<Transaction> = { realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: true).filter("isCleared == %@", false) }()
+    lazy var futureTransactions: Results<Transaction> = { realm.objects(Transaction.self).filter("transactionDate > %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
     var transactionView = TransactionView.toDo
     
     //MARK: - ViewDidLoad
@@ -66,11 +67,13 @@ class TaskVC: UIViewController {
     private func updateInstructionsLabel() {
         switch transactionView {
         case .toDo:
-            if unpostedTransactions.count > 0 {
-                instructionsLabel.text = "Swipe right to clear transactions.\n\nClearing transactions will update your monthly budget\nin the planning tab."
+            if allTransactions.count == 0 {
+                instructionsLabel.text = "No transactions yet.\n\nCheck back after adding some transactions."
+            } else if unpostedTransactions.count > 0 {
+                instructionsLabel.text = "Swipe right to clear transactions.\n\nTap to edit."
                 tabBarController!.tabBar.items![1].badgeValue = "1"
             } else {
-                instructionsLabel.text = "Great job! All transactions are cleared.\n\nCheck back after you add a new transaction\n or clear transactions as they come up."
+                instructionsLabel.text = "All clear!\n\nCheck back later\nor add new transactions."
                 tabBarController!.tabBar.items![1].badgeValue = nil
             }
         case .posted:
@@ -169,8 +172,13 @@ extension TaskVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let amount = transactionResults[indexPath.item].transactionAmount.toAttributedString(size: 9, offset: 6, weight: .regular)
         
         let date = transactionResults[indexPath.item].transactionDate.toString(.custom("MMMM dd, yyyy"))
-        let balanceAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", transactionResults[indexPath.item].transactionDate).sum(ofProperty: "transactionAmount")
-        let balance = balanceAtDate.toAttributedString(size: 9, offset: 6, weight: .regular)
+        let transactionsTotalAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", transactionResults[indexPath.item].transactionDate).sum(ofProperty: "transactionAmount")
+        
+        let startingBalance: Double = realm.objects(StartingBalance.self).sum(ofProperty: "amount")
+        
+        let totalBalance: Double = transactionsTotalAtDate + startingBalance
+        
+        let balance = totalBalance.toAttributedString(size: 9, offset: 6, weight: .regular)
         
         cell.configureCells(image: image!, color: color, name: name, amount: amount, date: date, balance: balance)
         

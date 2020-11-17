@@ -127,8 +127,13 @@ extension SubVC: UICollectionViewDataSource {
         cell.amountLabel.attributedText = transactionAmount.toAttributedString(size: 9, offset: 6, weight: .regular)
         
         
-        let balanceAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", transactionDate).sum(ofProperty: "transactionAmount")
-        cell.balanceLabel.attributedText = balanceAtDate.toAttributedString(size: 9, offset: 6, weight: .regular)
+        let transactionsTotalAtDate: Double = realm.objects(Transaction.self).filter("transactionDate <= %@", transactionDate).sum(ofProperty: "transactionAmount")
+        
+        let startingBalance: Double = realm.objects(StartingBalance.self).sum(ofProperty: "amount")
+        
+        let totalBalance: Double = transactionsTotalAtDate + startingBalance
+        
+        cell.balanceLabel.attributedText = totalBalance.toAttributedString(size: 9, offset: 6, weight: .regular)
         
         if transactions.filter("transactionName == %@", sectionSubcategory)[indexPath.item].isCleared == false {
             cell.nameLabel.textColor = .systemGray2

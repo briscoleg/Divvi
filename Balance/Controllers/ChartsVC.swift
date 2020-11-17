@@ -50,11 +50,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
 //        configurePieChart()
         configureLandscapeView()
         
-        pieChartView.isHidden = true
-        nextMonthButton.tintColor = .label
-        prevMonthButton.tintColor = .label
-        
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
+        configureUI()
 
         lineChartView?.animate(yAxisDuration: 1)
         
@@ -69,6 +65,14 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     }
     
     //MARK: - Methods
+    private func configureUI() {
+        pieChartView.isHidden = true
+        nextMonthButton.tintColor = .label
+        prevMonthButton.tintColor = .label
+        lineChartButton.tintColor = UIColor(rgb: SystemColors.shared.blue)
+        pieChartButton.tintColor = UIColor(rgb: SystemColors.shared.blue)
+        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
+    }
     
     @objc private func isLandscape() -> Void {}
     
@@ -192,8 +196,13 @@ class ChartsVC: UIViewController, ChartViewDelegate {
             let timeInterval = object.transactionDate.timeIntervalSince1970
             let xValue = (timeInterval - referenceTimeInterval) / (3600 * 24)
             
-            let balanceAtDate: Double = transactions.filter("transactionDate <= %@", object.transactionDate).sum(ofProperty: "transactionAmount")
-            let yValue = balanceAtDate
+            let transactionsTotalAtDate: Double = transactions.filter("transactionDate <= %@", object.transactionDate).sum(ofProperty: "transactionAmount")
+            
+            let startingBalance: Double = realm.objects(StartingBalance.self).sum(ofProperty: "amount")
+            
+            let totalBalance: Double = transactionsTotalAtDate + startingBalance
+            
+            let yValue = totalBalance
             let entry = ChartDataEntry(x: xValue, y: yValue)
         
             entries.append(entry)
@@ -213,6 +222,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         lineChartDataSet.circleRadius = 3
         lineChartDataSet.mode = .horizontalBezier
         lineChartDataSet.label = .none
+        lineChartDataSet.valueFont = .systemFont(ofSize: 14)
         
         let valFormatter = NumberFormatter()
         valFormatter.numberStyle = .currency

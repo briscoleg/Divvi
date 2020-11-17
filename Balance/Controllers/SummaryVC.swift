@@ -42,6 +42,8 @@ class SummaryVC: UIViewController {
     private var calendarHeightAnchor: NSLayoutConstraint?
     
     private let userDefaults = UserDefaults()
+    
+    private var selectedDate = Date()
         
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
@@ -49,10 +51,8 @@ class SummaryVC: UIViewController {
         
         calendar.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
 
-        if userDefaults.value(forKey: "startingBalanceSet") == nil {
-            userDefaults.setValue(false, forKey: "startingBalanceSet")
-        }
-        
+        setUserDefaults()
+
         print(userDefaults.value(forKey: "startingBalanceSet"))
         
         configureDelegates()
@@ -113,11 +113,29 @@ class SummaryVC: UIViewController {
         collectionView.delegate = self
     }
     
+    private func setUserDefaults() {
+        if userDefaults.value(forKey: "startingBalanceSet") == nil {
+            userDefaults.setValue(false, forKey: "startingBalanceSet")
+        }
+        if userDefaults.value(forKey: "calendarScrollDirection") == nil {
+            userDefaults.setValue("horizontal", forKey: "calendarScrollDirection")
+        }
+        //Calendar Scroll Direction
+        if userDefaults.value(forKey: "calendarScrollDirection") as! String == "horizontal" {
+            calendar.scrollDirection = .horizontal
+        } else if userDefaults.value(forKey: "calendarScrollDirection") as! String == "vertical" {
+            calendar.scrollDirection = .vertical
+        }
+    }
+    
     private func configureObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionEdited"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "calendarScrollDirectionChanged"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "startingBalanceSet"), object: nil)
+        
     }
     
     private func showBadgeForUnclearedTransactions() {
@@ -150,9 +168,10 @@ class SummaryVC: UIViewController {
     @objc private func refresh() {
         collectionView.reloadData()
         calendar.reloadData()
-        getBalanceAtDate(Date() + 61199)
+        getBalanceAtDate(selectedDate + 61199)
         displaySelectedDate(Date())
         showBadgeForUnclearedTransactions()
+        setUserDefaults()
         
     }
     
@@ -546,6 +565,8 @@ class SummaryVC: UIViewController {
 extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
         
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        
+        selectedDate = date
         
         getBalanceAtDate(date + 61199)
         

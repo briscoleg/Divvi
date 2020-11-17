@@ -61,7 +61,7 @@ class StartingBalanceVC: UIViewController {
         dateAndAmountLabel.text = " Starting Balance:\n\n\(startingBalanceAmount.toCurrency())\n \(startingBalanceDate.toString(style: .long))"
     }
     
-    private func saveTransaction() {
+    private func setStartingBalance() {
         
         guard amountTextField.text != "" else { amountTextField.placeholder = "Enter an amount"; return }
         
@@ -76,14 +76,15 @@ class StartingBalanceVC: UIViewController {
         } catch {
             print("Error saving starting balance: \(error)")
         }
+        userDefaults.setValue(true, forKey: "startingBalanceSet")
+        NotificationCenter.default.post(name: (Notification.Name(rawValue: "startingBalanceSet")), object: nil)
         dismiss(animated: true, completion: nil)
     }
     
     //MARK: - IBActions
     @IBAction func setBalanceButtonPressed(_ sender: UIButton) {
         
-        saveTransaction()
-        userDefaults.setValue(true, forKey: "startingBalanceSet")
+        setStartingBalance()
         
     }
     
