@@ -27,7 +27,7 @@ class PlanningCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         configureLayout()
-        
+                
     }
         
     //MARK: - Methods
@@ -38,8 +38,7 @@ class PlanningCell: UICollectionViewCell {
         rightArrowIconImageView.tintColor = .white
         imageView.tintColor = .white
         percentLabel.textColor = .white
-        
-        layer.cornerRadius = 20
+        contentView.backgroundColor = .systemBackground
         progressBar.backgroundColor = .systemGray3
                 
     }

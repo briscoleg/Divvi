@@ -27,20 +27,46 @@ class StartingBalanceVC: UIViewController {
     
     var startingBalanceAmount = 0.0
     var startingBalanceDate = Date()
+    
+    private let amountFieldAccessory: UIView = {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .systemGray4
+        view.alpha = 0.8
+        return view
+    }()
+    
+    private let doneButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("Done", for: .normal)
+        button.setTitleColor(UIColor.link, for: .normal)
+        button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        button.showsTouchWhenHighlighted = true
+        return button
+    }()
 
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setDelegates()
+        configureDelegates()
         configureUI()
-        
-        setupHideKeyboardOnTap()
+        hideKeyboardOnTap()
+        setCalendarScrollDirection()
 
+        addAmountFieldAccessory()
     }
     
     //MARK: - Methods
-    private func setDelegates() {
+    
+    private func setCalendarScrollDirection() {
+        if userDefaults.value(forKey: "calendarScrollDirection") as! String == "horizontal" {
+            calendarView.scrollDirection = .horizontal
+        } else if userDefaults.value(forKey: "calendarScrollDirection") as! String == "vertical" {
+            calendarView.scrollDirection = .vertical
+        }
+    }
+    
+    private func configureDelegates() {
         calendarView.delegate = self
         calendarView.dataSource = self
         amountTextField.delegate = self
@@ -58,7 +84,7 @@ class StartingBalanceVC: UIViewController {
         
         startingBalanceDate = date
 
-        dateAndAmountLabel.text = " Starting Balance:\n\n\(startingBalanceAmount.toCurrency())\n \(startingBalanceDate.toString(style: .long))"
+        dateAndAmountLabel.text = startingBalanceDate.toString(style: .long)
     }
     
     private func setStartingBalance() {
@@ -76,21 +102,61 @@ class StartingBalanceVC: UIViewController {
         } catch {
             print("Error saving starting balance: \(error)")
         }
+        
+        let transactionsBeforeStartingBalance = realm.objects(Transaction.self).filter(NSPredicate(format: "transactionDate < %@", startingBalanceDate as CVarArg))
+        do {
+            try realm.write {
+                realm.delete(transactionsBeforeStartingBalance)
+            }
+        } catch {
+            print("Error deleting transactions before starting balance: \(error)")
+        }
         userDefaults.setValue(true, forKey: "startingBalanceSet")
         NotificationCenter.default.post(name: (Notification.Name(rawValue: "startingBalanceSet")), object: nil)
         dismiss(animated: true, completion: nil)
     }
     
+    private func addAmountFieldAccessory() {
+        
+        amountFieldAccessory.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
+        amountFieldAccessory.translatesAutoresizingMaskIntoConstraints = false
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        amountTextField.inputAccessoryView = amountFieldAccessory
+        
+        amountFieldAccessory.addSubview(doneButton)
+        
+        NSLayoutConstraint.activate([
+            
+            doneButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
+            doneButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
+            
+        ])
+    }
+    
     //MARK: - IBActions
     @IBAction func setBalanceButtonPressed(_ sender: UIButton) {
         
-        setStartingBalance()
+        if realm.objects(Transaction.self).count == 0 {
+            setStartingBalance()
+        } else {
+            let alert = UIAlertController(title: "All transactions before this date will be deleted", message: "", preferredStyle: .actionSheet)
+            
+            let action = UIAlertAction(title: "Set Starting Balance", style: .destructive) { [self] (action) in
+                setStartingBalance()
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+            }
+            alert.addAction(action)
+            alert.addAction(cancelAction)
+            present(alert, animated: true, completion: nil)
+        }
         
     }
     
-    @IBAction func dismissButtonTapped(_ sender: UIButton) {
-        
-        dismiss(animated: true, completion: nil)
+    
+    @objc private func doneButtonTapped() {
+        amountTextField.resignFirstResponder()
     }
     
     
@@ -106,21 +172,30 @@ extension StartingBalanceVC: FSCalendarDelegate, FSCalendarDataSource {
 
 //MARK: - TextField Delegate
 extension StartingBalanceVC: UITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-    }
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         
         startingBalanceAmount = textField.text!.toDouble()
-
-//        amountTextField.resignFirstResponder()
         return true
+        
     }
+
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if let textField = amountTextField {
-            
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if textField == amountTextField {
+            if let text = textField.text {
+                let dotString = "."
+                let backSpace = string.isEmpty
+                if !backSpace {
+                    if text.contains(dotString) {
+                        if text.components(separatedBy: dotString)[1].count == 2 || string == "." {
+                            return false
+                        }
+                    }
+                }
+            }
         }
+        return true
     }
 }

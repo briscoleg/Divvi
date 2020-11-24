@@ -34,7 +34,6 @@ class SubVC: UIViewController {
     }
     
     //MARK: - ViewDidLoad
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,12 +43,21 @@ class SubVC: UIViewController {
         configureObservers()
         
         
-        self.title = viewTitle
         
         configureCollectionViewLayout()
         
-        hideNavigationBarLine()
+//        hideNavigationBarLine()
         
+        configureNavigationBar(largeTitleColor: .label, backgoundColor: .systemBackground, tintColor: UIColor(rgb: SystemColors.shared.blue), title: viewTitle, preferredLargeTitle: true)
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     //MARK: - Methods
@@ -62,6 +70,10 @@ class SubVC: UIViewController {
 //        navigationController?.navigationBar.setBackgroundImage(UIImage(), for:.default)
 //        navigationController?.navigationBar.shadowImage = UIImage()
 //        navigationController?.navigationBar.layoutIfNeeded()
+        title = viewTitle
+        
+//        navigationBar.setValue(true, forKey: "hidesShadow")
+
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     

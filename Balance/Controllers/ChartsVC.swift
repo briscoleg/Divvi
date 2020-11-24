@@ -18,7 +18,6 @@ enum ChartView {
 class ChartsVC: UIViewController, ChartViewDelegate {
 
     //MARK: - IBOutlets
-    @IBOutlet weak var monthYearLabel: UILabel!
     @IBOutlet weak var prevMonthButton: UIButton!
     @IBOutlet weak var nextMonthButton: UIButton!
     
@@ -57,9 +56,18 @@ class ChartsVC: UIViewController, ChartViewDelegate {
                 
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(false)
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(false)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        tabBarController?.tabBar.isHidden = false
         UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
 
     }
@@ -67,11 +75,16 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     //MARK: - Methods
     private func configureUI() {
         pieChartView.isHidden = true
-        nextMonthButton.tintColor = .label
-        prevMonthButton.tintColor = .label
+        nextMonthButton.tintColor = UIColor(rgb: SystemColors.shared.blue)
+        prevMonthButton.tintColor = UIColor(rgb: SystemColors.shared.blue)
         lineChartButton.tintColor = UIColor(rgb: SystemColors.shared.blue)
         pieChartButton.tintColor = UIColor(rgb: SystemColors.shared.blue)
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
+        title = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
+
+        navigationController?.navigationBar.setValue(true, forKey: "hidesShadow")
+        UINavigationBar.appearance().barTintColor = .systemBackground
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
+        UINavigationBar.appearance().isTranslucent = false
     }
     
     @objc private func isLandscape() -> Void {}
@@ -100,8 +113,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     
     private func configurePieChart() {
         
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Expenses"
-        
+        title = "\(formatter.string(from: SelectedMonth.shared.date)) Expenses"
 //        let totalIncome: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
 //        let totalExpenses: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory != %@", categories[0])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
 
@@ -115,7 +127,8 @@ class ChartsVC: UIViewController, ChartViewDelegate {
 //        pieChartView.delegate = self
         pieChartView.legend.enabled = true
 //        pieChartView.centerText = graphCenterText
-        pieChartView.holeRadiusPercent = 0.5
+        pieChartView.holeRadiusPercent = 0.4
+        pieChartView.holeColor = .systemBackground
 
         let expenseCategories = categories.dropFirst()
 
@@ -134,7 +147,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         expenseDataSet.sliceSpace = 2
         expenseDataSet.yValuePosition = .outsideSlice
         expenseDataSet.xValuePosition = .outsideSlice
-        expenseDataSet.valueLinePart1Length = 0.5
+        expenseDataSet.valueLinePart1Length = 0.3
         expenseDataSet.valueLineVariableLength = true
         expenseDataSet.valueColors = [.label]
         expenseDataSet.valueLineColor = .label
@@ -165,14 +178,11 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     }
     
     private func configureLineChart() {
-        
-        monthYearLabel.text = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
-        
+           
+        title = "\(formatter.string(from: SelectedMonth.shared.date)) Balances"
 //        lineChartView.delegate = self
         
         let objects = transactions.filter(SelectedMonth.shared.selectedMonthPredicate()).sorted(byKeyPath: "transactionDate", ascending: true)
-        
-        
         
         let xAxis = lineChartView.xAxis
         xAxis.labelPosition = .bottom

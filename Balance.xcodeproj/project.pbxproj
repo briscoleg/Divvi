@@ -38,6 +38,7 @@
 		C0EA444B24CF571300D1A92E /* SubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444A24CF571300D1A92E /* SubCell.swift */; };
 		C0EE9D1A24FC3573006DEB21 /* SubHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EE9D1924FC3573006DEB21 /* SubHeaderView.swift */; };
 		C0F7CFA424E495A900D55D9D /* CalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F7CFA324E495A900D55D9D /* CalendarVC.swift */; };
+		C724C7C2256C581D0017521F /* Pods_Balance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */; };
 		C773DABD25604F010084A848 /* StartingBalanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C773DABC25604F010084A848 /* StartingBalanceVC.swift */; };
 		C773DAC1256080920084A848 /* StartingBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C773DAC0256080920084A848 /* StartingBalance.swift */; };
 		C7889C8C25437B5F00C41154 /* CategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7889C8B25437B5F00C41154 /* CategoryVC.swift */; };
@@ -46,7 +47,6 @@
 		C7E821C12548A74A00F32F31 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E821C02548A74A00F32F31 /* SettingsCell.swift */; };
 		C7E9D579255756E000538A06 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9D578255756E000538A06 /* SettingsItem.swift */; };
 		C7ED6DB6255F05F8005431EF /* CustomHorizontalProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED6DB5255F05F8005431EF /* CustomHorizontalProgressBar.swift */; };
-		DBE0DAB289C83C0E100B40C7 /* Pods_Balance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6190D4B9574D98DA90A00 /* Pods_Balance.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,7 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBE0DAB289C83C0E100B40C7 /* Pods_Balance.framework in Frameworks */,
+				C724C7C2256C581D0017521F /* Pods_Balance.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,7 +233,7 @@
 				C0DB5FF324A160D900008F89 /* Sources */,
 				C0DB5FF424A160D900008F89 /* Frameworks */,
 				C0DB5FF524A160D900008F89 /* Resources */,
-				0E30033582CC86FD0AE73580 /* [CP] Embed Pods Frameworks */,
+				2E2056235082B8BD6037E492 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -291,7 +291,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0E30033582CC86FD0AE73580 /* [CP] Embed Pods Frameworks */ = {
+		2E2056235082B8BD6037E492 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -434,6 +434,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -506,6 +507,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_ENABLE_BATCH_MODE = NO;
@@ -518,15 +520,18 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 12B8086F49EABEA3EA0E5B35 /* Pods-Balance.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z4DLPBM8Q9;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Balance/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.briscoleg.Balance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -539,6 +544,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 797F909BF021DADBCC98A7A6 /* Pods-Balance.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -548,6 +554,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.briscoleg.Balance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -70,7 +70,7 @@ class SummaryVC: UIViewController {
 //        nextMonthButton.roundCorners()
         
         //        calendar.scrollDirection = .vertical
-                print(Realm.Configuration.defaultConfiguration.fileURL!)
+//                print(Realm.Configuration.defaultConfiguration.fileURL!)
         
         
         //        navigationController?.setNavigationBarHidden(true, animated: false)
@@ -257,6 +257,25 @@ class SummaryVC: UIViewController {
         let endDate = calendar.date(from: components)
         
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
+    }
+    
+    private func startingBalancePredicate(date: Date) -> NSPredicate {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
     }
     
     
@@ -584,13 +603,18 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         
         let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
         
+        let startingBalanceDate = realm.objects(StartingBalance.self).filter(startingBalancePredicate(date: date))
+        
+        for _ in startingBalanceDate {
+            return 1
+        }
+        
         for _ in incomeTransaction {
             return 1
         }
         for _ in expenseTransaction {
             return 1
         }
-        
         return 0
         
     }
@@ -623,10 +647,7 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         calendar.appearance.selectionColor = UIColor(rgb: SystemColors.shared.blue)
         
     }
-    
-    
 }
-
 
 //MARK: - CollectionView Delegate & DataSource
 extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -652,7 +673,7 @@ extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCell.cellId, for: indexPath) as! SummaryCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCell.cellId, for: indexPath) as? SummaryCell else { return UICollectionViewCell() }
         
         let filteredTransactions = realm.objects(Transaction.self).filter(dateRangePredicate)
         

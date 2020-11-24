@@ -71,6 +71,12 @@ extension SettingsVC: UICollectionViewDelegate, UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SettingsCell.identifier, for: indexPath) as? SettingsCell else { return UICollectionViewCell() }
         cell.nameLabel.text = settingsItems[indexPath.item].name
         cell.nameLabel.textColor = UIColor(rgb: SystemColors.shared.blue)
+        switch indexPath.item {
+        case 2, 3:
+            cell.nameLabel.textColor = UIColor(rgb: SystemColors.shared.red)
+        default:
+            break
+        }
         return cell
     }
     

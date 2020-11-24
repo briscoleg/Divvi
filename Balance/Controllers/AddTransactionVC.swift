@@ -31,6 +31,7 @@ class AddTransactionVC: UIViewController {
     let realm = try! Realm()
     var transaction: Transaction?
     var categoryPicked: Category?
+   
 //    var subcategoryPicked: SubCategory?
     
     //Default transaction values
@@ -131,6 +132,10 @@ class AddTransactionVC: UIViewController {
         
         saveButton.roundCorners()
         navigationBar.setValue(true, forKey: "hidesShadow")
+        UINavigationBar.appearance().barTintColor = .systemBackground
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
+        UINavigationBar.appearance().isTranslucent = false
+        
 
     }
     
@@ -234,14 +239,19 @@ class AddTransactionVC: UIViewController {
     
     private func saveTransaction() {
         
+        guard let startingBalance = realm.objects(StartingBalance.self).first else { return }
+        
         guard amountTextField.text != "" else { amountTextField.placeholder = "Enter an amount"; return }
         guard categoryPicked != nil else { categoryButton.setTitle("Select a Category", for: .normal); return }
+
+        guard datePicked.isAfterDate(startingBalance.date, orEqual: true, granularity: .day) else { dateButton.setTitle("Choose a date on or after starting balance", for: .normal)
+            return
+        }
         
         if !newTransaction {
             
             setNumberOfTransactions()
             saveEdit()
-            print("Edit Saved")
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionEdited"), object: nil)
             
         } else {
@@ -292,7 +302,6 @@ class AddTransactionVC: UIViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         dismiss(animated: true, completion: nil)
         
-        
     }
     
     private func displayRepeatInterval(with date: Date) {
@@ -317,11 +326,9 @@ class AddTransactionVC: UIViewController {
     private func displaySelectedDate(_ date: Date) {
         
         let formatter = DateFormatter()
-        
         formatter.dateFormat = "MMMM d, yyyy"
         
         let dateString = formatter.string(from: date)
-        
         if dateString == formatter.string(from: Date()) {
             dateButton.setTitle("Today", for: .normal)
         } else {
@@ -330,7 +337,7 @@ class AddTransactionVC: UIViewController {
         
     }
     
-    @objc func plusMinusButtonTapped() {
+    @objc private func plusMinusButtonTapped() {
         
         if isExpense {
             amountTextField.dropMinus()
@@ -343,8 +350,6 @@ class AddTransactionVC: UIViewController {
         }
         
     }
-    
-    
     
     private func addAmountFieldAccessory() {
         
@@ -504,23 +509,23 @@ class AddTransactionVC: UIViewController {
     }
     
     @IBAction func dismissPressed(_ sender: UIBarButtonItem) {
+        
         dismiss(animated: true, completion: nil)
         
     }
-    
-    
 }
-
 
 //MARK: - Extensions
 extension AddTransactionVC: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        
         if textField == amountTextField {
             addAmountFieldAccessory()
         } else if textField == descriptionTextField {
             addDescriptionFieldAccessory()
         }
+        
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

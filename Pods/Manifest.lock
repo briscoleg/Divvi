@@ -1,23 +1,19 @@
 PODS:
-  - Charts (3.5.0):
-    - Charts/Core (= 3.5.0)
-  - Charts/Core (3.5.0)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
   - FSCalendar (2.8.1)
-  - GTProgressBar (0.3.3)
-  - MKRingProgressView (2.2.3)
-  - Realm (4.4.1):
-    - Realm/Headers (= 4.4.1)
-  - Realm/Headers (4.4.1)
-  - RealmSwift (4.4.1):
-    - Realm (= 4.4.1)
-  - SwiftDate (6.1.0)
+  - Realm (10.1.4):
+    - Realm/Headers (= 10.1.4)
+  - Realm/Headers (10.1.4)
+  - RealmSwift (10.1.4):
+    - Realm (= 10.1.4)
+  - SwiftDate (6.3.0)
   - SwipeCellKit (2.7.1)
 
 DEPENDENCIES:
   - Charts
   - FSCalendar
-  - GTProgressBar
-  - MKRingProgressView
   - RealmSwift
   - SwiftDate
   - SwipeCellKit
@@ -26,23 +22,19 @@ SPEC REPOS:
   trunk:
     - Charts
     - FSCalendar
-    - GTProgressBar
-    - MKRingProgressView
     - Realm
     - RealmSwift
     - SwiftDate
     - SwipeCellKit
 
 SPEC CHECKSUMS:
-  Charts: 40a08591df1f8ad5c223ddedfb1a06da92f24f7c
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   FSCalendar: 5245140456fcbcac5824c203b98bd8068bdfee1a
-  GTProgressBar: a480283ecb0ada50de16c71e634892826928f640
-  MKRingProgressView: 404b3157e7a533ab8668d29ec20042c35d12ca1d
-  Realm: 4eb04d7487bd43c0581256f40b424eafb711deff
-  RealmSwift: 3eb8924ff7100df5928c7602f71d0fec51e7c9c5
-  SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
+  Realm: 80f4fb2971ccb9adc27a47d0955ae8e533a7030b
+  RealmSwift: 0e566ca714edb377bba8ea0811eafcea0b93734e
+  SwiftDate: ec6c0e173627a3ae6dd1671888a7f175956ebb94
   SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: d16994c609a70421e1090a0327c3f8fe562fe1ef
+PODFILE CHECKSUM: 2158cec111a6162731ad6b63a5c0264e17b85559
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.10.0

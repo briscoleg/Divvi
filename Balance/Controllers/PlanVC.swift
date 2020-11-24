@@ -25,12 +25,12 @@ class PlanVC: UIViewController {
     //MARK: - ViewDidLoad/ViewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: true)
-        self.tabBarController?.tabBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(false, animated: true)
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        navigationController?.setNavigationBarHidden(false, animated: true)
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +40,8 @@ class PlanVC: UIViewController {
         
         setCollectionViewLayout()
         configureObservers()
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
         
     }
     

@@ -61,7 +61,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
             if viewController.isKind(of: AddTransactionVC.self) {
                 if let vc =  storyboard?.instantiateViewController(identifier: AddTransactionVC.identifier) {
                     vc.modalPresentationStyle = .formSheet
-                    self.present(vc, animated: true, completion: nil)
+                    present(vc, animated: true, completion: nil)
+                    navigationController?.navigationBar.barTintColor = UIColor.green
                     print("AddTransactionVC")
                     return false
                     

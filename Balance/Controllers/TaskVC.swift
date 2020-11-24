@@ -68,12 +68,12 @@ class TaskVC: UIViewController {
         switch transactionView {
         case .toDo:
             if allTransactions.count == 0 {
-                instructionsLabel.text = "No transactions yet.\n\nCheck back after adding some transactions."
+                instructionsLabel.text = "No transactions yet.\n\nCheck back\nafter adding transactions."
             } else if unpostedTransactions.count > 0 {
                 instructionsLabel.text = "Swipe right to clear transactions.\n\nTap to edit."
                 tabBarController!.tabBar.items![1].badgeValue = "1"
             } else {
-                instructionsLabel.text = "All clear!\n\nCheck back later\nor add new transactions."
+                instructionsLabel.text = "All clear!\n\nCheck back later\nor add transactions."
                 tabBarController!.tabBar.items![1].badgeValue = nil
             }
         case .posted:
@@ -84,25 +84,25 @@ class TaskVC: UIViewController {
         }
     }
     
-    private func presentDetailVC(_ indexPath: IndexPath) {
+    private func presentDetailVC(at indexPath: IndexPath) {
         
-        var transactionToPresent = Transaction()
-        
-        switch transactionView {
-        case .toDo:
-            transactionToPresent = unpostedTransactions[indexPath.item]
-        case .posted:
-            transactionToPresent = postedTransactions[indexPath.item]
-        case .future:
-            transactionToPresent = futureTransactions[indexPath.item]
-            
-            if let vc = storyboard?.instantiateViewController(withIdentifier: DetailVC.identifier) as? DetailVC {
-                
-                vc.transaction = transactionToPresent
-                present(vc, animated: true, completion: nil)
-                
-            }
-        }
+//        var transactionToPresent = Transaction()
+//
+//        switch transactionView {
+//        case .toDo:
+//            transactionToPresent = unpostedTransactions[indexPath.item]
+//        case .posted:
+//            transactionToPresent = postedTransactions[indexPath.item]
+//        case .future:
+//            transactionToPresent = futureTransactions[indexPath.item]
+//
+//            if let vc = storyboard?.instantiateViewController(withIdentifier: DetailVC.identifier) as? DetailVC {
+//
+//                vc.transaction = transactionToPresent
+//                present(vc, animated: true, completion: nil)
+//
+//            }
+//        }
     }
     
     
@@ -133,7 +133,24 @@ class TaskVC: UIViewController {
 extension TaskVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presentDetailVC(indexPath)
+                
+        switch transactionView {
+        case .toDo:
+            if let vc = storyboard?.instantiateViewController(withIdentifier: DetailVC.identifier) as? DetailVC {
+                vc.transaction = unpostedTransactions[indexPath.item]
+                present(vc, animated: true, completion: nil)
+            }
+        case .posted:
+            if let vc = storyboard?.instantiateViewController(withIdentifier: DetailVC.identifier) as? DetailVC {
+                vc.transaction = postedTransactions[indexPath.item]
+                present(vc, animated: true, completion: nil)
+            }
+        case .future:
+            if let vc = storyboard?.instantiateViewController(withIdentifier: DetailVC.identifier) as? DetailVC {
+                vc.transaction = futureTransactions[indexPath.item]
+                present(vc, animated: true, completion: nil)
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -228,7 +245,7 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
     func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         
         
-        if orientation == .left && transactionView != .future{
+        if orientation == .left && transactionView != .future {
             
             var actionTitle = ""
             
@@ -259,6 +276,9 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
                 action.fulfill(with: .reset)
                 
                 collectionView.reloadData()
+                
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
                 
                 NotificationCenter.default.post(name: NSNotification.Name("transactionCleared"), object: nil)
                 

@@ -36,23 +36,42 @@ class CalendarVC: UIViewController {
     
     var intervalPicked = RepeatInterval.never.rawValue
     var dateDelegate: DateDelegate!
+    let userDefaults = UserDefaults()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setCalendarScrollDirection()
+        configureUI()
+        configureDelegates()
+
+    }
+    
+    private func configureDelegates() {
         
         calendar.delegate = self
         picker.delegate = self
         picker.dataSource = self
         
-        repeatSwitch.isOn = false
-        picker.isHidden = true
+    }
+    
+    private func configureUI() {
         
         chooseButton.roundCorners()
-        
         repeatLabel.text = "Repeats:"
-        
         picker.selectRow(1, inComponent: 0, animated: true)
-
+        repeatSwitch.isOn = false
+        picker.isHidden = true
+    }
+    
+    private func setCalendarScrollDirection() {
+        
+        if userDefaults.value(forKey: "calendarScrollDirection") as! String == "horizontal" {
+            calendar.scrollDirection = .horizontal
+        } else if userDefaults.value(forKey: "calendarScrollDirection") as! String == "vertical" {
+            calendar.scrollDirection = .vertical
+        }
+        
     }
     
     private func displaySelectedDate(_ date: Date) {
