@@ -1,0 +1,6 @@
+framework module Pods_Divvi {
+  umbrella header "Pods-Divvi-umbrella.h"
+
+  export *
+  module * { export * }
+}
