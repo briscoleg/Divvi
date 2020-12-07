@@ -32,15 +32,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        if let rootViewController = self.topViewControllerWithRootViewController(rootViewController: window?.rootViewController) {
+        
+        if let rootViewController = topViewControllerWithRootViewController(rootViewController: window?.rootViewController) {
+            
           if (rootViewController.responds(to: Selector(("isLandscape")))) {
             // Unlock landscape view orientations for this view controller
-            return .landscapeLeft;
+            return .landscapeLeft
           }
         }
         
         // Only allow portrait (standard behaviour)
-        return .portrait;
+        return .portrait
       }
       
       private func topViewControllerWithRootViewController(rootViewController: UIViewController!) -> UIViewController? {

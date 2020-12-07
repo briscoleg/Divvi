@@ -29,10 +29,10 @@ class SummaryVC: UIViewController {
     private lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     private lazy var unclearedTransactionsToDate: Results<Transaction> = { transaction.filter("transactionDate <= %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
     
-    private var dateRangePredicate = NSPredicate()
+    private var dateRangePredicate: NSPredicate!
     
     private var currentPage: Date?
-
+    
     private lazy var today: Date = {
         return Date()
     }()
@@ -42,15 +42,15 @@ class SummaryVC: UIViewController {
     private let userDefaults = UserDefaults()
     
     private var selectedDate = Date()
-        
+    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
         calendar.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
-
+        
         setUserDefaults()
-
+        
         print(userDefaults.value(forKey: "startingBalanceSet"))
         
         configureDelegates()
@@ -61,14 +61,14 @@ class SummaryVC: UIViewController {
         configureCollectionViewLayout()
         
         todayButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
-//        prevMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
-//        nextMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
+        //        prevMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
+        //        nextMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
         todayButton.roundCorners()
-//        prevMonthButton.roundCorners()
-//        nextMonthButton.roundCorners()
+        //        prevMonthButton.roundCorners()
+        //        nextMonthButton.roundCorners()
         
         //        calendar.scrollDirection = .vertical
-//                print(Realm.Configuration.defaultConfiguration.fileURL!)
+        //                print(Realm.Configuration.defaultConfiguration.fileURL!)
         
         
         //        navigationController?.setNavigationBarHidden(true, animated: false)
@@ -78,7 +78,7 @@ class SummaryVC: UIViewController {
         calendar.select(calendar.today)
         //        calendar.setCurrentPage(Date(), animated: true)
         
-        
+        dateRangePredicate = predicateForDayFromDate(date: Date())
         
         
         
@@ -91,7 +91,7 @@ class SummaryVC: UIViewController {
         
         getBalanceAtDate(Date())
         
-        dateRangePredicate = predicateForDayFromDate(date: Date())
+        
         
         //        calendar.collectionView.reloadData()
         
@@ -99,10 +99,10 @@ class SummaryVC: UIViewController {
         calendar.appearance.headerMinimumDissolvedAlpha = 0
         
         
-                        
+        
     }
     
-
+    
     //MARK: - Methods
     
     
@@ -156,7 +156,7 @@ class SummaryVC: UIViewController {
         appearance?.backgroundColor = .systemBackground
         appearance?.shadowImage = nil
         appearance?.shadowColor = nil
-//        tabBarController?.tabBar.isTranslucent = true
+        //        tabBarController?.tabBar.isTranslucent = true
         tabBarController?.tabBar.standardAppearance = appearance!
     }
     
@@ -186,20 +186,16 @@ class SummaryVC: UIViewController {
         let totalBalance: Double = transactionsTotalAtDate + startingBalance
         
         amountLabel.attributedText = totalBalance.toAttributedString(size: 45, offset: 10, weight: .ultraLight)
-//        amountLabel.text = transactionsTotalAtDate.toCurrency()
+        //        amountLabel.text = transactionsTotalAtDate.toCurrency()
         
     }
     
     private func displaySelectedDate(_ date: Date) {
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d, yyyy"
-        
-        let dateString = formatter.string(from: date)
-        if dateString == formatter.string(from: Date()) {
-            dateLabel.text = "Today"
+        if date.day == Date().day {
+            dateLabel.text = "Today's Balance"
         } else {
-            dateLabel.text = dateString
+            dateLabel.text = "\(date.toFormat("MMMM, d")) Balance"
         }
         
     }
@@ -222,63 +218,63 @@ class SummaryVC: UIViewController {
         
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
     }
-    
-    private func negativeTransactionPredicate(date: Date) -> NSPredicate {
-        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        
-        components.hour = 00
-        components.minute = 00
-        components.second = 00
-        
-        let startDate = calendar.date(from: components)
-        
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        
-        let endDate = calendar.date(from: components)
-        
-        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount < 0", argumentArray: [startDate!, endDate!])
-    }
-    
-    private func positiveTransactionPredicate(date: Date) -> NSPredicate {
-        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        
-        components.hour = 00
-        components.minute = 00
-        components.second = 00
-        
-        let startDate = calendar.date(from: components)
-        
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        
-        let endDate = calendar.date(from: components)
-        
-        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
-    }
-    
-    private func startingBalancePredicate(date: Date) -> NSPredicate {
-        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-        
-        components.hour = 00
-        components.minute = 00
-        components.second = 00
-        
-        let startDate = calendar.date(from: components)
-        
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        
-        let endDate = calendar.date(from: components)
-        
-        return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
-    }
+    //
+    //    private func negativeTransactionPredicate(date: Date) -> NSPredicate {
+    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+    //
+    //        components.hour = 00
+    //        components.minute = 00
+    //        components.second = 00
+    //
+    //        let startDate = calendar.date(from: components)
+    //
+    //        components.hour = 23
+    //        components.minute = 59
+    //        components.second = 59
+    //
+    //        let endDate = calendar.date(from: components)
+    //
+    //        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount < 0", argumentArray: [startDate!, endDate!])
+    //    }
+    //
+    //    private func positiveTransactionPredicate(date: Date) -> NSPredicate {
+    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+    //
+    //        components.hour = 00
+    //        components.minute = 00
+    //        components.second = 00
+    //
+    //        let startDate = calendar.date(from: components)
+    //
+    //        components.hour = 23
+    //        components.minute = 59
+    //        components.second = 59
+    //
+    //        let endDate = calendar.date(from: components)
+    //
+    //        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
+    //    }
+    //
+    //    private func startingBalancePredicate(date: Date) -> NSPredicate {
+    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+    //
+    //        components.hour = 00
+    //        components.minute = 00
+    //        components.second = 00
+    //
+    //        let startDate = calendar.date(from: components)
+    //
+    //        components.hour = 23
+    //        components.minute = 59
+    //        components.second = 59
+    //
+    //        let endDate = calendar.date(from: components)
+    //
+    //        return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
+    //    }
     
     
     //    private func positiveAndNegativeTransactionPredicate(date: Date) -> NSPredicate {
@@ -301,7 +297,6 @@ class SummaryVC: UIViewController {
     //    }
     
     //MARK: - Setup Categories
-    
     private func setupCategoriesOnFirstLoad() {
         
         if categories.count == 0 {
@@ -589,7 +584,7 @@ class SummaryVC: UIViewController {
 
 //MARK: - Calendar Delegate, DataSource, & Appearance
 extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
-        
+    
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
         selectedDate = date
@@ -606,11 +601,11 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
-        let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
+        let incomeTransaction = realm.objects(Transaction.self).filter(.positiveTransactionPredicate(date: date))
         
-        let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
+        let expenseTransaction = realm.objects(Transaction.self).filter(.negativeTransactionPredicate(date: date))
         
-        let startingBalanceDate = realm.objects(StartingBalance.self).filter(startingBalancePredicate(date: date))
+        let startingBalanceDate = realm.objects(StartingBalance.self).filter(.startingBalancePredicate(date: date))
         
         for _ in startingBalanceDate {
             return 1
@@ -626,17 +621,17 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         
     }
     
-
+    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
         return .label
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
         
-        let incomeTransaction = realm.objects(Transaction.self).filter(positiveTransactionPredicate(date: date))
+        let incomeTransaction = realm.objects(Transaction.self).filter(.positiveTransactionPredicate(date: date))
         
-        let expenseTransaction = realm.objects(Transaction.self).filter(negativeTransactionPredicate(date: date))
-
+        let expenseTransaction = realm.objects(Transaction.self).filter(.negativeTransactionPredicate(date: date))
+        
         for _ in incomeTransaction {
             return [UIColor(rgb: SystemColors.shared.green)]
         }
@@ -648,7 +643,7 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
     }
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
-                
+        
         calendar.appearance.todayColor = UIColor(rgb: SystemColors.shared.yellow)
         
         calendar.appearance.selectionColor = UIColor(rgb: SystemColors.shared.blue)
@@ -671,9 +666,6 @@ extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
             
             present(vc, animated: true, completion: nil)
         }
-        
-        
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -688,15 +680,15 @@ extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let filteredTransactions = realm.objects(Transaction.self).filter(dateRangePredicate)
         
         let amount = filteredTransactions[indexPath.row].transactionAmount
-
+        
         if let image = UIImage(named: filteredTransactions[indexPath.item].transactionCategory!.categoryName) {
             cell.configure(with: image, and: amount)
-
+            
         }
-    
+        
         cell.circleView.backgroundColor = UIColor(rgb: filteredTransactions[indexPath.item].transactionCategory!.categoryColor)
         
-                
+        
         cell.amountLabel.attributedText = amount.toAttributedString(size: 9, offset: 4, weight: .regular)
         
         if filteredTransactions[indexPath.row].transactionAmount > 0 {
@@ -725,12 +717,3 @@ extension SummaryVC: UICollectionViewDelegateFlowLayout {
         return 0
     }
 }
-
-//extension FSCalendarScope {
-//    func asCalendarComponent() -> Calendar.Component {
-//        switch (self) {
-//        case .month: return .month
-//        case .week: return .weekOfYear
-//        }
-//     }
-//}

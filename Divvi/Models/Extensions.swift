@@ -220,7 +220,15 @@ extension Double {
     }
 }
 
-
+extension Date {
+    func style(style: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "\(style)"
+        let formattedDate = formatter.string(from: date)
+        return formattedDate
+        
+    }
+}
 
 extension Date {
     func dateToString() -> String {
@@ -416,3 +424,111 @@ extension NSPredicate {
         return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
     }
 }
+
+extension NSPredicate {
+    
+    static func getDayRangePredicateFromDate(date: Date) -> NSPredicate {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
+    }
+    
+    static func negativeTransactionPredicate(date: Date) -> NSPredicate {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount < 0", argumentArray: [startDate!, endDate!])
+    }
+    
+    static func positiveTransactionPredicate(date: Date) -> NSPredicate {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
+    }
+    
+    static func startingBalancePredicate(date: Date) -> NSPredicate {
+        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        components.hour = 00
+        components.minute = 00
+        components.second = 00
+        
+        let startDate = calendar.date(from: components)
+        
+        components.hour = 23
+        components.minute = 59
+        components.second = 59
+        
+        let endDate = calendar.date(from: components)
+        
+        return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
+    }
+}
+
+extension UINavigationController {
+
+override open var shouldAutorotate: Bool {
+    get {
+        if let visibleVC = visibleViewController {
+            return visibleVC.shouldAutorotate
+        }
+        return super.shouldAutorotate
+    }
+}
+
+override open var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+    get {
+        if let visibleVC = visibleViewController {
+            return visibleVC.preferredInterfaceOrientationForPresentation
+        }
+        return super.preferredInterfaceOrientationForPresentation
+    }
+}
+
+override open var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+    get {
+        if let visibleVC = visibleViewController {
+            return visibleVC.supportedInterfaceOrientations
+        }
+        return super.supportedInterfaceOrientations
+    }
+}}

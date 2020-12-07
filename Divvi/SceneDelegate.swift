@@ -29,38 +29,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneDidBecomeActive(_ scene: UIScene) {
         
-        print("Active")
     }
     
     func sceneWillResignActive(_ scene: UIScene) {
         
-        
-        
-        print("Inactive")
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
+        
         if window?.rootViewController is PasscodeVC {
-
         } else {
-            
             let mainStoryboardIpad : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let passcodeVC : UIViewController = mainStoryboardIpad.instantiateViewController(withIdentifier: PasscodeVC.identifier)
-//                                 self.window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = passcodeVC
             window?.makeKeyAndVisible()
             
         }
-        print("Foreground")
-
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
         
-        print("Background")
-        
     }
-
 
 }
 

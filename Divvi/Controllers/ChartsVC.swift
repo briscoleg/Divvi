@@ -60,19 +60,33 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         
     }
     
+    override var shouldAutorotate: Bool {
+        return true
+    }
+    
+    
+    
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         navigationController?.setNavigationBarHidden(false, animated: true)
+        tabBarController?.tabBar.isHidden = true
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(false)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        tabBarController?.tabBar.isHidden = false
+        
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
 //        super.viewWillDisappear(false)
-        navigationController?.setNavigationBarHidden(true, animated: true)
-        tabBarController?.tabBar.isHidden = false
-        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+        
 
     }
     
@@ -95,10 +109,12 @@ class ChartsVC: UIViewController, ChartViewDelegate {
     
     private func configureLandscapeView() {
         
-        self.tabBarController?.tabBar.isHidden = true
+//        self.tabBarController?.tabBar.isHidden = true
         
 //        let value = UIInterfaceOrientation.landscapeLeft.rawValue
         UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
+        
+        UIViewController.attemptRotationToDeviceOrientation()
         
     }
     

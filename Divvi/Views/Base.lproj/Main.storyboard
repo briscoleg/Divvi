@@ -1155,8 +1155,9 @@ July 22, 2020</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="COl-gv-AG6">
-                                <rect key="frame" x="162" y="433" width="92" height="30"/>
+                                <rect key="frame" x="156" y="432" width="107" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <state key="normal" title="Retry Face ID"/>
                                 <connections>
                                     <action selector="retryButtonPressed:" destination="jtK-OE-Bcm" eventType="touchUpInside" id="iQf-L3-cKv"/>
@@ -1455,10 +1456,10 @@ July 22, 2020</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KX-qs-rDZ">
-                                                    <rect key="frame" x="346" y="142" width="40" height="40"/>
+                                                    <rect key="frame" x="346" y="147" width="40" height="35"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="P3T-Zj-qBg"/>
-                                                        <constraint firstAttribute="height" constant="40" id="Uc7-Mc-2e6"/>
+                                                        <constraint firstAttribute="height" constant="35" id="Uc7-Mc-2e6"/>
                                                     </constraints>
                                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                     <state key="normal" image="chevron.right" catalog="system"/>
@@ -1467,10 +1468,10 @@ July 22, 2020</string>
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qM0-Lg-Bh5">
-                                                    <rect key="frame" x="28" y="142" width="40" height="40"/>
+                                                    <rect key="frame" x="28" y="147" width="40" height="35"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="CFH-o0-BeN"/>
-                                                        <constraint firstAttribute="height" constant="40" id="eC1-dU-wWe"/>
+                                                        <constraint firstAttribute="height" constant="35" id="eC1-dU-wWe"/>
                                                     </constraints>
                                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                     <state key="normal" image="chevron.left" catalog="system"/>

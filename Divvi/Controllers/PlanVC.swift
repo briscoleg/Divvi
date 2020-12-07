@@ -23,14 +23,26 @@ class PlanVC: UIViewController {
     private lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
     
     //MARK: - ViewDidLoad/ViewWillAppear
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(true, animated: true)
-//        tabBarController?.tabBar.isHidden = false
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        navigationController?.setNavigationBarHidden(false, animated: true)
-//    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        let value = UIInterfaceOrientation.portrait.rawValue
+        UIDevice.current.setValue(value, forKey: "orientation")
+
+        UIViewController.attemptRotationToDeviceOrientation()
+
+        tabBarController?.tabBar.isHidden = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +53,7 @@ class PlanVC: UIViewController {
         setCollectionViewLayout()
         configureObservers()
         
-        navigationController?.setNavigationBarHidden(true, animated: true)
+//        navigationController?.setNavigationBarHidden(true, animated: true)
         
     }
     

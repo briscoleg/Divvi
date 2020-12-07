@@ -98,7 +98,7 @@ extension Passcode {
     
     private func pin() -> UIView {
         let pin = Pin()
-        pin.pin.backgroundColor = .green
+        pin.pin.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
         return pin
     }
     

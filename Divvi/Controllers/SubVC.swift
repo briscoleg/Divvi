@@ -53,11 +53,15 @@ class SubVC: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidAppear(true)
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
+
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         navigationController?.setNavigationBarHidden(false, animated: true)
+
     }
     
     //MARK: - Methods

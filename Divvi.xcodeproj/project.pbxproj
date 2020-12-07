@@ -50,7 +50,6 @@
 		C7F54623257D7E2200C200C0 /* PasscodeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54622257D7E2200C200C0 /* PasscodeVC.swift */; };
 		C7F54626257D7E8F00C200C0 /* Passcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54625257D7E8F00C200C0 /* Passcode.swift */; };
 		C7F5462A257D845D00C200C0 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54629257D845D00C200C0 /* Pin.swift */; };
-		C7F54631257DACD200C200C0 /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54630257DACD200C200C0 /* Predicates.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -101,7 +100,6 @@
 		C7F54622257D7E2200C200C0 /* PasscodeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasscodeVC.swift; sourceTree = "<group>"; };
 		C7F54625257D7E8F00C200C0 /* Passcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passcode.swift; sourceTree = "<group>"; };
 		C7F54629257D845D00C200C0 /* Pin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
-		C7F54630257DACD200C200C0 /* Predicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Predicates.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,7 +186,6 @@
 				C7E9D578255756E000538A06 /* SettingsItem.swift */,
 				C7F54625257D7E8F00C200C0 /* Passcode.swift */,
 				C7F54629257D845D00C200C0 /* Pin.swift */,
-				C7F54630257DACD200C200C0 /* Predicates.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -364,7 +361,6 @@
 				C047132124EF2D1D00A7F39F /* SideBarVC.swift in Sources */,
 				C0EA444B24CF571300D1A92E /* SubCell.swift in Sources */,
 				C773DAC1256080920084A848 /* StartingBalance.swift in Sources */,
-				C7F54631257DACD200C200C0 /* Predicates.swift in Sources */,
 				C07C806A24FD85FC00CD6651 /* PlanVC.swift in Sources */,
 				C024E7C924BAB10E008D9E02 /* Extensions.swift in Sources */,
 				C7E9D579255756E000538A06 /* SettingsItem.swift in Sources */,
