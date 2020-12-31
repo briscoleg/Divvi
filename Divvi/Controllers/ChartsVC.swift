@@ -220,6 +220,7 @@ class ChartsVC: UIViewController, ChartViewDelegate {
         xAxis.labelPosition = .bottom
         xAxis.labelCount = 30
         xAxis.drawLabelsEnabled = true
+        xAxis.drawGridLinesEnabled = false
         
         var referenceTimeInterval: TimeInterval = 0
         

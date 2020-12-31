@@ -38,8 +38,15 @@ class PlanningCell: UICollectionViewCell {
         rightArrowIconImageView.tintColor = .white
         imageView.tintColor = .white
         percentLabel.textColor = .white
-        contentView.backgroundColor = .systemBackground
-        progressBar.backgroundColor = .systemGray3
+        
+        if #available(iOS 13, *) {
+            contentView.backgroundColor = .systemBackground
+            progressBar.backgroundColor = .systemGray3
+        } else {
+            contentView.backgroundColor = .white
+            progressBar.backgroundColor = .systemGray
+        }
+
                 
     }
     

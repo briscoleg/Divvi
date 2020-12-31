@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import FSCalendar
 import RealmSwift
+import FSCalendar
 
 class SummaryVC: UIViewController {
     
@@ -33,81 +33,43 @@ class SummaryVC: UIViewController {
     
     private var currentPage: Date?
     
-    private lazy var today: Date = {
-        return Date()
-    }()
+//    private lazy var today: Date = {
+//        return Date()
+//    }()
     
     private var calendarHeightAnchor: NSLayoutConstraint?
     
     private let userDefaults = UserDefaults()
     
-    private var selectedDate = Date()
+    private var selectedDate = Date().localDate().removeTime!
     
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        calendar.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
-        
+                
+        setDelegates()
         setUserDefaults()
-        
-        print(userDefaults.value(forKey: "startingBalanceSet"))
-        
-        configureDelegates()
+        setupUI()
         setupCategoriesOnFirstLoad()
-        customizeTabBarAppearance()
-        showBadgeForUnclearedTransactions()
-        configureObservers()
-        configureCollectionViewLayout()
-        
-        todayButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
-        //        prevMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
-        //        nextMonthButton.tintColor = UIColor(rgb: SystemColors.blue)
-        todayButton.roundCorners()
-        //        prevMonthButton.roundCorners()
-        //        nextMonthButton.roundCorners()
-        
-        //        calendar.scrollDirection = .vertical
-        //                print(Realm.Configuration.defaultConfiguration.fileURL!)
-        
-        
-        //        navigationController?.setNavigationBarHidden(true, animated: false)
-        
-        
-        
-        calendar.select(calendar.today)
-        //        calendar.setCurrentPage(Date(), animated: true)
+        setupObservers()
         
         dateRangePredicate = predicateForDayFromDate(date: Date())
-        
-        
-        
-        
-        //Hide Nav Bar Line
-        //        navigationBar.setValue(true, forKey: "hidesShadow")
-        
-        //        let todayItem = UIBarButtonItem(title: "TODAY", style: .plain, target: self, action: #selector(self.todayItemClicked(sender:)))
-        //        self.navigationItem.rightBarButtonItem = todayItem
-        
+
         getBalanceAtDate(Date())
         
+        showBadgeForUnclearedTransactions()
+
+        //Hide left and right months
+//        calendar.appearance.headerMinimumDissolvedAlpha = 0
         
         
-        //        calendar.collectionView.reloadData()
-        
-        
-        calendar.appearance.headerMinimumDissolvedAlpha = 0
-        
-        
-        
+        //                print(Realm.Configuration.defaultConfiguration.fileURL!)
+
     }
     
     
     //MARK: - Methods
-    
-    
-    
-    private func configureDelegates() {
+    private func setDelegates() {
         calendar.delegate = self
         calendar.dataSource = self
         
@@ -116,6 +78,8 @@ class SummaryVC: UIViewController {
     }
     
     private func setUserDefaults() {
+        
+        //Starting Balance Set
         if userDefaults.value(forKey: "startingBalanceSet") == nil {
             userDefaults.setValue(false, forKey: "startingBalanceSet")
         }
@@ -128,9 +92,10 @@ class SummaryVC: UIViewController {
         } else if userDefaults.value(forKey: "calendarScrollDirection") as! String == "vertical" {
             calendar.scrollDirection = .vertical
         }
+        
     }
     
-    private func configureObservers() {
+    private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
@@ -140,24 +105,29 @@ class SummaryVC: UIViewController {
         
     }
     
-    private func showBadgeForUnclearedTransactions() {
+    private func setupUI() {
         
-        if unclearedTransactionsToDate.count > 0 {
-            tabBarController!.tabBar.items![1].badgeValue = "1"
-        } else {
-            tabBarController!.tabBar.items![1].badgeValue = nil
-        }
+//        calendar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4).isActive = true
         
+        setupTabBarAppearance()
+        configureCollectionViewLayout()
+        
+        dateLabel.text = "Today's Balance"
+        calendar.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8).isActive = true
+        todayButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
+        todayButton.roundCorners()
+
     }
     
-    private func customizeTabBarAppearance() {
-        let appearance = tabBarController?.tabBar.standardAppearance
+    private func setupTabBarAppearance() {
         
-        appearance?.backgroundColor = .systemBackground
-        appearance?.shadowImage = nil
-        appearance?.shadowColor = nil
-        //        tabBarController?.tabBar.isTranslucent = true
-        tabBarController?.tabBar.standardAppearance = appearance!
+        if let appearance = tabBarController?.tabBar.standardAppearance {
+            appearance.backgroundColor = .systemBackground
+            appearance.shadowImage = nil
+            appearance.shadowColor = nil
+            tabBarController?.tabBar.standardAppearance = appearance
+        }
+        
     }
     
     private func configureCollectionViewLayout() {
@@ -170,10 +140,21 @@ class SummaryVC: UIViewController {
     @objc private func refresh() {
         collectionView.reloadData()
         calendar.reloadData()
-        getBalanceAtDate(selectedDate + 61199)
-        displaySelectedDate(Date())
-        showBadgeForUnclearedTransactions()
+        getBalanceAtDate(selectedDate)
+        
+        displaySelectedDate(selectedDate)
         setUserDefaults()
+        showBadgeForUnclearedTransactions()
+        
+    }
+    
+    func showBadgeForUnclearedTransactions() {
+        
+        if unclearedTransactionsToDate.count > 0 {
+            tabBarController!.tabBar.items![3].badgeValue = "1"
+        } else {
+            tabBarController!.tabBar.items![3].badgeValue = nil
+        }
         
     }
     
@@ -192,10 +173,30 @@ class SummaryVC: UIViewController {
     
     private func displaySelectedDate(_ date: Date) {
         
-        if date.day == Date().day {
+//        let date = Date()
+//        let calendar = Calendar.current
+//
+//        let year = calendar.component(.year, from: date)
+//
+//        let month = calendar.component(.month, from: date)
+//
+//        let day = calendar.component(.day, from: date)
+//
+//        let hour = calendar.component(.hour, from: date)
+//
+//        //Use this for dates
+//        print("Year: \(year), Month: \(month), Day: \(day), Hour: \(hour)")
+//        print(date)
+//        print(day)
+        
+//        print(date.day)
+//        print(Date().day)
+//        print(Date())
+        
+        if date.day == Date().localDate().day {
             dateLabel.text = "Today's Balance"
         } else {
-            dateLabel.text = "\(date.toFormat("MMMM, d")) Balance"
+            dateLabel.text = "\(date.toFormat("MMMM d")) Balance"
         }
         
     }
@@ -218,83 +219,6 @@ class SummaryVC: UIViewController {
         
         return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@", argumentArray: [startDate!, endDate!])
     }
-    //
-    //    private func negativeTransactionPredicate(date: Date) -> NSPredicate {
-    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-    //
-    //        components.hour = 00
-    //        components.minute = 00
-    //        components.second = 00
-    //
-    //        let startDate = calendar.date(from: components)
-    //
-    //        components.hour = 23
-    //        components.minute = 59
-    //        components.second = 59
-    //
-    //        let endDate = calendar.date(from: components)
-    //
-    //        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount < 0", argumentArray: [startDate!, endDate!])
-    //    }
-    //
-    //    private func positiveTransactionPredicate(date: Date) -> NSPredicate {
-    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-    //
-    //        components.hour = 00
-    //        components.minute = 00
-    //        components.second = 00
-    //
-    //        let startDate = calendar.date(from: components)
-    //
-    //        components.hour = 23
-    //        components.minute = 59
-    //        components.second = 59
-    //
-    //        let endDate = calendar.date(from: components)
-    //
-    //        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0", argumentArray: [startDate!, endDate!])
-    //    }
-    //
-    //    private func startingBalancePredicate(date: Date) -> NSPredicate {
-    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-    //
-    //        components.hour = 00
-    //        components.minute = 00
-    //        components.second = 00
-    //
-    //        let startDate = calendar.date(from: components)
-    //
-    //        components.hour = 23
-    //        components.minute = 59
-    //        components.second = 59
-    //
-    //        let endDate = calendar.date(from: components)
-    //
-    //        return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
-    //    }
-    
-    
-    //    private func positiveAndNegativeTransactionPredicate(date: Date) -> NSPredicate {
-    //        let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-    //        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-    //
-    //        components.hour = 00
-    //        components.minute = 00
-    //        components.second = 00
-    //
-    //        let startDate = calendar.date(from: components)
-    //
-    //        components.hour = 23
-    //        components.minute = 59
-    //        components.second = 59
-    //
-    //        let endDate = calendar.date(from: components)
-    //
-    //        return NSPredicate(format: "transactionDate >= %@ && transactionDate =< %@ && transactionAmount > 0 || transactionAmount < 0", argumentArray: [startDate!, endDate!])
-    //    }
     
     //MARK: - Setup Categories
     private func setupCategoriesOnFirstLoad() {
@@ -558,28 +482,30 @@ class SummaryVC: UIViewController {
     //MARK: - IBActions
     @IBAction func todayButtonPressed(_ sender: UIButton) {
         
-        calendar.setCurrentPage(Date(), animated: true)
-        
         calendar.select(calendar.today)
+                
+//        calendar.setCurrentPage(Date(), animated: true)
+        calendar.setCurrentPage(Date().localDate(), animated: true)
+
+//        displaySelectedDate(Date())
+        displaySelectedDate(Date().localDate())
+
+//        getBalanceAtDate(Date())
+        getBalanceAtDate(Date().localDate())
         
-        displaySelectedDate(Date())
-        
-        getBalanceAtDate(Date())
-        
-        dateRangePredicate = predicateForDayFromDate(date: Date())
-        
+//        dateRangePredicate = predicateForDayFromDate(date: Date())
+        dateRangePredicate = predicateForDayFromDate(date: Date().localDate())
+
         collectionView.reloadData()
         
+//        print(Date())
+//        print(Date().localDate())
+//        print(Date().startOfDay)
+//        print(Date().endOfDay)
+//        print(calendar.today)
+
     }
-    
-    @IBAction func nextMonthButtonPressed(_ sender: UIButton) {
-        
-        
-    }
-    
-    @IBAction func prevMonthButtonPressed(_ sender: UIButton) {
-        
-    }
+
 }
 
 //MARK: - Calendar Delegate, DataSource, & Appearance
@@ -589,13 +515,31 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         
         selectedDate = date
         
-        getBalanceAtDate(date + 61199)
+        getBalanceAtDate(date + 57599)
+        
+        print(date + 57599)
         
         displaySelectedDate(date)
-        
+                
         dateRangePredicate = predicateForDayFromDate(date: date)
         
         collectionView.reloadData()
+        
+        let calendar = Calendar.current
+        
+        let year = calendar.component(.year, from: date)
+
+        let month = calendar.component(.month, from: date)
+
+        let day = calendar.component(.day, from: date)
+        
+        let hour = calendar.component(.hour, from: date)
+
+        //Use this for dates
+        print("Year: \(year), Month: \(month), Day: \(day), Hour: \(hour)")
+        print(date)
+        print(date.localDate())
+        print(selectedDate + 61199)
         
     }
     
@@ -623,7 +567,9 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
     
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
+        
         return .label
+        
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
@@ -671,6 +617,7 @@ extension SummaryVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return transaction.filter(dateRangePredicate).count
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

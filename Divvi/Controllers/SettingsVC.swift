@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import LocalAuthentication
 
 class SettingsVC: UIViewController {
     
@@ -24,10 +25,10 @@ class SettingsVC: UIViewController {
     private var scrollDirection: String {
         userDefaults.value(forKey: "calendarScrollDirection") as! String
     }
-        
     
-//    private var scrollDirection = UserDefaults.value(forKey: "calendarScrollDirection")
-
+    var faceIDString = ""
+    var securityType = ""
+        
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +36,9 @@ class SettingsVC: UIViewController {
         setDelegates()
         configureSettingsItems()
         configureCollectionViewLayout()
+//        determineSecurityType()
+        
+
 
     }
     
@@ -44,6 +48,10 @@ class SettingsVC: UIViewController {
         collectionView.delegate = self
     }
     
+    @objc private func refresh() {
+        configureSettingsItems()
+    }
+    
     private func configureCollectionViewLayout() {
         
         let layout = UICollectionViewFlowLayout()
@@ -51,15 +59,81 @@ class SettingsVC: UIViewController {
         
     }
     
-    private func configureSettingsItems() {
+    private func presentPasscodeVC() {
+        if let vc = storyboard?.instantiateViewController(identifier: PasscodeVC.identifier) as? PasscodeVC {
+            vc.passcodeView = .newPasscode
+            vc.modalPresentationStyle = .currentContext
+            present(vc, animated: true, completion: nil)
+        }
+    }
+    
+    private func determineSecurityType() {
+        
+        let currentType = LAContext().biometricType
+        
+        switch currentType {
+        case .faceID:
+            securityType = "Face ID / Password"
+            print("FaceID")
+        case .touchID:
+            securityType = "Touch ID / Password"
+            print("TouchID")
+        case .none:
+            securityType = "Password"
+            print("Password")
+        }
+    }
+    
+    private func faceID() {
+        
+        let context = LAContext()
+        var error : NSError?
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            let reason = "Authenticate"
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { [self] success, authenticationError in
+                
+                DispatchQueue.main.async {
+                    if success {
+                        userDefaults.setValue(true, forKey: "faceIDEnabled")
+                        presentPasscodeVC()
+                        configureSettingsItems()
+                    } else {
 
-        let names = ["About", "Calendar Swipe: \(scrollDirection.capitalized)", "Reset Starting Balance", "Delete All Transactions"]
+                    }
+                }
+            }
+        } else {
+            presentPasscodeVC()
+            NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "passcodeCreated"), object: nil)
+//            configureSettingsItems()
+
+        }
+    }
+    
+    private func configureSettingsItems() {
+        
+        determineSecurityType()
+
+        if userDefaults.value(forKey: "faceIDEnabled") as! Bool || userDefaults.value(forKey: "passcodeEnabled") as! Bool {
+            faceIDString = "Disable \(securityType)"
+        } else {
+            faceIDString = "Set Up \(securityType)"
+        }
+        
         settingsItems.removeAll()
+
+        let names = [
+            "About",
+            "Calendar Swipe: \(scrollDirection.capitalized)",
+            "\(faceIDString)",
+            "Reset Starting Balance",
+            "Delete All Transactions",
+        ]
         for name in names {
             
             settingsItems.append(SettingsItem(name: name))
         }
-        
+        collectionView.reloadData()
     }
     
 }
@@ -72,13 +146,16 @@ extension SettingsVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SettingsCell.identifier, for: indexPath) as? SettingsCell else { return UICollectionViewCell() }
+        
+//        cell.configure(with: indexPath)
+
         cell.nameLabel.text = settingsItems[indexPath.item].name
         
         cell.customView.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
         cell.nameLabel.textColor = .white
         
         switch indexPath.item {
-        case 3:
+        case 4:
             cell.customView.backgroundColor = UIColor(rgb: SystemColors.shared.red)
         default:
             break
@@ -87,6 +164,7 @@ extension SettingsVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         switch indexPath.item {
         case 0:
             if let vc = storyboard?.instantiateViewController(identifier: "AboutVC") {
@@ -111,10 +189,8 @@ extension SettingsVC: UICollectionViewDelegate, UICollectionViewDataSource {
                 
                 if userDefaults.value(forKey: "calendarScrollDirection") as! String == "horizontal" {
                     userDefaults.setValue("vertical", forKey: "calendarScrollDirection")
-                    print("Calendar changed to \(scrollDirection)")
                 } else if userDefaults.value(forKey: "calendarScrollDirection") as! String == "vertical" {
                     userDefaults.setValue("horizontal", forKey: "calendarScrollDirection")
-                    print("Calendar changed to \(scrollDirection)")
                     }
                 configureSettingsItems()
                 collectionView.reloadData()
@@ -129,6 +205,49 @@ extension SettingsVC: UICollectionViewDelegate, UICollectionViewDataSource {
             present(alert, animated: true, completion: nil)
             
         case 2:
+            
+            determineSecurityType()
+            
+            if userDefaults.value(forKey: "faceIDEnabled") as! Bool == false && userDefaults.value(forKey: "passcodeEnabled") as! Bool == false {
+                
+                let alert = UIAlertController(title: "Enable \(securityType)?", message: "", preferredStyle: .actionSheet)
+                
+                let action = UIAlertAction(title: "Enable", style: .default) { [self] (action) in
+                    
+                    faceID()
+                    
+                }
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+                }
+                
+                alert.addAction(action)
+                alert.addAction(cancelAction)
+                present(alert, animated: true, completion: nil)
+                
+            } else {
+                
+                let alert = UIAlertController(title: "Disable \(securityType)?", message: "", preferredStyle: .actionSheet)
+                
+                let action = UIAlertAction(title: "Disable", style: .default) { [self] (action) in
+
+                    userDefaults.setValue(false, forKey: "faceIDEnabled")
+                    userDefaults.setValue(false, forKey: "passcodeEnabled")
+
+                    configureSettingsItems()
+                    print(userDefaults.value(forKey: "passcodeEnabled"))
+                    print(userDefaults.value(forKey: "faceIDEnabled"))
+                    
+                }
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+                }
+                
+                alert.addAction(action)
+                alert.addAction(cancelAction)
+                present(alert, animated: true, completion: nil)
+                
+            }
+            
+        case 3:
             
             let alert = UIAlertController(title: "Are you sure you want to reset your starting balance?", message: "", preferredStyle: .actionSheet)
             
@@ -158,7 +277,8 @@ extension SettingsVC: UICollectionViewDelegate, UICollectionViewDataSource {
             alert.addAction(action)
             alert.addAction(cancelAction)
             present(alert, animated: true, completion: nil)
-        case 3:
+            
+        case 4:
             let alert = UIAlertController(title: "Are you sure you want to delete all transactions?", message: "", preferredStyle: .actionSheet)
             
             let action = UIAlertAction(title: "Delete All Transactions", style: .destructive) { (action) in

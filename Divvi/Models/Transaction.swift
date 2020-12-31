@@ -9,6 +9,7 @@
 import Foundation
 import RealmSwift
 
+
 class Transaction: Object {
     
     @objc dynamic var transactionDescription: String? = nil

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jtK-OE-Bcm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="San-Gx-wkP">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -131,6 +131,7 @@
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="225" id="RnH-Ud-nCn"/>
                                     <constraint firstAttribute="height" constant="50" id="cNb-SS-SHv"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <state key="normal" title="Choose">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
@@ -338,7 +339,7 @@
             </objects>
             <point key="canvasLocation" x="2202.898550724638" y="1991.5178571428571"/>
         </scene>
-        <!--To-Do-->
+        <!--Transactions-->
         <scene sceneID="ZLa-Vr-Lah">
             <objects>
                 <viewController storyboardIdentifier="TaskVC" id="MxZ-EK-IeB" customClass="TaskVC" customModule="Divvi" customModuleProvider="target" sceneMemberID="viewController">
@@ -347,7 +348,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="aKx-hq-CTt">
-                                <rect key="frame" x="0.0" y="211" width="414" height="685"/>
+                                <rect key="frame" x="0.0" y="251" width="414" height="645"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ML1-Xu-wwu">
                                     <size key="itemSize" width="414" height="90"/>
@@ -464,6 +465,14 @@ Swipe left to delete.</string>
                                     <action selector="unclearedSegmentedControlSwitched:" destination="MxZ-EK-IeB" eventType="valueChanged" id="CZH-sf-g9m"/>
                                 </connections>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lH6-CR-FNU">
+                                <rect key="frame" x="321" y="235" width="73" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Clear All"/>
+                                <connections>
+                                    <action selector="clearAllButtonPressed:" destination="MxZ-EK-IeB" eventType="touchUpInside" id="xnv-Yf-pNH"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="QOb-vX-NA3"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -472,15 +481,18 @@ Swipe left to delete.</string>
                             <constraint firstItem="aKx-hq-CTt" firstAttribute="trailing" secondItem="QOb-vX-NA3" secondAttribute="trailing" id="Elp-T5-zJf"/>
                             <constraint firstItem="4qo-Dz-NmY" firstAttribute="centerX" secondItem="a8H-ic-3Vq" secondAttribute="centerX" id="IGH-LN-7sb"/>
                             <constraint firstItem="aKx-hq-CTt" firstAttribute="leading" secondItem="QOb-vX-NA3" secondAttribute="leading" id="MP2-UD-ewL"/>
+                            <constraint firstItem="aKx-hq-CTt" firstAttribute="top" secondItem="lH6-CR-FNU" secondAttribute="bottom" constant="-20" id="Pn2-ZX-lHY"/>
                             <constraint firstAttribute="bottom" secondItem="aKx-hq-CTt" secondAttribute="bottom" id="SnD-jY-dcV"/>
-                            <constraint firstItem="aKx-hq-CTt" firstAttribute="top" secondItem="pI6-44-azk" secondAttribute="bottom" constant="10" id="jAL-Wf-muM"/>
+                            <constraint firstItem="aKx-hq-CTt" firstAttribute="top" secondItem="pI6-44-azk" secondAttribute="bottom" constant="50" id="jAL-Wf-muM"/>
                             <constraint firstItem="4qo-Dz-NmY" firstAttribute="top" secondItem="QOb-vX-NA3" secondAttribute="top" constant="20" id="jl7-89-HaE"/>
+                            <constraint firstItem="QOb-vX-NA3" firstAttribute="trailing" secondItem="lH6-CR-FNU" secondAttribute="trailing" constant="20" id="lrs-qj-oYc"/>
                             <constraint firstItem="pI6-44-azk" firstAttribute="top" secondItem="4qo-Dz-NmY" secondAttribute="bottom" constant="25" id="qTz-Qd-L64"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="To-Do" image="check" id="TDP-1F-w2f"/>
+                    <tabBarItem key="tabBarItem" title="Transactions" image="check" id="TDP-1F-w2f"/>
                     <navigationItem key="navigationItem" id="bYi-hc-ca2"/>
                     <connections>
+                        <outlet property="clearAllButton" destination="lH6-CR-FNU" id="h8f-z1-HFB"/>
                         <outlet property="clearSegmentedControl" destination="4qo-Dz-NmY" id="SCb-58-Rpg"/>
                         <outlet property="collectionView" destination="aKx-hq-CTt" id="gEe-n0-Jqa"/>
                         <outlet property="instructionsLabel" destination="pI6-44-azk" id="fk8-Ns-rPP"/>
@@ -499,7 +511,7 @@ Swipe left to delete.</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6vE-1t-DWA">
-                                <rect key="frame" x="30" y="598" width="354" height="195"/>
+                                <rect key="frame" x="30" y="598" width="354" height="215"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="GPC-jA-PDI">
                                     <size key="itemSize" width="150" height="96"/>
@@ -609,7 +621,7 @@ Swipe left to delete.</string>
                             <constraint firstItem="wQZ-dM-HXg" firstAttribute="centerX" secondItem="HNh-df-3UJ" secondAttribute="centerX" id="STL-5O-251"/>
                             <constraint firstItem="6vE-1t-DWA" firstAttribute="leading" secondItem="Zao-fM-Hew" secondAttribute="leading" constant="30" id="X8y-Jq-kQZ"/>
                             <constraint firstItem="df4-27-p91" firstAttribute="leading" secondItem="Zao-fM-Hew" secondAttribute="leading" id="Xm1-Uh-rNP"/>
-                            <constraint firstItem="Zao-fM-Hew" firstAttribute="bottom" secondItem="6vE-1t-DWA" secondAttribute="bottom" constant="20" id="f7S-eS-hQU"/>
+                            <constraint firstItem="Zao-fM-Hew" firstAttribute="bottom" secondItem="6vE-1t-DWA" secondAttribute="bottom" id="f7S-eS-hQU"/>
                             <constraint firstItem="C0o-PF-DWT" firstAttribute="centerX" secondItem="HNh-df-3UJ" secondAttribute="centerX" id="hEs-9j-l90"/>
                             <constraint firstItem="6vE-1t-DWA" firstAttribute="top" secondItem="C0o-PF-DWT" secondAttribute="bottom" constant="10" id="wh2-p0-Jd3"/>
                         </constraints>
@@ -756,8 +768,9 @@ Swipe left to delete.</string>
                                     <constraint firstAttribute="height" constant="50" id="73e-SU-SNT"/>
                                     <constraint firstAttribute="width" constant="250" id="Wgw-I1-YTy"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" image="checkmark" catalog="system">
+                                <state key="normal" title="Save">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -818,7 +831,7 @@ Swipe left to delete.</string>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Description" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MSv-hq-MFe">
                                                 <rect key="frame" x="0.0" y="53" width="414" height="17"/>
-                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
+                                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -1153,23 +1166,9 @@ July 22, 2020</string>
                     <view key="view" contentMode="scaleToFill" id="y5E-aR-RVR">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="COl-gv-AG6">
-                                <rect key="frame" x="156" y="432" width="107" height="34"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="Retry Face ID"/>
-                                <connections>
-                                    <action selector="retryButtonPressed:" destination="jtK-OE-Bcm" eventType="touchUpInside" id="iQf-L3-cKv"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="ouH-c9-jfo"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <connections>
-                        <outlet property="retryButton" destination="COl-gv-AG6" id="KpV-Dh-cf9"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="p0r-jQ-PY2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1187,9 +1186,9 @@ July 22, 2020</string>
                     </tabBar>
                     <connections>
                         <segue destination="lzq-Md-EwE" kind="relationship" relationship="viewControllers" id="HOa-2j-kfI"/>
-                        <segue destination="MxZ-EK-IeB" kind="relationship" relationship="viewControllers" id="9Ha-gI-9Wq"/>
-                        <segue destination="rj2-Uc-oAv" kind="relationship" relationship="viewControllers" id="oIk-1a-hu0"/>
                         <segue destination="X9t-Dl-3Wk" kind="relationship" relationship="viewControllers" id="PgD-d5-B0x"/>
+                        <segue destination="rj2-Uc-oAv" kind="relationship" relationship="viewControllers" id="oIk-1a-hu0"/>
+                        <segue destination="MxZ-EK-IeB" kind="relationship" relationship="viewControllers" id="9Ha-gI-9Wq"/>
                         <segue destination="gi7-tU-BE3" kind="relationship" relationship="viewControllers" id="3jc-Mm-naS"/>
                     </connections>
                 </tabBarController>
@@ -1456,10 +1455,10 @@ July 22, 2020</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KX-qs-rDZ">
-                                                    <rect key="frame" x="346" y="147" width="40" height="35"/>
+                                                    <rect key="frame" x="346" y="142" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="P3T-Zj-qBg"/>
-                                                        <constraint firstAttribute="height" constant="35" id="Uc7-Mc-2e6"/>
+                                                        <constraint firstAttribute="height" constant="40" id="Uc7-Mc-2e6"/>
                                                     </constraints>
                                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                     <state key="normal" image="chevron.right" catalog="system"/>
@@ -1468,10 +1467,10 @@ July 22, 2020</string>
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qM0-Lg-Bh5">
-                                                    <rect key="frame" x="28" y="147" width="40" height="35"/>
+                                                    <rect key="frame" x="28" y="142" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="CFH-o0-BeN"/>
-                                                        <constraint firstAttribute="height" constant="35" id="eC1-dU-wWe"/>
+                                                        <constraint firstAttribute="height" constant="40" id="eC1-dU-wWe"/>
                                                     </constraints>
                                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                     <state key="normal" image="chevron.left" catalog="system"/>
@@ -1554,7 +1553,6 @@ July 22, 2020</string>
         <image name="chart.bar.xaxis" catalog="system" width="128" height="98"/>
         <image name="chart.pie.fill" catalog="system" width="128" height="121"/>
         <image name="check" width="25" height="25"/>
-        <image name="checkmark" catalog="system" width="128" height="114"/>
         <image name="chevron.left" catalog="system" width="96" height="128"/>
         <image name="chevron.right" catalog="system" width="96" height="128"/>
         <image name="ellipsis.circle.fill" catalog="system" width="128" height="121"/>

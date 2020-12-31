@@ -30,7 +30,11 @@ class StartingBalanceVC: UIViewController {
     
     private let amountFieldAccessory: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = .systemGray4
+        if #available(iOS 13, *) {
+            view.backgroundColor = .systemGray4
+        } else {
+            view.backgroundColor = .systemGray
+        }
         view.alpha = 0.8
         return view
     }()
@@ -38,7 +42,11 @@ class StartingBalanceVC: UIViewController {
     private let doneButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Done", for: .normal)
-        button.setTitleColor(UIColor.link, for: .normal)
+        if #available(iOS 13.0, *) {
+            button.setTitleColor(UIColor.link, for: .normal)
+        } else {
+//            button.setTitle(UIColor(rgb: SystemColors.shared.blue), for: .normal)
+        }
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         button.showsTouchWhenHighlighted = true
         return button
@@ -73,6 +81,7 @@ class StartingBalanceVC: UIViewController {
     }
     
     private func configureUI() {
+        
         setBalanceButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
         setBalanceButton.roundCorners()
         
@@ -157,8 +166,8 @@ class StartingBalanceVC: UIViewController {
     
     @objc private func doneButtonTapped() {
         amountTextField.resignFirstResponder()
-        dateAndAmountLabel.text = startingBalanceDate.toString(style: .long)
-        amountTextField.text = startingBalanceAmount.toCurrency()
+//        amountTextField.text = startingBalanceAmount.toCurrency()
+
     }
     
     @IBAction func dismissButtonPressed(_ sender: UIButton) {
@@ -193,16 +202,24 @@ extension StartingBalanceVC: FSCalendarDelegate, FSCalendarDataSource, FSCalenda
 //MARK: - TextField Delegate
 extension StartingBalanceVC: UITextFieldDelegate {
     
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+//    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         
-        startingBalanceAmount = textField.text!.toDouble()
-        return true
+//        startingBalanceAmount = textField.text!.toDouble()
+//        return true
         
-    }
+//    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        print("End Editing")
+        dateAndAmountLabel.text = startingBalanceDate.toString(style: .long)
+        startingBalanceAmount = textField.text!.toDouble()
         amountTextField.text = startingBalanceAmount.toCurrency()
 
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        amountTextField.text = ""
+        return true
     }
 
     

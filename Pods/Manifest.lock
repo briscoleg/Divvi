@@ -16,7 +16,7 @@ DEPENDENCIES:
   - FSCalendar
   - RealmSwift
   - SwiftDate
-  - SwipeCellKit
+  - SwipeCellKit (from `https://github.com/SwipeCellKit/SwipeCellKit.git`, branch `master`)
 
 SPEC REPOS:
   trunk:
@@ -25,7 +25,16 @@ SPEC REPOS:
     - Realm
     - RealmSwift
     - SwiftDate
-    - SwipeCellKit
+
+EXTERNAL SOURCES:
+  SwipeCellKit:
+    :branch: master
+    :git: https://github.com/SwipeCellKit/SwipeCellKit.git
+
+CHECKOUT OPTIONS:
+  SwipeCellKit:
+    :commit: 7219cad3098637176ace311510d11467dbfb9bb0
+    :git: https://github.com/SwipeCellKit/SwipeCellKit.git
 
 SPEC CHECKSUMS:
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
@@ -35,6 +44,6 @@ SPEC CHECKSUMS:
   SwiftDate: ec6c0e173627a3ae6dd1671888a7f175956ebb94
   SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: 6c1068778b1faa53aa64e7df2bcc60bd1651d18d
+PODFILE CHECKSUM: fef87e1f3aeeb2008a8f372dd14498d315981194
 
 COCOAPODS: 1.10.0

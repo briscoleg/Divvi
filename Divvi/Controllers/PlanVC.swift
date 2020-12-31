@@ -29,8 +29,6 @@ class PlanVC: UIViewController {
 
     }
     
-    
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
@@ -52,9 +50,7 @@ class PlanVC: UIViewController {
         
         setCollectionViewLayout()
         configureObservers()
-        
-//        navigationController?.setNavigationBarHidden(true, animated: true)
-        
+                
     }
     
     //MARK: -  Methods
@@ -152,7 +148,9 @@ extension PlanVC: UICollectionViewDataSource {
         
         let plannedTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
                 
-        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && isCleared == true", categories[indexPath.row])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+//        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && isCleared == true", categories[indexPath.row])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+        
+        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && transactionDate <= %@", categories[indexPath.row], Date() as CVarArg)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
         
         let plannedToSpentRatio = spentTotal / plannedTotal
         
@@ -187,11 +185,12 @@ extension PlanVC: UICollectionViewDataSource {
         
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: BudgetHeader.identifier, for: indexPath) as? BudgetHeader else { fatalError("Invalid view type") }
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: BudgetHeader.identifier, for: indexPath) as? BudgetHeader else { return UICollectionReusableView() }
             return headerView
         default:
             assert(false, "Invalid element type")
         }
+        return UICollectionReusableView()
     }
 }
 

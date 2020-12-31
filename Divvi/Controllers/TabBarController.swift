@@ -25,7 +25,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
         
         self.delegate = self
-        
+
 //        summaryVC = SummaryVC()
 //        budgetVC = Budget2VC()
         addTransactionVC = AddTransactionVC()

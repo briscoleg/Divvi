@@ -30,12 +30,15 @@ class AddTransactionVC: UIViewController {
     let realm = try! Realm()
     var transaction: Transaction?
     var categoryPicked: Category?
+    
+    lazy var allTransactions: Results<Transaction> = {realm.objects(Transaction.self)}()
+    lazy var unclearedTransactionsToDate: Results<Transaction> = { allTransactions.filter("transactionDate <= %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
    
 //    var subcategoryPicked: SubCategory?
     
     //Default transaction values
     var amount = 0.0
-    var datePicked = Date()
+    var datePicked = Date().localDate().removeTime!
     var repeatInterval = "Never"
     var isExpense = true
     var newTransaction = true
@@ -88,7 +91,8 @@ class AddTransactionVC: UIViewController {
     let accessorySaveButton: UIButton = {
         
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        button.setTitle("Save", for: .normal)
+        button.setTitleColor(.link, for: .normal)
         button.addTarget(self, action: #selector(accessorySaveButtonTapped), for: .touchUpInside)
 //        button.tintColor = UIColor(rgb: SystemColors.shared.blue)
         button.showsTouchWhenHighlighted = true
@@ -122,6 +126,8 @@ class AddTransactionVC: UIViewController {
         setTitle()
         setCategoryNameAndColor()
         
+        print(datePicked)
+                
         //Add keyboard accessories
 //        addAmountFieldAccessory()
 //        addDescriptionFieldAccessory()
@@ -152,7 +158,7 @@ class AddTransactionVC: UIViewController {
         }
         
     }
-    
+      
     private func setAmountTextfieldColor() {
         
         if categoryPicked?.categoryName == "Income" {
@@ -214,11 +220,7 @@ class AddTransactionVC: UIViewController {
             break
         }
     }
-    @objc func objcSaveTransaction() {
-        
-        saveTransaction()
 
-    }
     private func saveEdit() {
         
         do {
@@ -269,6 +271,7 @@ class AddTransactionVC: UIViewController {
                 newTransaction.transactionAmount = amountTextField.text!.toDouble()
                 newTransaction.transactionDescription = descriptionTextField.text
                 newTransaction.transactionDate = datePicked
+                print(newTransaction.transactionDate)
                 newTransaction.transactionCategory = categoryPicked
                 newTransaction.repeatInterval = repeatInterval
                 newTransaction.transactionName = transactionName
@@ -302,6 +305,7 @@ class AddTransactionVC: UIViewController {
             
         }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
+        
         dismiss(animated: true, completion: nil)
         
     }
@@ -370,7 +374,7 @@ class AddTransactionVC: UIViewController {
         NSLayoutConstraint.activate([
             
             keyboardDismissButton.leadingAnchor.constraint(equalTo:
-                                                            amountFieldAccessory.leadingAnchor, constant: 30),
+                                                            amountFieldAccessory.leadingAnchor, constant: 40),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
                                                             amountFieldAccessory.centerYAnchor),
             plusMinusButton.centerXAnchor.constraint(equalTo:
@@ -378,7 +382,7 @@ class AddTransactionVC: UIViewController {
             plusMinusButton.centerYAnchor.constraint(equalTo:
                                                         amountFieldAccessory.centerYAnchor),
             
-            categoryAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -30),
+            categoryAccessoryButton.trailingAnchor.constraint(equalTo: amountFieldAccessory.trailingAnchor, constant: -40),
             categoryAccessoryButton.centerYAnchor.constraint(equalTo: amountFieldAccessory.centerYAnchor),
             
         ])
@@ -437,7 +441,7 @@ class AddTransactionVC: UIViewController {
         NSLayoutConstraint.activate([
 
             keyboardDismissButton.leadingAnchor.constraint(equalTo:
-                                                            descriptionFieldAccessory.leadingAnchor, constant: 30),
+                                                            descriptionFieldAccessory.leadingAnchor, constant: 40),
             keyboardDismissButton.centerYAnchor.constraint(equalTo:
                                                             descriptionFieldAccessory.centerYAnchor),
 
@@ -446,13 +450,20 @@ class AddTransactionVC: UIViewController {
             chooseDateButton.centerYAnchor.constraint(equalTo:
                                                         descriptionFieldAccessory.centerYAnchor),
 
-            accessorySaveButton.trailingAnchor.constraint(equalTo: descriptionFieldAccessory.trailingAnchor, constant: -30),
+            accessorySaveButton.trailingAnchor.constraint(equalTo: descriptionFieldAccessory.trailingAnchor, constant: -40),
             accessorySaveButton.centerYAnchor.constraint(equalTo: descriptionFieldAccessory.centerYAnchor),
 
         ])
     }
     
     //MARK: - IBActions
+    
+    
+    @objc func objcSaveTransaction() {
+        
+        saveTransaction()
+
+    }
     
     @objc private func chooseDateTapped() {
         if let calendarVC = storyboard?.instantiateViewController(withIdentifier: CalendarVC.identifier) as? CalendarVC {
@@ -498,6 +509,7 @@ class AddTransactionVC: UIViewController {
         if let calendarVC = storyboard?.instantiateViewController(withIdentifier: CalendarVC.identifier) as? CalendarVC {
             
             calendarVC.dateDelegate = self
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
             present(calendarVC, animated: true, completion: nil)
         }
     }

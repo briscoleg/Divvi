@@ -196,6 +196,8 @@ extension SubVC: UICollectionViewDelegate {
         default:
             assert(false, "Invalid element type")
         }
+        return UICollectionReusableView()
+
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

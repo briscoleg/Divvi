@@ -9,6 +9,7 @@
 import UIKit
 
 class Passcode: UIView, UITextInputTraits {
+    
     var keyboardType: UIKeyboardType = .numberPad
 
     var didFinishedEnterCode:((String)-> Void)?
@@ -17,7 +18,7 @@ class Passcode: UIView, UITextInputTraits {
         didSet {
             updateStack(by: code)
             if code.count == maxLength, let didFinishedEnterCode = didFinishedEnterCode {
-                self.resignFirstResponder()
+//                self.resignFirstResponder()
                 didFinishedEnterCode(code)
             }
         }
@@ -61,16 +62,13 @@ extension Passcode: UIKeyInput {
             return
         }
         code.append(contentsOf: text)
-        print(code)
     }
     
     func deleteBackward() {
         if hasText {
             code.removeLast()
         }
-        print(code)
     }
-    
 }
 
 extension Passcode {
@@ -80,10 +78,10 @@ extension Passcode {
         stack.backgroundColor = .systemBackground
         stack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            stack.topAnchor.constraint(equalTo: self.topAnchor),
-            stack.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stack.topAnchor.constraint(equalTo: topAnchor),
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor)
             ])
         stack.axis = .horizontal
         stack.distribution = .fillEqually
@@ -92,7 +90,8 @@ extension Passcode {
     
     private func emptyPin() -> UIView {
         let pin = Pin()
-        pin.pin.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        pin.pin.backgroundColor = UIColor.label.withAlphaComponent(0.4)
+//            UIColor.black.withAlphaComponent(0.4)
         return pin
     }
     
@@ -102,7 +101,7 @@ extension Passcode {
         return pin
     }
     
-    private func updateStack(by code: String) {
+    func updateStack(by code: String) {
         var emptyPins:[UIView] = Array(0..<maxLength).map{_ in emptyPin()}
         let userPinLength = code.count
         let pins:[UIView] = Array(0..<userPinLength).map{_ in pin()}

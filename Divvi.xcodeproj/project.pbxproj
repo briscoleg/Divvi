@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B2FD890F400818F726E753A2 /* Pods_Divvi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A31A1A9EF33660B43A3BA0C9 /* Pods_Divvi.framework */; };
+		40901A512589BE86AAA66C35 /* Pods_Divvi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3670CE4CCB5BB2305C795C6C /* Pods_Divvi.framework */; };
 		C00D932424EF042D00B4C236 /* BudgetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00D932324EF042D00B4C236 /* BudgetHeader.swift */; };
 		C00DC92C250ACBA5008B12CD /* SelectedMonth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00DC92B250ACBA5008B12CD /* SelectedMonth.swift */; };
 		C01D65A2251BD7F80040E972 /* DayAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01D65A1251BD7F80040E972 /* DayAxisValueFormatter.swift */; };
@@ -39,12 +39,15 @@
 		C0EA444B24CF571300D1A92E /* SubCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EA444A24CF571300D1A92E /* SubCell.swift */; };
 		C0EE9D1A24FC3573006DEB21 /* SubHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EE9D1924FC3573006DEB21 /* SubHeaderView.swift */; };
 		C0F7CFA424E495A900D55D9D /* CalendarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F7CFA324E495A900D55D9D /* CalendarVC.swift */; };
+		C76F75E7258A678E0088C5D5 /* BiometricExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76F75E6258A678E0088C5D5 /* BiometricExtension.swift */; };
+		C771F49C257FDF1A002F3BA1 /* TransactionDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = C771F49B257FDF1A002F3BA1 /* TransactionDay.swift */; };
 		C773DABD25604F010084A848 /* StartingBalanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C773DABC25604F010084A848 /* StartingBalanceVC.swift */; };
 		C773DAC1256080920084A848 /* StartingBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C773DAC0256080920084A848 /* StartingBalance.swift */; };
 		C7889C8C25437B5F00C41154 /* CategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7889C8B25437B5F00C41154 /* CategoryVC.swift */; };
 		C7C6814625630E9E008AF535 /* AboutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C6814525630E9E008AF535 /* AboutVC.swift */; };
 		C7C9D6DF2548A03200E435FC /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C9D6DE2548A03200E435FC /* SettingsVC.swift */; };
 		C7E821C12548A74A00F32F31 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E821C02548A74A00F32F31 /* SettingsCell.swift */; };
+		C7E959DE258D494000D656D4 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7E9D579255756E000538A06 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9D578255756E000538A06 /* SettingsItem.swift */; };
 		C7ED6DB6255F05F8005431EF /* CustomHorizontalProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED6DB5255F05F8005431EF /* CustomHorizontalProgressBar.swift */; };
 		C7F54623257D7E2200C200C0 /* PasscodeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54622257D7E2200C200C0 /* PasscodeVC.swift */; };
@@ -52,10 +55,23 @@
 		C7F5462A257D845D00C200C0 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54629257D845D00C200C0 /* Pin.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C7E959DF258D494000D656D4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C7E959DE258D494000D656D4 /* (null) in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		3766506E91DF05F0561CCB24 /* Pods-Divvi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Divvi.debug.xcconfig"; path = "Target Support Files/Pods-Divvi/Pods-Divvi.debug.xcconfig"; sourceTree = "<group>"; };
-		A31A1A9EF33660B43A3BA0C9 /* Pods_Divvi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Divvi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B45DC3D343F5DD62E1B83ABC /* Pods-Divvi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Divvi.release.xcconfig"; path = "Target Support Files/Pods-Divvi/Pods-Divvi.release.xcconfig"; sourceTree = "<group>"; };
+		065EB338C7E289AA722F7958 /* Pods-Divvi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Divvi.release.xcconfig"; path = "Target Support Files/Pods-Divvi/Pods-Divvi.release.xcconfig"; sourceTree = "<group>"; };
+		3670CE4CCB5BB2305C795C6C /* Pods_Divvi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Divvi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C00D932324EF042D00B4C236 /* BudgetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetHeader.swift; sourceTree = "<group>"; };
 		C00DC92B250ACBA5008B12CD /* SelectedMonth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedMonth.swift; sourceTree = "<group>"; };
 		C01D65A1251BD7F80040E972 /* DayAxisValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayAxisValueFormatter.swift; sourceTree = "<group>"; };
@@ -89,6 +105,8 @@
 		C0EA444A24CF571300D1A92E /* SubCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCell.swift; sourceTree = "<group>"; };
 		C0EE9D1924FC3573006DEB21 /* SubHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubHeaderView.swift; sourceTree = "<group>"; };
 		C0F7CFA324E495A900D55D9D /* CalendarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarVC.swift; sourceTree = "<group>"; };
+		C76F75E6258A678E0088C5D5 /* BiometricExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricExtension.swift; sourceTree = "<group>"; };
+		C771F49B257FDF1A002F3BA1 /* TransactionDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDay.swift; sourceTree = "<group>"; };
 		C773DABC25604F010084A848 /* StartingBalanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartingBalanceVC.swift; sourceTree = "<group>"; };
 		C773DAC0256080920084A848 /* StartingBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartingBalance.swift; sourceTree = "<group>"; };
 		C7889C8B25437B5F00C41154 /* CategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryVC.swift; sourceTree = "<group>"; };
@@ -100,6 +118,7 @@
 		C7F54622257D7E2200C200C0 /* PasscodeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasscodeVC.swift; sourceTree = "<group>"; };
 		C7F54625257D7E8F00C200C0 /* Passcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passcode.swift; sourceTree = "<group>"; };
 		C7F54629257D845D00C200C0 /* Pin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
+		DF8D377B066526E907130028 /* Pods-Divvi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Divvi.debug.xcconfig"; path = "Target Support Files/Pods-Divvi/Pods-Divvi.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,18 +126,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2FD890F400818F726E753A2 /* Pods_Divvi.framework in Frameworks */,
+				40901A512589BE86AAA66C35 /* Pods_Divvi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6783867162ED1AD121FDBE3B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3670CE4CCB5BB2305C795C6C /* Pods_Divvi.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9ADA34B4E0CAFBCD34A3F757 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3766506E91DF05F0561CCB24 /* Pods-Divvi.debug.xcconfig */,
-				B45DC3D343F5DD62E1B83ABC /* Pods-Divvi.release.xcconfig */,
+				DF8D377B066526E907130028 /* Pods-Divvi.debug.xcconfig */,
+				065EB338C7E289AA722F7958 /* Pods-Divvi.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -176,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				C08A028624A3C4980056F355 /* Transaction.swift */,
+				C771F49B257FDF1A002F3BA1 /* TransactionDay.swift */,
 				C773DAC0256080920084A848 /* StartingBalance.swift */,
 				C0D56C9624D9EBCF00AD1D8E /* Category.swift */,
 				C00DC92B250ACBA5008B12CD /* SelectedMonth.swift */,
@@ -186,6 +214,7 @@
 				C7E9D578255756E000538A06 /* SettingsItem.swift */,
 				C7F54625257D7E8F00C200C0 /* Passcode.swift */,
 				C7F54629257D845D00C200C0 /* Pin.swift */,
+				C76F75E6258A678E0088C5D5 /* BiometricExtension.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -196,7 +225,8 @@
 				C0DB5FF924A160D900008F89 /* Divvi */,
 				C0DB5FF824A160D900008F89 /* Products */,
 				9ADA34B4E0CAFBCD34A3F757 /* Pods */,
-				CA25290B0FA0772476E56D6B /* Frameworks */,
+				C78578CA258D4C9200BC46C2 /* Recovered References */,
+				6783867162ED1AD121FDBE3B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -223,12 +253,11 @@
 			path = Divvi;
 			sourceTree = "<group>";
 		};
-		CA25290B0FA0772476E56D6B /* Frameworks */ = {
+		C78578CA258D4C9200BC46C2 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				A31A1A9EF33660B43A3BA0C9 /* Pods_Divvi.framework */,
 			);
-			name = Frameworks;
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -238,11 +267,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C0DB600B24A160DB00008F89 /* Build configuration list for PBXNativeTarget "Divvi" */;
 			buildPhases = (
-				78AD5F7519EBAA07E243EE22 /* [CP] Check Pods Manifest.lock */,
+				2E8C1B81B8F13D1F40DDCBE6 /* [CP] Check Pods Manifest.lock */,
 				C0DB5FF324A160D900008F89 /* Sources */,
 				C0DB5FF424A160D900008F89 /* Frameworks */,
 				C0DB5FF524A160D900008F89 /* Resources */,
-				A0867A8154128753EA6B45E9 /* [CP] Embed Pods Frameworks */,
+				C7E959DF258D494000D656D4 /* Embed Frameworks */,
+				B49FDD804ECE0FFC20CD9AC0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -300,7 +330,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		78AD5F7519EBAA07E243EE22 /* [CP] Check Pods Manifest.lock */ = {
+		2E8C1B81B8F13D1F40DDCBE6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -322,7 +352,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A0867A8154128753EA6B45E9 /* [CP] Embed Pods Frameworks */ = {
+		B49FDD804ECE0FFC20CD9AC0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -373,11 +403,13 @@
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
 				C097B53624F8742C00EEB0AF /* ColorPickerView.swift in Sources */,
 				C047132324EF2DFC00A7F39F /* SideBarCell.swift in Sources */,
+				C771F49C257FDF1A002F3BA1 /* TransactionDay.swift in Sources */,
 				C7ED6DB6255F05F8005431EF /* CustomHorizontalProgressBar.swift in Sources */,
 				C7F54626257D7E8F00C200C0 /* Passcode.swift in Sources */,
 				C092D3F624CB5D7A0006B050 /* TaskVC.swift in Sources */,
 				C097B53424F85D4000EEB0AF /* ChartsVC.swift in Sources */,
 				C061FF8025000A7500920E60 /* TabBarController.swift in Sources */,
+				C76F75E7258A678E0088C5D5 /* BiometricExtension.swift in Sources */,
 				C0EA444924CF568A00D1A92E /* SubVC.swift in Sources */,
 				C092D3F424CB5C280006B050 /* TaskCell.swift in Sources */,
 				C00DC92C250ACBA5008B12CD /* SelectedMonth.swift in Sources */,
@@ -414,6 +446,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					x86_64,
+					arm64,
+				);
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -447,6 +484,8 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				FRAMEWORK_SEARCH_PATHS = "${TARGET_BUILD_DIR}/RealmSwift.framework";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "${TARGET_BUILD_DIR}/Realm";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -461,7 +500,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -476,6 +515,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					x86_64,
+					arm64,
+				);
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -508,6 +552,12 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"(recursive)\n$(PROJECT_DIR)/build/Debug-iphoneos",
+					"(non-recursive)\n$(SRCROOT)",
+					"(recursive)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -516,7 +566,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -530,48 +580,78 @@
 		};
 		C0DB600C24A160DB00008F89 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3766506E91DF05F0561CCB24 /* Pods-Divvi.debug.xcconfig */;
+			baseConfigurationReference = DF8D377B066526E907130028 /* Pods-Divvi.debug.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					x86_64,
+					arm64,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Z4DLPBM8Q9;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				EXCLUDED_ARCHS = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"(recursive)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Charts\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/FSCalendar\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftDate\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwipeCellKit\"",
+					"\"${PODS_ROOT}/Realm/core\"",
+				);
 				INFOPLIST_FILE = Divvi/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.01;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.briscoleg.Divvi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		C0DB600D24A160DB00008F89 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B45DC3D343F5DD62E1B83ABC /* Pods-Divvi.release.xcconfig */;
+			baseConfigurationReference = 065EB338C7E289AA722F7958 /* Pods-Divvi.release.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					x86_64,
+					arm64,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Z4DLPBM8Q9;
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = Divvi/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.01;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.briscoleg.Divvi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

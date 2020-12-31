@@ -11,6 +11,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    let userDefaults = UserDefaults()
+
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -18,6 +20,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        
+        if userDefaults.value(forKey: "faceIDEnabled") == nil {
+            userDefaults.setValue(false, forKey: "faceIDEnabled")
+        }
+        
+        if userDefaults.value(forKey: "passcodeEnabled") == nil {
+            userDefaults.setValue(false, forKey: "passcodeEnabled")
+        }
+        
+//        if userDefaults.value(forKey: "passcode") == nil {
+//            userDefaults.setValue("1233", forKey: "passcode")
+//        }
+                
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -37,14 +53,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         
-        if window?.rootViewController is PasscodeVC {
-        } else {
-            let mainStoryboardIpad : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let passcodeVC : UIViewController = mainStoryboardIpad.instantiateViewController(withIdentifier: PasscodeVC.identifier)
+        if userDefaults.value(forKey: "faceIDEnabled") as! Bool || userDefaults.value(forKey: "passcodeEnabled") as! Bool {
+            let mainStoryboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let passcodeVC : UIViewController = mainStoryboard.instantiateViewController(withIdentifier: PasscodeVC.identifier)
             window?.rootViewController = passcodeVC
             window?.makeKeyAndVisible()
-            
         }
+        
+//        if window?.rootViewController is PasscodeVC {
+//        } else {
+//
+//
+//        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

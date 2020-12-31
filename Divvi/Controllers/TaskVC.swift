@@ -22,13 +22,15 @@ class TaskVC: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var instructionsLabel: UILabel!
     @IBOutlet weak var clearSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var clearAllButton: UIButton!
     
     //MARK: - Properties
     let realm = try! Realm()
     lazy var allTransactions: Results<Transaction> = {realm.objects(Transaction.self)}()
     lazy var postedTransactions: Results<Transaction> = { realm.objects(Transaction.self).sorted(byKeyPath: "transactionDate", ascending: false).filter("isCleared == %@", true) }()
-    lazy var unpostedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date().advanced(by: 10000)).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
-    lazy var futureTransactions: Results<Transaction> = { realm.objects(Transaction.self).filter("transactionDate > %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    lazy var unpostedTransactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter("transactionDate <= %@", Date().localDate().removeTime!).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    lazy var futureTransactions: Results<Transaction> = { realm.objects(Transaction.self).filter("transactionDate > %@", Date().localDate().removeTime!).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    lazy var unclearedTransactionsToDate: Results<Transaction> = { allTransactions.filter("transactionDate <= %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
     var transactionView = TransactionView.toDo
     
     //MARK: - ViewDidLoad
@@ -38,22 +40,42 @@ class TaskVC: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        
         updateInstructionsLabel()
         configureCollectionViewLayout()
         configureObservers()
         
+        showBadgeForUnclearedTransactions()
+        
+        configureUI()
+        
     }
     
     //MARK: - Methods
+    
+    private func configureUI() {
+        clearAllButton.setTitleColor(UIColor(rgb: SystemColors.shared.blue), for: .normal)
+    }
     private func configureObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "categoryAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionAdded"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionDeleted"), object: nil)
     }
     
+    func showBadgeForUnclearedTransactions() {
+        
+        if unclearedTransactionsToDate.count > 0 {
+            tabBarController!.tabBar.items![3].badgeValue = "1"
+        } else {
+            tabBarController!.tabBar.items![3].badgeValue = nil
+        }
+        
+    }
+    
     @objc func refresh() {
         collectionView.reloadData()
         updateInstructionsLabel()
+        showBadgeForUnclearedTransactions()
         
     }
     
@@ -69,17 +91,22 @@ class TaskVC: UIViewController {
         case .toDo:
             if allTransactions.count == 0 {
                 instructionsLabel.text = "No transactions yet.\n\nCheck back\nafter adding transactions."
+                clearAllButton.isHidden = true
             } else if unpostedTransactions.count > 0 {
                 instructionsLabel.text = "Swipe right to clear transactions.\n\nTap to edit."
-                tabBarController!.tabBar.items![1].badgeValue = "1"
+                tabBarController!.tabBar.items![3].badgeValue = "1"
+                clearAllButton.isHidden = false
             } else {
-                instructionsLabel.text = "All done! 🙌\n\nCheck back later\nor add transactions."
-                tabBarController!.tabBar.items![1].badgeValue = nil
+                instructionsLabel.text = "All done!\n\nCheck back later\nor add transactions."
+                tabBarController!.tabBar.items![3].badgeValue = nil
+                clearAllButton.isHidden = true
             }
         case .posted:
             instructionsLabel.text = ""
+            clearAllButton.isHidden = true
         case .future:
             instructionsLabel.text = ""
+            clearAllButton.isHidden = true
             
         }
     }
@@ -107,6 +134,24 @@ class TaskVC: UIViewController {
     
     
     //MARK: - IBActions
+    
+    @IBAction func clearAllButtonPressed(_ sender: UIButton) {
+        
+        
+        
+        do {
+            try realm.write {
+                for transaction in unpostedTransactions {
+                    transaction.isCleared = true
+                }
+            }
+        } catch {
+            print("Error clearing transactions \(error)")
+        }
+        
+        updateInstructionsLabel()
+        collectionView.reloadData()
+    }
     @IBAction func unclearedSegmentedControlSwitched(_ sender: UISegmentedControl) {
         
         switch clearSegmentedControl.selectedSegmentIndex {
@@ -165,13 +210,17 @@ extension TaskVC: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
+    private func swipeCells(_ cell: TaskCell) {
+        cell.showSwipe(orientation: .left)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TaskCell.reuseIdentifier, for: indexPath) as? TaskCell else { return UICollectionViewCell() }
         
         //SwipeCell Delegate
         cell.delegate = self
-        
+        swipeCells(cell)
         var transactionResults: Results<Transaction>
         
         switch transactionView {
@@ -234,7 +283,7 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
         if orientation == .right {
             options.expansionStyle = .destructiveAfterFill
             options.transitionStyle = .drag
-        } else {
+        } else if orientation == .left {
             options.expansionStyle = .destructiveAfterFill
             options.transitionStyle = .drag
         }
@@ -243,9 +292,10 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, editActionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-        
-        
+                
         if orientation == .left && transactionView != .future {
+
+            print("Swipe Left")
             
             var actionTitle = ""
             
@@ -271,6 +321,7 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
                     transactionToEdit[indexPath.item].isCleared = !transactionToEdit[indexPath.item].isCleared
                 }
                 
+                
                 updateInstructionsLabel()
                 
                 action.fulfill(with: .reset)
@@ -290,6 +341,9 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
             return [clearAction]
         } else if orientation == .right {
             
+            print("Swipe Right")
+
+            
             let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (action, indexPath) in
                 
                 switch self.transactionView {
@@ -297,6 +351,8 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
                     do {
                         try self.realm.write {
                             self.realm.delete(self.unpostedTransactions[indexPath.item])
+//                        try self.realm.write {
+//                            self.unpostedTransactions[indexPath.item].isCleared = !self.unpostedTransactions[indexPath.item].isCleared
                         }
                     } catch {
                         print("Error deleting unposted transaction: \(error)")
@@ -331,9 +387,7 @@ extension TaskVC: SwipeCollectionViewCellDelegate {
         } else {
             return nil
         }
-        
     }
-    
 }
 
 extension TaskVC: UICollectionViewDelegateFlowLayout {

@@ -34,12 +34,12 @@ class BudgetHeader: UICollectionReusableView {
     
     var category: Category?
     
-//    var selectedDate = Date()
     let formatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         return formatter
     }()
+    
     var graphCenterText = ""
     
     override func layoutSubviews() {
@@ -48,14 +48,35 @@ class BudgetHeader: UICollectionReusableView {
         configureLayout()
         
         updateMonthYearLabel()
+        
+//        configureCircularGraph()
 
 
     }
     
+    private func configureCircularGraph() {
+    
+        let graph = CircularGraph()
+        graph.frame = CGRect(x: 0, y: 0, width: frame.size.width / 4, height: frame.size.width / 4)
+        graph.progressLayerStrokeColor = UIColor(rgb: SystemColors.shared.red)
+        graph.trackLayerStrokeColor = UIColor(rgb: SystemColors.shared.green)
+        
+        graph.animateProgress(duration: 0.5, value: 0.5)
+        
+        addSubview(graph)
+        
+        graph.center.x = center.x
+        graph.center.y = center.y - 30
+    
+    }
+    
     private func configureLayout() {
         
-        leftButton.layer.cornerRadius = 10
-        rightButton.layer.cornerRadius = 10
+//        leftButton.layer.cornerRadius = 10
+//        rightButton.layer.cornerRadius = 10
+        
+        leftButton.makeCircular()
+        rightButton.makeCircular()
 
         leftButton.tintColor = .white
         leftButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)

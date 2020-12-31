@@ -42,21 +42,24 @@ class CalendarVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupDelegates()
         setCalendarScrollDirection()
         configureUI()
-        configureDelegates()
 
     }
     
-    private func configureDelegates() {
+    private func setupDelegates() {
         
         calendar.delegate = self
+        calendar.dataSource = self
         picker.delegate = self
         picker.dataSource = self
         
     }
     
     private func configureUI() {
+        
+        calendar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4).isActive = true
         
         chooseButton.roundCorners()
         repeatLabel.text = "Repeats:"
@@ -145,22 +148,28 @@ extension CalendarVC: FSCalendarDataSource, FSCalendarDelegate, FSCalendarDelega
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+        
         return [UIColor(rgb: SystemColors.shared.blue)]
+        
     }
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {
                 
         calendar.appearance.todayColor = UIColor(rgb: SystemColors.shared.yellow)
-        
         calendar.appearance.selectionColor = UIColor(rgb: SystemColors.shared.blue)
-        
         calendar.appearance.weekdayTextColor = UIColor(rgb: SystemColors.shared.blue)
         calendar.appearance.headerTitleColor = UIColor(rgb: SystemColors.shared.blue)
         
     }
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
-        return .label
+        
+        if #available(iOS 13.0, *) {
+            return .label
+        } else {
+            return .black
+        }
+        
     }
     
     
@@ -177,20 +186,27 @@ extension CalendarVC: FSCalendarDataSource, FSCalendarDelegate, FSCalendarDelega
 //MARK: - Picker Delegate & DataSource
 extension CalendarVC: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        
         return 1
+        
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        
         return RepeatInterval.allCases.count
+        
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
         repeatLabel.text = "Repeats: \(RepeatInterval.allCases[row].rawValue)"
         intervalPicked = RepeatInterval.allCases[row].rawValue
-        print(intervalPicked)
+        
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        
         return RepeatInterval.allCases[row].rawValue
+        
     }
 }

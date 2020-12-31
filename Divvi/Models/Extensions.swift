@@ -502,7 +502,27 @@ extension NSPredicate {
         
         return NSPredicate(format: "date >= %@ && date =< %@", argumentArray: [startDate!, endDate!])
     }
+    
 }
+
+extension Date{
+
+func makeDayPredicate() -> NSPredicate {
+    let calendar = Calendar.current
+    var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self)
+    components.hour = 00
+    components.minute = 00
+    components.second = 00
+    let startDate = calendar.date(from: components)
+    components.hour = 23
+    components.minute = 59
+    components.second = 59
+    let endDate = calendar.date(from: components)
+    return NSPredicate(format: "transactionDate >= %@ AND transactionDate =< %@", argumentArray: [startDate!, endDate!])
+}
+}
+
+
 
 extension UINavigationController {
 
@@ -532,3 +552,65 @@ override open var supportedInterfaceOrientations: UIInterfaceOrientationMask{
         return super.supportedInterfaceOrientations
     }
 }}
+
+extension UIView {
+    func shake() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+        animation.duration = 0.6
+        animation.values = [-20.0, 20.0, -20.0, 20.0, -10.0, 10.0, -5.0, 5.0, 0.0 ]
+        layer.add(animation, forKey: "shake")
+    }
+}
+
+extension Date {
+    func localDate() -> Date {
+        let nowUTC = Date()
+        let timeZoneOffset = Double(TimeZone.current.secondsFromGMT(for: nowUTC))
+        guard let localDate = Calendar.current.date(byAdding: .second, value: Int(timeZoneOffset), to: nowUTC) else {return Date()}
+
+        return localDate
+    }
+    
+    func removeTimeStamp(fromDate: Date) -> Date {
+        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: fromDate)) else {
+            fatalError("Failed to strip time from Date object")
+        }
+        return date
+    }
+}
+
+extension Date {
+    public var removeTime : Date? {
+       guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: self)) else {
+        return nil
+       }
+       return date
+   }
+   
+}
+
+extension Date {
+    var startOfDay: Date {
+        return Calendar.current.startOfDay(for: self)
+    }
+
+    var endOfDay: Date {
+        var components = DateComponents()
+        components.day = 1
+        components.second = -1
+        return Calendar.current.date(byAdding: components, to: startOfDay)!
+    }
+
+    var startOfMonth: Date {
+        let components = Calendar.current.dateComponents([.year, .month], from: startOfDay)
+        return Calendar.current.date(from: components)!
+    }
+
+    var endOfMonth: Date {
+        var components = DateComponents()
+        components.month = 1
+        components.second = -1
+        return Calendar.current.date(byAdding: components, to: startOfMonth)!
+    }
+}
