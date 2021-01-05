@@ -63,7 +63,7 @@ class SummaryVC: UIViewController {
 //        calendar.appearance.headerMinimumDissolvedAlpha = 0
         
         
-        //                print(Realm.Configuration.defaultConfiguration.fileURL!)
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
 
     }
     
@@ -515,7 +515,7 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         
         selectedDate = date
         
-        getBalanceAtDate(date + 57599)
+        getBalanceAtDate(date)
         
         print(date + 57599)
         
@@ -539,7 +539,6 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
         print("Year: \(year), Month: \(month), Day: \(day), Hour: \(hour)")
         print(date)
         print(date.localDate())
-        print(selectedDate + 61199)
         
     }
     

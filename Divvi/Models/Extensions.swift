@@ -614,3 +614,39 @@ extension Date {
         return Calendar.current.date(byAdding: components, to: startOfMonth)!
     }
 }
+
+extension Date {
+    func monthAsString() -> String {
+            let df = DateFormatter()
+            df.setLocalizedDateFormatFromTemplate("MMM")
+            return df.string(from: self)
+    }
+}
+
+//extension UIViewController {
+//    func showInputDialog(title:String? = nil,
+//                         subtitle:String? = nil,
+//                         actionTitle:String? = "Add",
+//                         cancelTitle:String? = "Cancel",
+//                         inputPlaceholder:String? = nil,
+//                         inputKeyboardType:UIKeyboardType = UIKeyboardType.default,
+//                         cancelHandler: ((UIAlertAction) -> Swift.Void)? = nil,
+//                         actionHandler: ((_ amount: Double?) -> Void)? = nil) {
+//
+//        let alert = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
+//        alert.addTextField { (textField:UITextField) in
+//            textField.placeholder = inputPlaceholder
+//            textField.keyboardType = inputKeyboardType
+//        }
+//        alert.addAction(UIAlertAction(title: actionTitle, style: .default, handler: { (action:UIAlertAction) in
+//            guard let textField =  alert.textFields?.first else {
+//                actionHandler?(nil)
+//                return
+//            }
+//            actionHandler?(field)
+//        }))
+//        alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel, handler: cancelHandler))
+//
+//        self.present(alert, animated: true, completion: nil)
+//    }
+//}

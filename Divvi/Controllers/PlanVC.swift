@@ -21,6 +21,7 @@ class PlanVC: UIViewController {
     private let realm = try! Realm()
     private lazy var categories: Results<Category> = { self.realm.objects(Category.self) }()
     private lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self) }()
+    private lazy var categoryBudgets: Results<MonthlyCategoryBudget> = { self.realm.objects(MonthlyCategoryBudget.self) }()
     
     //MARK: - ViewDidLoad/ViewWillAppear
     
@@ -71,6 +72,7 @@ class PlanVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "transactionCleared"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "dateUpdated"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "chartSliceSelected"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: "budgetUpdated"), object: nil)
     }
     
     //MARK: - IBActions
@@ -147,12 +149,15 @@ extension PlanVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let plannedTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@", categories[indexPath.item])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+        
+//        let budgetedTotal: Double = MonthlyCategoryBudget
                 
 //        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && isCleared == true", categories[indexPath.row])).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
         
-        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && transactionDate <= %@", categories[indexPath.row], Date() as CVarArg)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
+        let spentTotal: Double = abs(transactions.filter(NSPredicate(format: "transactionCategory == %@ && transactionDate <= %@", categories[indexPath.item], Date().localDate().removeTime! as CVarArg)).filter(SelectedMonth.shared.selectedMonthPredicate()).sum(ofProperty: "transactionAmount"))
         
-        let plannedToSpentRatio = spentTotal / plannedTotal
+        
+
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PlanningCell.identifier, for: indexPath) as? PlanningCell else { return UICollectionViewCell() }
 
@@ -162,9 +167,25 @@ extension PlanVC: UICollectionViewDataSource {
             color: UIColor(rgb: categories[indexPath.item].categoryColor)
         )
         
-        cell.amountBudgetedLabel.text = "\(plannedTotal.toCurrency())\n Planned"
+        let categoryBudgetAmount: Double = categoryBudgets.filter(NSPredicate(format: "budgetCategory == %@ && budgetMonth == \(SelectedMonth.shared.date.month) && budgetYear == \(SelectedMonth.shared.date.year)", categories[indexPath.item].categoryName)).sum(ofProperty: "monthlyBudgetAmount")
 
-        cell.percentLabel.text = plannedToSpentRatio.toPercent()
+//        print(categoryPlannedBudget)
+        print(categoryBudgetAmount)
+
+        let plannedToSpentRatio: Double
+        if categoryBudgetAmount > 0 {
+            plannedToSpentRatio = spentTotal / categoryBudgetAmount
+            cell.amountBudgetedLabel.text = "\(categoryBudgetAmount.toCurrency())\n Budgeted"
+            cell.percentLabel.text = plannedToSpentRatio.toPercent()
+            
+        } else {
+            plannedToSpentRatio = spentTotal / plannedTotal
+
+            cell.amountBudgetedLabel.text = "\(plannedTotal.toCurrency())\n Planned"
+            cell.percentLabel.text = plannedToSpentRatio.toPercent()
+        }
+
+        
         
         if categories[indexPath.item].categoryName == "Income" {
             cell.amountSpentLabel.text = "\(spentTotal.toCurrency()) \nEarned"

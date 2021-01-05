@@ -14,20 +14,25 @@ class SubVC: UIViewController {
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var setBudgetButton: UIButton!
+    @IBOutlet weak var budgetLabel: UILabel!
     
     //MARK: - Properties
     
     static let identifier = "SubVC"
     
     let realm = try! Realm()
-        
+    
     lazy var subCategories = List<SubCategory>()
     
     var categorySelected: Category?
-        
+    
     var viewTitle = ""
     
+    var categoryBudgetedAmount: Double { categoryBudgets.filter(NSPredicate(format: "budgetCategory == %@ && budgetMonth == \(SelectedMonth.shared.date.month) && budgetYear == \(SelectedMonth.shared.date.year)", categorySelected!.categoryName)).sum(ofProperty: "monthlyBudgetAmount") }
+    
     lazy var transactions: Results<Transaction> = { self.realm.objects(Transaction.self).filter(SelectedMonth.shared.selectedMonthPredicate()).filter(NSPredicate(format: "transactionCategory == %@", categorySelected!)).sorted(byKeyPath: "transactionDate", ascending: true) }()
+    
+    lazy var categoryBudgets: Results<MonthlyCategoryBudget> = { self.realm.objects(MonthlyCategoryBudget.self) }()
     
     var sectionNames: [String] {
         return Set(transactions.value(forKey: "transactionName") as! [String]).sorted()
@@ -42,13 +47,10 @@ class SubVC: UIViewController {
         
         configureObservers()
         
+        setupUI()
+        //        hideNavigationBarLine()
         
         
-        configureCollectionViewLayout()
-        
-//        hideNavigationBarLine()
-        
-        configureNavigationBar(largeTitleColor: .label, backgoundColor: .systemBackground, tintColor: UIColor(rgb: SystemColors.shared.blue), title: viewTitle, preferredLargeTitle: true)
         
     }
     
@@ -57,11 +59,11 @@ class SubVC: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationController?.setNavigationBarHidden(false, animated: true)
-
+        
     }
     
     //MARK: - Methods
@@ -70,14 +72,46 @@ class SubVC: UIViewController {
         collectionView.reloadData()
     }
     
+    private func setupBudgetLabel() {
+        
+        let categoryBudgetAmount: Double = categoryBudgets.filter(NSPredicate(format: "budgetCategory == %@ && budgetMonth == \(SelectedMonth.shared.date.month) && budgetYear == \(SelectedMonth.shared.date.year)", categorySelected!.categoryName)).sum(ofProperty: "monthlyBudgetAmount")
+        
+        if categoryBudgetAmount > 0 {
+            budgetLabel.text = "\(categoryBudgetAmount.toCurrency()) Budgeted"
+        } else {
+            budgetLabel.text = "No Budget Set"
+        }
+        
+    }
+    
+    private func setupUI() {
+        
+        setBudgetButton.setTitleColor(UIColor(rgb: SystemColors.shared.blue), for: .normal)
+//        setBudgetButton.setTitle("Set Budget", for: .normal)
+        
+        //\(SelectedMonth.shared.date.monthAsString()) \(SelectedMonth.shared.date.year) \(categorySelected!.categoryName)
+        
+        if categoryBudgetedAmount > 0 {
+            
+            setBudgetButton.setBackgroundImage(UIImage(systemName: "xmark"), for: .normal)
+
+        } else {
+            setBudgetButton.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
+
+        }
+        configureCollectionViewLayout()
+        configureNavigationBar(largeTitleColor: .label, backgoundColor: .systemBackground, tintColor: UIColor(rgb: SystemColors.shared.blue), title: viewTitle, preferredLargeTitle: true)
+        
+        setupBudgetLabel()
+
+        
+        
+    }
+    
     private func hideNavigationBarLine() {
-//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for:.default)
-//        navigationController?.navigationBar.shadowImage = UIImage()
-//        navigationController?.navigationBar.layoutIfNeeded()
+        
         title = viewTitle
         
-//        navigationBar.setValue(true, forKey: "hidesShadow")
-
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
@@ -94,14 +128,96 @@ class SubVC: UIViewController {
         collectionView.collectionViewLayout = layout
     }
     
-    
-    //MARK: - IBActions
-    
-    @IBAction func setBudgetButtonPressed(_ sender: UIButton) {
+    private func addBudgetAmount() {
+        
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Monthly \(categorySelected!.categoryName) Budget", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add", style: .default) { [self] (action) in
+            
+            let monthlyBudget = MonthlyCategoryBudget()
+            monthlyBudget.budgetCategory = categorySelected!.categoryName
+            monthlyBudget.budgetMonth = SelectedMonth.shared.date.month
+            monthlyBudget.budgetYear = SelectedMonth.shared.date.year
+            if let textFieldDoubleValue = textField.text?.toDouble() {
+                monthlyBudget.monthlyBudgetAmount = textFieldDoubleValue
+                budgetLabel.text = "\(textFieldDoubleValue.toCurrency()) Budgeted"
+                
+            }
+            
+            do {
+                try realm.write {
+                    realm.add(monthlyBudget)
+                }
+            } catch {
+                print("Error settings monthly budget: \(error)")
+            }
+            
+            setupUI()
+
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        alert.addTextField { (field) in
+            
+            textField = field
+            textField.placeholder = "Enter monthly total"
+            
+            textField.keyboardType = .decimalPad
+            
+        }
+        alert.addAction(action)
+        alert.addAction(cancelAction)
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
+        
+        self.present(alert, animated: true, completion: nil)
         
         
         
+
+
+            
     }
+
+//MARK: - IBActions
+
+@IBAction func setBudgetButtonPressed(_ sender: UIButton) {
+    
+    let budgetAmount: Double = categoryBudgets.filter(NSPredicate(format: "budgetCategory == %@ && budgetMonth == \(SelectedMonth.shared.date.month) && budgetYear == \(SelectedMonth.shared.date.year)", categorySelected!.categoryName)).sum(ofProperty: "monthlyBudgetAmount")
+    
+    if budgetAmount > 0 {
+        
+        let setBudgetAmounts = categoryBudgets.filter(NSPredicate(format: "budgetCategory == %@ && budgetMonth == \(SelectedMonth.shared.date.month) && budgetYear == \(SelectedMonth.shared.date.year)", categorySelected!.categoryName))
+        
+        for amounts in setBudgetAmounts {
+            do {
+            try realm.write {
+                realm.delete(amounts)
+            }
+            } catch {
+                print("Error deleting budget amounts: \(error)")
+            }
+        }
+        
+
+        
+    } else {
+        addBudgetAmount()
+
+    }
+    
+    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "budgetUpdated"), object: nil)
+    
+    setupUI()
+    
+//    collectionView.reloadData()
+    
+}
 }
 
 //MARK: - CollectionView DataSource
@@ -185,11 +301,11 @@ extension SubVC: UICollectionViewDelegate {
             let totalPlanned: Double = transactions.filter("transactionName == %@", sectionNames[indexPath.section]).sum(ofProperty: "transactionAmount")
             //            let totalSpent: Double = transactions.filter(NSPredicate(format: "isCleared == 1")).sum(ofProperty: "transactionAmount")
             
-            headerView.totalPlannedLabel.text = "Total planned: \(abs(totalPlanned).toCurrency())"
+            headerView.totalPlannedLabel.text = ""
             
             //            headerView.totalSpentLabel.text = "Spent: \(abs(totalSpent).toCurrency())"
             
-            headerView.totalSpentLabel.text = sectionNames[indexPath.section]
+            headerView.totalSpentLabel.text = "\(sectionNames[indexPath.section]) Total: \(abs(totalPlanned).toCurrency())"
             
             return headerView
             
@@ -197,7 +313,7 @@ extension SubVC: UICollectionViewDelegate {
             assert(false, "Invalid element type")
         }
         return UICollectionReusableView()
-
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -238,30 +354,6 @@ extension SubVC: UICollectionViewDelegateFlowLayout {
 //        let alert = UIAlertController(title: "Monthly \(subCategories[indexPath.item].subCategoryName):", message: "", preferredStyle: .alert)
 //
 //        let action = UIAlertAction(title: "Add", style: .default) { (action) in
-//
-//            let textFieldDoubleValue = textField.text?.toDouble()
-//
-//            let subCategoryAmountToUpdate = self.subCategories[indexPath.item]
-//
-//            let categoryAmountToUpdate = self.categorySelected?.categoryAmountBudgeted
-//
-//            try! self.realm.write {
-//
-//                if self.categorySelected?.categoryName == "Income" {
-//                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = textFieldDoubleValue!
-//                } else {
-//                    subCategoryAmountToUpdate.subCategoryAmountBudgeted = -textFieldDoubleValue!
-//                }
-//
-//                let sumOfSubCategories: Double = self.subCategories.sum(ofProperty: "subCategoryAmountBudgeted")
-//
-//                self.categorySelected?.categoryAmountBudgeted = sumOfSubCategories
-//
-//                print(self.categorySelected?.categoryAmountBudgeted)
-//            }
-//
-//            collectionView.reloadData()
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "planningAmountAdded"), object: nil)
 //
 //
 //        }

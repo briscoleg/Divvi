@@ -26,7 +26,7 @@ class StartingBalanceVC: UIViewController {
     private let realm = try! Realm()
     
     var startingBalanceAmount = 0.0
-    var startingBalanceDate = Date()
+    var startingBalanceDate = Date().localDate().removeTime!
     
     private let amountFieldAccessory: UIView = {
         let view = UIView(frame: .zero)
@@ -159,6 +159,7 @@ class StartingBalanceVC: UIViewController {
             alert.addAction(action)
             alert.addAction(cancelAction)
             present(alert, animated: true, completion: nil)
+            print("Starting balance is: \(startingBalanceDate)")
         }
         
     }
@@ -184,6 +185,7 @@ extension StartingBalanceVC: FSCalendarDelegate, FSCalendarDataSource, FSCalenda
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
 
         updateStartingBalance(with: date)
+        print(date)
     }
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at monthPosition: FSCalendarMonthPosition) {

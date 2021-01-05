@@ -49,6 +49,7 @@
 		C7E821C12548A74A00F32F31 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E821C02548A74A00F32F31 /* SettingsCell.swift */; };
 		C7E959DE258D494000D656D4 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7E9D579255756E000538A06 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9D578255756E000538A06 /* SettingsItem.swift */; };
+		C7ECDCA1259E48BA00C14612 /* MonthlyCategoryBudget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ECDCA0259E48BA00C14612 /* MonthlyCategoryBudget.swift */; };
 		C7ED6DB6255F05F8005431EF /* CustomHorizontalProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED6DB5255F05F8005431EF /* CustomHorizontalProgressBar.swift */; };
 		C7F54623257D7E2200C200C0 /* PasscodeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54622257D7E2200C200C0 /* PasscodeVC.swift */; };
 		C7F54626257D7E8F00C200C0 /* Passcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F54625257D7E8F00C200C0 /* Passcode.swift */; };
@@ -114,6 +115,7 @@
 		C7C9D6DE2548A03200E435FC /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
 		C7E821C02548A74A00F32F31 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		C7E9D578255756E000538A06 /* SettingsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
+		C7ECDCA0259E48BA00C14612 /* MonthlyCategoryBudget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyCategoryBudget.swift; sourceTree = "<group>"; };
 		C7ED6DB5255F05F8005431EF /* CustomHorizontalProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHorizontalProgressBar.swift; sourceTree = "<group>"; };
 		C7F54622257D7E2200C200C0 /* PasscodeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasscodeVC.swift; sourceTree = "<group>"; };
 		C7F54625257D7E8F00C200C0 /* Passcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Passcode.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				C08A028624A3C4980056F355 /* Transaction.swift */,
+				C7ECDCA0259E48BA00C14612 /* MonthlyCategoryBudget.swift */,
 				C771F49B257FDF1A002F3BA1 /* TransactionDay.swift */,
 				C773DAC0256080920084A848 /* StartingBalance.swift */,
 				C0D56C9624D9EBCF00AD1D8E /* Category.swift */,
@@ -400,6 +403,7 @@
 				C00D932424EF042D00B4C236 /* BudgetHeader.swift in Sources */,
 				C7F54623257D7E2200C200C0 /* PasscodeVC.swift in Sources */,
 				C7889C8C25437B5F00C41154 /* CategoryVC.swift in Sources */,
+				C7ECDCA1259E48BA00C14612 /* MonthlyCategoryBudget.swift in Sources */,
 				C0DB5FFD24A160D900008F89 /* SceneDelegate.swift in Sources */,
 				C097B53624F8742C00EEB0AF /* ColorPickerView.swift in Sources */,
 				C047132324EF2DFC00A7F39F /* SideBarCell.swift in Sources */,

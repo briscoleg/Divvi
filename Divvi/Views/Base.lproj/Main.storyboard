@@ -207,7 +207,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="nnG-B4-b8j">
-                                <rect key="frame" x="0.0" y="84" width="414" height="778"/>
+                                <rect key="frame" x="0.0" y="124" width="414" height="738"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="yhg-CX-4ag">
                                     <size key="itemSize" width="0.0" height="100"/>
@@ -320,19 +320,42 @@
                                     </connections>
                                 </collectionReusableView>
                             </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MLW-m6-j2u">
+                                <rect key="frame" x="20" y="49" width="52" height="26.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="1mY-j2-cRm">
+                                <rect key="frame" x="82" y="51" width="25" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="NxX-2I-Yvq"/>
+                                    <constraint firstAttribute="height" constant="25" id="dZR-UZ-b2M"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="plus" catalog="system"/>
+                                <connections>
+                                    <action selector="setBudgetButtonPressed:" destination="fwU-wK-1aE" eventType="touchUpInside" id="2io-Ie-Ypu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="HZ5-0N-9xD"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="nnG-B4-b8j" firstAttribute="leading" secondItem="2VR-uq-z8z" secondAttribute="leading" id="6mP-K8-LJQ"/>
                             <constraint firstItem="nnG-B4-b8j" firstAttribute="trailing" secondItem="HZ5-0N-9xD" secondAttribute="trailing" id="9oz-MF-HDt"/>
+                            <constraint firstItem="1mY-j2-cRm" firstAttribute="top" secondItem="HZ5-0N-9xD" secondAttribute="top" constant="5" id="J2E-p5-frf"/>
                             <constraint firstItem="nnG-B4-b8j" firstAttribute="bottom" secondItem="HZ5-0N-9xD" secondAttribute="bottom" id="NVT-I4-miX"/>
-                            <constraint firstItem="nnG-B4-b8j" firstAttribute="top" secondItem="HZ5-0N-9xD" secondAttribute="top" constant="40" id="SWj-AX-Xz5"/>
+                            <constraint firstItem="nnG-B4-b8j" firstAttribute="top" secondItem="HZ5-0N-9xD" secondAttribute="top" constant="80" id="SWj-AX-Xz5"/>
+                            <constraint firstItem="MLW-m6-j2u" firstAttribute="leading" secondItem="HZ5-0N-9xD" secondAttribute="leading" constant="20" id="bdb-U5-SiH"/>
+                            <constraint firstItem="MLW-m6-j2u" firstAttribute="top" secondItem="HZ5-0N-9xD" secondAttribute="top" constant="5" id="meG-hU-LJC"/>
+                            <constraint firstItem="1mY-j2-cRm" firstAttribute="leading" secondItem="MLW-m6-j2u" secondAttribute="trailing" constant="10" id="wqE-Y4-PI3"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="SjT-tr-awB"/>
                     <connections>
+                        <outlet property="budgetLabel" destination="MLW-m6-j2u" id="B3m-co-h4R"/>
                         <outlet property="collectionView" destination="nnG-B4-b8j" id="Jd4-Ok-wpX"/>
+                        <outlet property="setBudgetButton" destination="1mY-j2-cRm" id="HgC-0a-pqo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JZ4-FH-kng" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1558,6 +1581,7 @@ July 22, 2020</string>
         <image name="ellipsis.circle.fill" catalog="system" width="128" height="121"/>
         <image name="menu" width="25" height="25"/>
         <image name="planning" width="25" height="25"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <image name="plus" width="50" height="50"/>
         <image name="shippingbox.fill" catalog="system" width="128" height="124"/>
         <image name="trash" catalog="system" width="121" height="128"/>
