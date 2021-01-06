@@ -43,6 +43,8 @@ class SummaryVC: UIViewController {
     
     private var selectedDate = Date().localDate().removeTime!
     
+    static var dateForNewTransaction = Date().localDate().removeTime!
+    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -489,6 +491,8 @@ class SummaryVC: UIViewController {
 
 //        displaySelectedDate(Date())
         displaySelectedDate(Date().localDate())
+        
+        SummaryVC.dateForNewTransaction = Date().localDate()
 
 //        getBalanceAtDate(Date())
         getBalanceAtDate(Date().localDate())
@@ -514,6 +518,8 @@ extension SummaryVC: FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegat
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
         selectedDate = date
+        
+        SummaryVC.dateForNewTransaction = date
         
         getBalanceAtDate(date)
         

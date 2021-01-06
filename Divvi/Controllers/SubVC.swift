@@ -86,17 +86,24 @@ class SubVC: UIViewController {
     
     private func setupUI() {
         
-        setBudgetButton.setTitleColor(UIColor(rgb: SystemColors.shared.blue), for: .normal)
+//        setBudgetButton.setTitleColor(UIColor(rgb: SystemColors.shared.blue), for: .normal)
 //        setBudgetButton.setTitle("Set Budget", for: .normal)
         
         //\(SelectedMonth.shared.date.monthAsString()) \(SelectedMonth.shared.date.year) \(categorySelected!.categoryName)
         
+        
+        setBudgetButton.makeCircular()
+        setBudgetButton.tintColor = .white
+        setBudgetButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
+//        setBudgetButton.backgroundColor = UIColor(rgb: SystemColors.shared.blue)
+//        setBudgetButton.tintColor = .white
+//        setBudgetButton.makeCircular()
         if categoryBudgetedAmount > 0 {
             
-            setBudgetButton.setBackgroundImage(UIImage(systemName: "xmark"), for: .normal)
+            setBudgetButton.setImage(UIImage(systemName: "xmark"), for: .normal)
 
         } else {
-            setBudgetButton.setBackgroundImage(UIImage(systemName: "plus"), for: .normal)
+            setBudgetButton.setImage(UIImage(systemName: "plus"), for: .normal)
 
         }
         configureCollectionViewLayout()
@@ -300,9 +307,7 @@ extension SubVC: UICollectionViewDelegate {
             
             let totalPlanned: Double = transactions.filter("transactionName == %@", sectionNames[indexPath.section]).sum(ofProperty: "transactionAmount")
             //            let totalSpent: Double = transactions.filter(NSPredicate(format: "isCleared == 1")).sum(ofProperty: "transactionAmount")
-            
-            headerView.totalPlannedLabel.text = ""
-            
+                        
             //            headerView.totalSpentLabel.text = "Spent: \(abs(totalSpent).toCurrency())"
             
             headerView.totalSpentLabel.text = "\(sectionNames[indexPath.section]) Total: \(abs(totalPlanned).toCurrency())"

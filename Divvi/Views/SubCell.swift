@@ -23,8 +23,11 @@ class SubCell: UICollectionViewCell {
         
         circleView.makeCircular()
         subcategoryImage.tintColor = .white
+//        nameLabel.adjustsFontSizeToFitWidth = true
+//        nameLabel.minimumScaleFactor = 0.5
+        nameLabel.fitTextToBounds()
     }
-    
+        
     func configureSubcategoryCell(_ image: UIImage, _ color: UIColor) {
         subcategoryImage.image = image
         circleView.backgroundColor = color

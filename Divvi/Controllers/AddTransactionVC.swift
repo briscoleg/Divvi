@@ -33,12 +33,13 @@ class AddTransactionVC: UIViewController {
     
     lazy var allTransactions: Results<Transaction> = {realm.objects(Transaction.self)}()
     lazy var unclearedTransactionsToDate: Results<Transaction> = { allTransactions.filter("transactionDate <= %@", Date()).filter("isCleared == %@", false).sorted(byKeyPath: "transactionDate", ascending: true) }()
-   
-//    var subcategoryPicked: SubCategory?
-    
+       
     //Default transaction values
     var amount = 0.0
-    var datePicked = Date().localDate().removeTime!
+    let summaryVC = SummaryVC()
+
+    var datePicked = SummaryVC.dateForNewTransaction
+
     var repeatInterval = "Never"
     var isExpense = true
     var newTransaction = true
@@ -126,6 +127,10 @@ class AddTransactionVC: UIViewController {
         setTitle()
         setCategoryNameAndColor()
         
+//        datePicked = SummaryVC.dateForNewTransaction
+        
+//        dateButton.setTitle(datePicked.dateToString(), for: .normal)
+        
         print(datePicked)
                 
         //Add keyboard accessories
@@ -140,11 +145,11 @@ class AddTransactionVC: UIViewController {
     private func customizeAppearance() {
         
         saveButton.roundCorners()
+        displaySelectedDate(datePicked)
         navigationBar.setValue(true, forKey: "hidesShadow")
         UINavigationBar.appearance().barTintColor = .systemBackground
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
         UINavigationBar.appearance().isTranslucent = false
-        
 
     }
     
